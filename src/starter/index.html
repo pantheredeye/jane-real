@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Route Calculator - Real Estate Showing Planner</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <h1 class="app-title">ROUTE CALCULATOR</h1>
+            <p class="app-subtitle">Real Estate Showing Planner</p>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Phase 1: Address Input Section -->
+            <section class="input-section glass-card">
+                <h2 class="section-title">PROPERTY ADDRESSES</h2>
+                
+                <div class="address-input-container">
+                    <label for="addresses" class="input-label">PASTE ADDRESSES (ONE PER LINE)</label>
+                    <textarea 
+                        id="addresses" 
+                        class="address-textarea"
+                        placeholder="123 Main St, City, State&#10;456 Oak Ave, City, State&#10;789 Pine Rd, City, State"
+                        rows="6"
+                    ></textarea>
+                </div>
+
+                <div class="starting-point-container">
+                    <label for="starting-point" class="input-label">STARTING POINT</label>
+                    <select id="starting-point" class="starting-point-dropdown">
+                        <option value="0">First property (auto-selected)</option>
+                    </select>
+                </div>
+
+                <div class="duration-container">
+                    <label class="input-label">SHOWING DURATION (MINUTES)</label>
+                    <div class="duration-presets">
+                        <button class="duration-btn active" data-duration="15">15</button>
+                        <button class="duration-btn" data-duration="30">30</button>
+                        <button class="duration-btn" data-duration="45">45</button>
+                        <button class="duration-btn" data-duration="60">60</button>
+                    </div>
+                </div>
+
+                <button class="calculate-btn" id="calculate-route">
+                    <span class="btn-text">CALCULATE ROUTE</span>
+                    <span class="btn-loader hidden">CALCULATING...</span>
+                </button>
+            </section>
+
+            <!-- Results Section -->
+            <section class="results-section hidden" id="results-section">
+                <h2 class="section-title">OPTIMIZED ITINERARY</h2>
+                <p class="section-description">Review your route below. Adjust appointment times and lock specific slots as needed, then re-optimize if changes are made.</p>
+                
+                <div class="route-summary glass-card-elevated">
+                    <div class="summary-item">
+                        <span class="summary-label">TOTAL PROPERTIES:</span>
+                        <span class="summary-value" id="total-properties">0</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">TOTAL TIME:</span>
+                        <span class="summary-value" id="total-time">0h 0m</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">DRIVING TIME:</span>
+                        <span class="summary-value" id="driving-time">0h 0m</span>
+                    </div>
+                </div>
+
+                <div class="itinerary-container">
+                    <div class="itinerary-list" id="itinerary-list">
+                        <!-- Dynamic unified property cards with controls will be inserted here -->
+                    </div>
+                </div>
+
+                <div class="copy-options">
+                    <label class="copy-label">COPY FORMAT:</label>
+                    <div class="copy-buttons">
+                        <button class="copy-btn client-copy" id="copy-client">
+                            <span class="btn-text">📱 FOR CLIENT</span>
+                            <span class="btn-success hidden">COPIED!</span>
+                        </button>
+                        <button class="copy-btn detailed-copy" id="copy-detailed">
+                            <span class="btn-text">📋 DETAILED</span>
+                            <span class="btn-success hidden">COPIED!</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="optimize-btn" id="re-optimize">
+                        RE-OPTIMIZE ROUTE
+                    </button>
+                </div>
+            </section>
+        </main>
+
+        <!-- Status Messages -->
+        <div class="status-container">
+            <div class="status-message hidden" id="status-message"></div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
