@@ -62,7 +62,7 @@ export function PropertyCard({ routeItem, routeIndex, onTimeChange, onDurationCh
       <PropertyControls 
         property={property} 
         appointmentTime={routeItem.appointmentTime}
-        propertyIndex={routeItem.propertyIndex}
+        propertyIndex={routeIndex}
         onTimeChange={onTimeChange}
         onDurationChange={onDurationChange}
         onToggleFreeze={onToggleFreeze}
