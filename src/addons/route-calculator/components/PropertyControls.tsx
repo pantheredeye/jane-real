@@ -1,6 +1,5 @@
 'use client'
 
-import { useState } from 'react'
 
 interface Property {
   id: string
@@ -13,28 +12,40 @@ interface Property {
 interface PropertyControlsProps {
   property: Property
   appointmentTime: Date
+  propertyIndex: number
+  onTimeChange: (propertyIndex: number, newTime: string) => void
+  onDurationChange: (propertyIndex: number, newDuration: number) => void
+  onToggleFreeze: (propertyIndex: number) => void
 }
 
-export function PropertyControls({ property, appointmentTime }: PropertyControlsProps) {
-  const [timeValue, setTimeValue] = useState(() => {
+export function PropertyControls({ 
+  property, 
+  appointmentTime, 
+  propertyIndex, 
+  onTimeChange, 
+  onDurationChange, 
+  onToggleFreeze 
+}: PropertyControlsProps) {
+  // Use props values instead of local state
+  const timeValue = (() => {
     const hours = appointmentTime.getHours().toString().padStart(2, '0')
     const minutes = appointmentTime.getMinutes().toString().padStart(2, '0')
     return `${hours}:${minutes}`
-  })
+  })()
   
-  const [duration, setDuration] = useState(property.showingDuration)
-  const [isFrozen, setIsFrozen] = useState(property.isFrozen)
+  const duration = property.showingDuration
+  const isFrozen = property.isFrozen
 
   const handleTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setTimeValue(e.target.value)
+    onTimeChange(propertyIndex, e.target.value)
   }
 
   const handleDurationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setDuration(parseInt(e.target.value))
+    onDurationChange(propertyIndex, parseInt(e.target.value))
   }
 
   const toggleFreeze = () => {
-    setIsFrozen(!isFrozen)
+    onToggleFreeze(propertyIndex)
   }
 
   return (

@@ -8,6 +8,7 @@ import { RouteSummary } from '../components/RouteSummary'
 import { CopyButtons } from '../components/CopyButtons'
 import { calculateRoute } from '../server-functions/calculateRoute'
 import type { OptimizedRoute } from '../types'
+import { useRouteManager } from '../hooks/useRouteManager'
 
 export default function HomePage() {
   // TODO: Lift DurationSelector state up to HomePage (like we did with AddressInput)
@@ -24,8 +25,14 @@ export default function HomePage() {
   const [startingPropertyIndex, setStartingPropertyIndex] = useState(0)
   const [startTime, setStartTime] = useState('09:00')
   const [selectedDuration, setSelectedDuration] = useState(30)
-  const [calculatedRoute, setCalculatedRoute] = useState<OptimizedRoute | null>(null)
   const [isCalculating, setIsCalculating] = useState(false)
+  const { 
+    route: calculatedRoute, 
+    updateAppointmentTime, 
+    updateShowingDuration, 
+    toggleFreezeAppointment, 
+    setInitialRoute 
+  } = useRouteManager(null)
   
   // Parse addresses into array and filter empty lines
   const addressList = useMemo(() => {
@@ -54,7 +61,7 @@ export default function HomePage() {
       // Call server function directly with plain object (RedwoodSDK best practice)
       const result = await calculateRoute(requestData)
       console.log('Server response:', result)
-      setCalculatedRoute(result)
+      setInitialRoute(result)
       
     } catch (error) {
       console.error('Route calculation failed:', error)
@@ -146,6 +153,9 @@ export default function HomePage() {
                   key={item.propertyIndex}
                   routeItem={item}
                   routeIndex={index}
+                  onTimeChange={updateAppointmentTime}
+                  onDurationChange={updateShowingDuration}
+                  onToggleFreeze={toggleFreezeAppointment}
                 />
               ))}
             </div>

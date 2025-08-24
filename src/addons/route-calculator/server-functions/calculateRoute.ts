@@ -14,6 +14,19 @@
 // TODO: Add support for time constraints and business hours
 // TODO: Implement real-time traffic data integration
 
+// TODO: Add server persistence for route customizations (after custom hook implementation)
+// CONTEXT: User wants to persist route modifications (appointment time/duration changes) to server
+// BENEFITS: Session continuity, multi-device access, collaboration/sharing, audit trail, backup
+// APPROACH: Background sync from custom hook - user gets immediate client updates + server persistence
+// IMPLEMENTATION: 
+//   1. Create POST /save-route endpoint to persist modified routes with unique ID
+//   2. Add debouncedServerSync() in custom hook for non-blocking background saves
+//   3. Add GET /route/:id endpoint to load saved routes
+//   4. Consider route versioning for audit trail
+//   5. Add route sharing functionality via unique URLs
+// MIGRATION PATH: Start with simple background sync, can add optimistic updates later
+// RELATED: This works alongside the custom hook approach for client-side cascading
+
 import { z } from 'zod'
 import { format, parse, addMinutes } from 'date-fns'
 import { geocodeAddresses, calculateDistanceMatrix } from './geocoding'

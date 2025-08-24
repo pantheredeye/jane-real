@@ -18,6 +18,9 @@ interface RouteItem {
 interface PropertyCardProps {
   routeItem: RouteItem
   routeIndex: number
+  onTimeChange: (propertyIndex: number, newTime: string) => void
+  onDurationChange: (propertyIndex: number, newDuration: number) => void
+  onToggleFreeze: (propertyIndex: number) => void
 }
 
 function formatDisplayTime(date: Date): string {
@@ -28,7 +31,7 @@ function formatDisplayTime(date: Date): string {
   })
 }
 
-export function PropertyCard({ routeItem, routeIndex }: PropertyCardProps) {
+export function PropertyCard({ routeItem, routeIndex, onTimeChange, onDurationChange, onToggleFreeze }: PropertyCardProps) {
   const { property } = routeItem
 
   const handleDirections = () => {
@@ -59,6 +62,10 @@ export function PropertyCard({ routeItem, routeIndex }: PropertyCardProps) {
       <PropertyControls 
         property={property} 
         appointmentTime={routeItem.appointmentTime}
+        propertyIndex={routeItem.propertyIndex}
+        onTimeChange={onTimeChange}
+        onDurationChange={onDurationChange}
+        onToggleFreeze={onToggleFreeze}
       />
     </div>
   )
