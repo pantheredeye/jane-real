@@ -1,18 +1,19 @@
 'use client'
 
-import { useState } from 'react'
 
-export function AddressInput() {
-  // TODO: Connect to parent component state management
+interface AddressInputProps {
+  addresses: string
+  onChange: (addresses: string) => void
+}
+
+export function AddressInput({ addresses, onChange }: AddressInputProps) {
   // TODO: Add address validation and parsing
   // TODO: Handle form submission to server function
   // TODO: Show parsed address count/validation feedback
   // TODO: Add clear/reset functionality
-  
-  const [addresses, setAddresses] = useState('')
 
   const handleAddressChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setAddresses(e.target.value)
+    onChange(e.target.value)
   }
 
   return (

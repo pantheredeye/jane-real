@@ -1,5 +1,15 @@
 'use server'
 
+// PROGRESS: Successfully replaced Axios-based calls with fetch() for Cloudflare Workers compatibility
+// CURRENT ISSUE: Google Maps API key issues - getting "expired" and "billing not enabled" errors
+// STATUS: Created new server API key (GOOGLE_MAPS_API_KEY_SERVER) and deployed to Cloudflare
+// NEXT STEPS:
+// 1. Wait for API key to propagate (can take a few minutes)
+// 2. Enable billing on Google Cloud Project: https://console.cloud.google.com/project/_/billing/enable
+// 3. Verify API restrictions are set to: Geocoding API + Distance Matrix API only
+// 4. Test geocoding again - should get real coordinates instead of null
+// 5. If working, remove old Axios client code and clean up imports
+
 import { Client } from '@googlemaps/google-maps-services-js'
 import type { GeocodingResult, DistanceMatrixResult, Coordinates } from '../types'
 import { env } from 'cloudflare:workers'
@@ -7,23 +17,24 @@ import { env } from 'cloudflare:workers'
 const client = new Client({})
 
 export async function geocodeAddresses(addresses: string[]): Promise<GeocodingResult[]> {
-  if (!env.GOOGLE_MAPS_API_KEY) {
-    throw new Error('Google Maps API key not configured')
+  if (!env.GOOGLE_MAPS_API_KEY_SERVER) {
+    throw new Error('Google Maps server API key not configured')
   }
 
   const results: GeocodingResult[] = []
 
   for (const address of addresses) {
     try {
-      const response = await client.geocode({
-        params: {
-          address,
-          key: env.GOOGLE_MAPS_API_KEY,
-        },
-      })
+      const encodedAddress = encodeURIComponent(address)
+      const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodedAddress}&key=${env.GOOGLE_MAPS_API_KEY_SERVER}`
+      
+      const response = await fetch(url)
+      const data = await response.json()
 
-      if (response.data.results.length > 0) {
-        const result = response.data.results[0]
+      console.log(`Geocoding response for "${address}":`, data)
+
+      if (data.results && data.results.length > 0) {
+        const result = data.results[0]
         const location = result.geometry.location
 
         results.push({
@@ -35,8 +46,7 @@ export async function geocodeAddresses(addresses: string[]): Promise<GeocodingRe
           formattedAddress: result.formatted_address,
         })
       } else {
-        // If geocoding fails, we'll skip this address or handle it appropriately
-        console.warn(`Failed to geocode address: ${address}`)
+        console.warn(`Failed to geocode address: ${address}`, 'Status:', data.status, 'Error:', data.error_message)
         results.push({
           address,
           coordinates: null,
@@ -63,8 +73,8 @@ export async function calculateDistanceMatrix(
   origins: Coordinates[],
   destinations: Coordinates[]
 ): Promise<DistanceMatrixResult> {
-  if (!env.GOOGLE_MAPS_API_KEY) {
-    throw new Error('Google Maps API key not configured')
+  if (!env.GOOGLE_MAPS_API_KEY_SERVER) {
+    throw new Error('Google Maps server API key not configured')
   }
 
   try {
@@ -75,7 +85,7 @@ export async function calculateDistanceMatrix(
         units: 'metric',
         mode: 'driving',
         avoid: [],
-        key: env.GOOGLE_MAPS_API_KEY,
+        key: env.GOOGLE_MAPS_API_KEY_SERVER,
       },
     })
 

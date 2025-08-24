@@ -217,10 +217,18 @@ The project uses Prisma with D1. Key models:
 - Team sharing and collaboration features
 - Mobile app companion
 
-## Communication Style
+## Communication Style & Development Workflow
 - Keep responses short and conversational
-- Use dialog-style back and forth
+- Use dialog-style back and forth  
 - Prefer small code snippets over long explanations
+- Make incremental changes, not large code rewrites
+
+## TODO Management for Context
+- TODOs are kept directly in source files as comments
+- Use TODOs to provide context for future sessions
+- Scan files with `grep -r "TODO" src/addons/route-calculator/` to understand current work
+- TODOs should be specific and actionable, not generic
+- Update TODOs as work progresses to keep context fresh
 
 ## Contributing
 When adding features, follow these guidelines:

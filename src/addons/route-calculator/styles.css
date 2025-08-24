@@ -186,7 +186,8 @@ body {
 }
 
 /* Starting Point Dropdown */
-.starting-point-container {
+.starting-point-container,
+.start-time-container {
   margin-bottom: var(--space-lg);
 }
 

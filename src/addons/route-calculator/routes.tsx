@@ -16,9 +16,8 @@ export const routeCalculatorRoutes = [
   // Main calculator page
   route("/", [HomePage]),
   
-  // API endpoints for route calculation
-  route("/calculate", "POST", [calculateRoute]),
-  route("/re-optimize", "POST", [reOptimizeRoute]),
+  // Server functions are called directly from client components
+  // No HTTP routes needed for calculate/re-optimize
   
   // Export endpoints
   route("/api/export/:format", "GET", [exportItinerary]),

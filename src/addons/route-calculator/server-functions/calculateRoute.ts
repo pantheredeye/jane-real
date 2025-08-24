@@ -1,8 +1,14 @@
 'use server'
 
-// TODO: Connect these server functions to route definitions
+// TODO: Break server functions into separate endpoints for better UX:
+// TODO: 1. POST /calculate - initial route (addresses, startTime, startingPropertyIndex, defaultDuration)
+// TODO: 2. POST /update-duration - change specific property duration (propertyIndex, newDuration)
+// TODO: 3. POST /freeze-appointment - lock specific time slots (propertyIndex, appointmentTime)
+// TODO: 4. POST /re-optimize - recalculate with all current constraints (existing route + frozen times)
+// TODO: Current bundled approach works but limits user workflow flexibility
+// TODO: Separate endpoints allow granular updates without full recalculation
 // TODO: Add proper error handling and validation
-// TODO: Implement rate limiting and request throttling
+// TODO: Implement rate limiting and request throttling  
 // TODO: Add caching for repeated geocoding requests
 // TODO: Optimize TSP algorithm for larger property sets
 // TODO: Add support for time constraints and business hours
@@ -21,33 +27,15 @@ import type {
 } from '../types'
 import { CalculateRouteRequestSchema, ReOptimizeRequestSchema } from '../types'
 
-export async function calculateRoute(request: Request): Promise<Response> {
+export async function calculateRoute(requestData: CalculateRouteRequest): Promise<OptimizedRoute> {
   try {
-    const body = await request.json()
-    const validatedData = CalculateRouteRequestSchema.parse(body)
+    const validatedData = CalculateRouteRequestSchema.parse(requestData)
     
     const route = await optimizeRoute(validatedData)
-    
-    const response: CalculateRouteResponse = {
-      success: true,
-      route,
-    }
-    
-    return new Response(JSON.stringify(response), {
-      headers: { 'Content-Type': 'application/json' },
-    })
+    return route
   } catch (error) {
     console.error('Route calculation error:', error)
-    
-    const response: CalculateRouteResponse = {
-      success: false,
-      error: error instanceof Error ? error.message : 'Unknown error occurred',
-    }
-    
-    return new Response(JSON.stringify(response), {
-      status: 400,
-      headers: { 'Content-Type': 'application/json' },
-    })
+    throw new Error(error instanceof Error ? error.message : 'Unknown error occurred')
   }
 }
 
