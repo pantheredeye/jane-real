@@ -1,5 +1,13 @@
 'use server'
 
+// TODO: Connect these server functions to route definitions
+// TODO: Add proper error handling and validation
+// TODO: Implement rate limiting and request throttling
+// TODO: Add caching for repeated geocoding requests
+// TODO: Optimize TSP algorithm for larger property sets
+// TODO: Add support for time constraints and business hours
+// TODO: Implement real-time traffic data integration
+
 import { z } from 'zod'
 import { format, parse, addMinutes } from 'date-fns'
 import { geocodeAddresses, calculateDistanceMatrix } from './geocoding'

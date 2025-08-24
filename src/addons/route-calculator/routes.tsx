@@ -1,3 +1,11 @@
+// TODO: Add interruptors for authentication and validation
+// TODO: Add rate limiting to API endpoints
+// TODO: Add proper error handling middleware
+// TODO: Implement CORS headers for API endpoints
+// TODO: Add request/response validation with Zod schemas
+// TODO: Add logging and monitoring interruptors
+// TODO: Add caching strategies for geocoding results
+
 import { route } from "rwsdk/router";
 import HomePage from "./pages/HomePage";
 import { calculateRoute } from "./server-functions/calculateRoute";

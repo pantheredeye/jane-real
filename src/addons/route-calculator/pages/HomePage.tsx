@@ -5,6 +5,14 @@ import { RouteSummary } from '../components/RouteSummary'
 import { CopyButtons } from '../components/CopyButtons'
 
 export default function HomePage() {
+  // TODO: Add client-side state management for route data
+  // TODO: Connect calculate button to server function
+  // TODO: Show/hide results section based on calculation state
+  // TODO: Implement dynamic property card rendering
+  // TODO: Add error handling and status messages
+  // TODO: Connect starting point dropdown to state
+  // TODO: Add loading states during calculation
+  
   return (
     <div className="app-container">
       <header className="app-header">

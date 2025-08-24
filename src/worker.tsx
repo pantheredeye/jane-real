@@ -60,6 +60,6 @@ export default defineApp([
       Home,
     ]),
     prefix("/user", userRoutes),
-    prefix("/route-calculator", routeCalculatorRoutes),
+    prefix("/route", routeCalculatorRoutes),
   ]),
 ]);

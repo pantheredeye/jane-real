@@ -3,6 +3,12 @@
 import { useState } from 'react'
 
 export function AddressInput() {
+  // TODO: Connect to parent component state management
+  // TODO: Add address validation and parsing
+  // TODO: Handle form submission to server function
+  // TODO: Show parsed address count/validation feedback
+  // TODO: Add clear/reset functionality
+  
   const [addresses, setAddresses] = useState('')
 
   const handleAddressChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
