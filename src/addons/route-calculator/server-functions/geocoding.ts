@@ -78,25 +78,21 @@ export async function calculateDistanceMatrix(
   }
 
   try {
-    const response = await client.distancematrix({
-      params: {
-        origins: origins.map(coord => `${coord.lat},${coord.lng}`),
-        destinations: destinations.map(coord => `${coord.lat},${coord.lng}`),
-        units: 'metric',
-        mode: 'driving',
-        avoid: [],
-        key: env.GOOGLE_MAPS_API_KEY_SERVER,
-      },
-    })
+    const originsStr = origins.map(coord => `${coord.lat},${coord.lng}`).join('|')
+    const destinationsStr = destinations.map(coord => `${coord.lat},${coord.lng}`).join('|')
+    const url = `https://maps.googleapis.com/maps/api/distancematrix/json?origins=${encodeURIComponent(originsStr)}&destinations=${encodeURIComponent(destinationsStr)}&units=metric&mode=driving&key=${env.GOOGLE_MAPS_API_KEY_SERVER}`
+    
+    const response = await fetch(url)
+    const data = await response.json()
 
     const durations: number[][] = []
     const distances: number[][] = []
 
-    response.data.rows.forEach((row, originIndex) => {
+    data.rows.forEach((row: any, originIndex: number) => {
       durations[originIndex] = []
       distances[originIndex] = []
 
-      row.elements.forEach((element, destIndex) => {
+      row.elements.forEach((element: any, destIndex: number) => {
         if (element.status === 'OK') {
           // Convert seconds to minutes
           durations[originIndex][destIndex] = Math.ceil(element.duration.value / 60)

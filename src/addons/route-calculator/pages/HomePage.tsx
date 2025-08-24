@@ -20,11 +20,12 @@ export default function HomePage() {
   // TODO: Add error handling and status messages
   // TODO: Add loading states during calculation
   
-  const [addresses, setAddresses] = useState('3633 Rhett Butler Road, Hernando MS\n5210 Waikiki Cove, Hernando MS\n11147 Horseshoe Bend, Hernando MS\n2150 Scenic Hills Drive, Horn Lake MS')
+  const [addresses, setAddresses] = useState('3633 Rhett Butler Road, Hernando MS\n5210 Waikiki Cove, Hernando MS\n11147 Horseshoe Bend, Hernando MS\n206 Swan Lake Drive, Coldwater MS\n2203 St Ives Ln, Hernando, MS')
   const [startingPropertyIndex, setStartingPropertyIndex] = useState(0)
   const [startTime, setStartTime] = useState('09:00')
   const [selectedDuration, setSelectedDuration] = useState(30)
   const [calculatedRoute, setCalculatedRoute] = useState<OptimizedRoute | null>(null)
+  const [isCalculating, setIsCalculating] = useState(false)
   
   // Parse addresses into array and filter empty lines
   const addressList = useMemo(() => {
@@ -47,6 +48,7 @@ export default function HomePage() {
     }
     
     console.log('Calculating route with:', requestData)
+    setIsCalculating(true)
     
     try {
       // Call server function directly with plain object (RedwoodSDK best practice)
@@ -57,6 +59,8 @@ export default function HomePage() {
     } catch (error) {
       console.error('Route calculation failed:', error)
       // TODO: Show error message to user
+    } finally {
+      setIsCalculating(false)
     }
   }
   
@@ -112,9 +116,13 @@ export default function HomePage() {
             onChange={setSelectedDuration} 
           />
 
-          <button className="calculate-btn" onClick={handleCalculateRoute}>
-            <span className="btn-text">CALCULATE ROUTE</span>
-            <span className="btn-loader hidden">CALCULATING...</span>
+          <button 
+            className="calculate-btn" 
+            onClick={handleCalculateRoute}
+            disabled={isCalculating}
+          >
+            <span className={`btn-text ${isCalculating ? 'hidden' : ''}`}>CALCULATE ROUTE</span>
+            <span className={`btn-loader ${isCalculating ? '' : 'hidden'}`}>CALCULATING...</span>
           </button>
         </section>
 
