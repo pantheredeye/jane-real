@@ -37,6 +37,7 @@ export interface CalculateRouteRequest {
   showingDuration: number
   startingPropertyIndex: number
   startTime?: string
+  timezoneOffset?: number // Minutes difference from UTC (e.g., -300 for EST)
   frozenAppointments?: Array<{
     propertyIndex: number
     appointmentTime: string
@@ -74,26 +75,13 @@ export const CalculateRouteRequestSchema = z.object({
   showingDuration: z.number().min(5).max(120),
   startingPropertyIndex: z.number().min(0),
   startTime: z.string().optional(),
+  timezoneOffset: z.number().optional(),
   frozenAppointments: z.array(z.object({
     propertyIndex: z.number(),
     appointmentTime: z.string(),
   })).optional(),
 })
 
-export const ReOptimizeRequestSchema = z.object({
-  route: z.object({
-    items: z.array(z.any()),
-    totalTime: z.number(),
-    totalDrivingTime: z.number(),
-    totalShowingTime: z.number(),
-    startTime: z.string(),
-    endTime: z.string(),
-  }),
-  frozenAppointments: z.array(z.object({
-    propertyIndex: z.number(),
-    appointmentTime: z.string(),
-  })).optional(),
-})
 
 // Utility types
 export type ExportFormat = 'client' | 'detailed'

@@ -9,7 +9,6 @@
 import { route } from "rwsdk/router";
 import HomePage from "./pages/HomePage";
 import { calculateRoute } from "./server-functions/calculateRoute";
-import { reOptimizeRoute } from "./server-functions/calculateRoute";
 import { exportItinerary } from "./server-functions/export";
 
 export const routeCalculatorRoutes = [

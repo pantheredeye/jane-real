@@ -829,3 +829,59 @@ body {
     --bg-glass-strong: rgba(255, 255, 255, 1);
   }
 }
+
+/* Sticky Jump to Results Button */
+.jump-to-results-btn {
+  position: fixed;
+  bottom: var(--space-md);
+  right: var(--space-md);
+  background: var(--accent-electric);
+  color: var(--text-white);
+  border: none;
+  border-radius: var(--radius-lg);
+  padding: var(--space-sm) var(--space-md);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  box-shadow: var(--shadow-elevated);
+  backdrop-filter: var(--blur-medium);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 1000;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: slideInUp 0.4s ease-out forwards;
+  min-height: var(--touch-minimum);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.jump-to-results-btn:hover {
+  background: #2563eb;
+  transform: translateY(-2px);
+  box-shadow: 0 16px 48px rgba(37, 99, 235, 0.3);
+}
+
+.jump-to-results-btn:active {
+  transform: translateY(0);
+  transition: transform 0.1s;
+}
+
+/* Slide in animation for jump button */
+@keyframes slideInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Mobile responsive adjustments */
+@media (max-width: 768px) {
+  .jump-to-results-btn {
+    bottom: var(--space-sm);
+    right: var(--space-sm);
+    padding: var(--space-sm);
+    font-size: 12px;
+  }
+}

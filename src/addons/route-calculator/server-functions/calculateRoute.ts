@@ -28,7 +28,7 @@
 // RELATED: This works alongside the custom hook approach for client-side cascading
 
 import { z } from 'zod'
-import { format, parse, addMinutes } from 'date-fns'
+import { format, parse, addMinutes, subMinutes } from 'date-fns'
 import { geocodeAddresses, calculateDistanceMatrix } from './geocoding'
 import type { 
   Property, 
@@ -38,7 +38,18 @@ import type {
   CalculateRouteResponse,
   Coordinates 
 } from '../types'
-import { CalculateRouteRequestSchema, ReOptimizeRequestSchema } from '../types'
+import { CalculateRouteRequestSchema } from '../types'
+
+// Helper function to parse time strings in user's local timezone
+function parseTimeInUserTimezone(timeString: string, timezoneOffset: number): Date {
+  // Parse the time as if it's in UTC
+  const parsedTime = parse(timeString, 'HH:mm', new Date())
+  
+  // Adjust for the user's timezone offset
+  // timezoneOffset is minutes from UTC (negative for timezones ahead of UTC)
+  // We need to subtract the offset to convert from user's local time to UTC
+  return subMinutes(parsedTime, timezoneOffset)
+}
 
 export async function calculateRoute(requestData: CalculateRouteRequest): Promise<OptimizedRoute> {
   try {
@@ -52,48 +63,11 @@ export async function calculateRoute(requestData: CalculateRouteRequest): Promis
   }
 }
 
-export async function reOptimizeRoute(request: Request): Promise<Response> {
-  try {
-    const body = await request.json()
-    const validatedData = ReOptimizeRequestSchema.parse(body)
-    
-    // Extract current route data and re-optimize with frozen appointments
-    const addresses = validatedData.route.items.map(item => item.property.address)
-    const startingPropertyIndex = 0 // Can be determined from the current route
-    
-    const optimizeRequest: CalculateRouteRequest = {
-      addresses,
-      showingDuration: validatedData.route.items[0]?.property.showingDuration || 30,
-      startingPropertyIndex,
-      frozenAppointments: validatedData.frozenAppointments,
-    }
-    
-    const route = await optimizeRoute(optimizeRequest)
-    
-    const response: CalculateRouteResponse = {
-      success: true,
-      route,
-    }
-    
-    return new Response(JSON.stringify(response), {
-      headers: { 'Content-Type': 'application/json' },
-    })
-  } catch (error) {
-    console.error('Route re-optimization error:', error)
-    
-    const response: CalculateRouteResponse = {
-      success: false,
-      error: error instanceof Error ? error.message : 'Unknown error occurred',
-    }
-    
-    return new Response(JSON.stringify(response), {
-      status: 400,
-      headers: { 'Content-Type': 'application/json' },
-    })
-  }
-}
 
 async function optimizeRoute(request: CalculateRouteRequest): Promise<OptimizedRoute> {
+  // Get timezone offset for time parsing
+  const timezoneOffset = request.timezoneOffset || 0
+  
   // Step 1: Geocode all addresses
   const geocodingResults = await geocodeAddresses(request.addresses)
   
@@ -112,7 +86,7 @@ async function optimizeRoute(request: CalculateRouteRequest): Promise<OptimizedR
     request.frozenAppointments.forEach(frozen => {
       if (properties[frozen.propertyIndex]) {
         properties[frozen.propertyIndex].isFrozen = true
-        properties[frozen.propertyIndex].appointmentTime = parse(frozen.appointmentTime, 'HH:mm', new Date())
+        properties[frozen.propertyIndex].appointmentTime = parseTimeInUserTimezone(frozen.appointmentTime, timezoneOffset)
       }
     })
   }
@@ -143,7 +117,7 @@ async function optimizeRoute(request: CalculateRouteRequest): Promise<OptimizedR
   
   // Step 6: Calculate appointment times
   const startTime = request.startTime ? 
-    parse(request.startTime, 'HH:mm', new Date()) : 
+    parseTimeInUserTimezone(request.startTime, timezoneOffset) : 
     new Date(Date.now() + 60 * 60 * 1000) // Default to 1 hour from now
     
   startTime.setHours(Math.max(9, startTime.getHours())) // Ensure reasonable start time

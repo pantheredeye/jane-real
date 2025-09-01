@@ -1,15 +1,5 @@
 'use server'
 
-// PROGRESS: Successfully replaced Axios-based calls with fetch() for Cloudflare Workers compatibility
-// CURRENT ISSUE: Google Maps API key issues - getting "expired" and "billing not enabled" errors
-// STATUS: Created new server API key (GOOGLE_MAPS_API_KEY_SERVER) and deployed to Cloudflare
-// NEXT STEPS:
-// 1. Wait for API key to propagate (can take a few minutes)
-// 2. Enable billing on Google Cloud Project: https://console.cloud.google.com/project/_/billing/enable
-// 3. Verify API restrictions are set to: Geocoding API + Distance Matrix API only
-// 4. Test geocoding again - should get real coordinates instead of null
-// 5. If working, remove old Axios client code and clean up imports
-
 import { Client } from '@googlemaps/google-maps-services-js'
 import type { GeocodingResult, DistanceMatrixResult, Coordinates } from '../types'
 import { env } from 'cloudflare:workers'
@@ -30,8 +20,6 @@ export async function geocodeAddresses(addresses: string[]): Promise<GeocodingRe
       
       const response = await fetch(url)
       const data = await response.json()
-
-      console.log(`Geocoding response for "${address}":`, data)
 
       if (data.results && data.results.length > 0) {
         const result = data.results[0]

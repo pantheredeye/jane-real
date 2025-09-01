@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { AddressInput } from '../components/AddressInput'
 import { DurationSelector } from '../components/DurationSelector'
 import { PropertyCard } from '../components/PropertyCard'
@@ -26,6 +26,8 @@ export default function HomePage() {
   const [startTime, setStartTime] = useState('09:00')
   const [selectedDuration, setSelectedDuration] = useState(30)
   const [isCalculating, setIsCalculating] = useState(false)
+  const [showJumpButton, setShowJumpButton] = useState(false)
+  const [showCalculateSuccess, setShowCalculateSuccess] = useState(false)
   const { 
     route: calculatedRoute, 
     updateAppointmentTime, 
@@ -42,6 +44,51 @@ export default function HomePage() {
       .filter(addr => addr.length > 0)
   }, [addresses])
 
+  // Handle jump button visibility based on scroll position and results availability
+  useEffect(() => {
+    if (!calculatedRoute) {
+      setShowJumpButton(false)
+      return
+    }
+
+    const handleScroll = () => {
+      const resultsSection = document.querySelector('.results-section') as HTMLElement
+      if (!resultsSection) return
+      
+      const resultsTop = resultsSection.offsetTop
+      const scrollPosition = window.scrollY + window.innerHeight / 2
+      
+      // Hide button when user is near or past results section
+      setShowJumpButton(scrollPosition < resultsTop - 100)
+    }
+
+    // Show button initially when results are available
+    setShowJumpButton(true)
+    
+    // Add scroll listener
+    window.addEventListener('scroll', handleScroll)
+    
+    // Initial check
+    setTimeout(handleScroll, 200)
+    
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [calculatedRoute])
+
+  // Reset success state when inputs change
+  const resetSuccessState = () => {
+    setShowCalculateSuccess(false)
+  }
+
+  const handleJumpToResults = () => {
+    const resultsSection = document.querySelector('.results-section')
+    if (resultsSection) {
+      resultsSection.scrollIntoView({ 
+        behavior: 'smooth',
+        block: 'start'
+      })
+    }
+  }
+
   const handleCalculateRoute = async () => {
     // TODO: Add form validation (check addresses, startTime)
     // TODO: Add loading states
@@ -51,7 +98,8 @@ export default function HomePage() {
       addresses: addressList,
       showingDuration: selectedDuration,
       startingPropertyIndex,
-      startTime: startTime || undefined
+      startTime: startTime || undefined,
+      timezoneOffset: new Date().getTimezoneOffset() // Client's timezone offset in minutes
     }
     
     console.log('Calculating route with:', requestData)
@@ -62,6 +110,21 @@ export default function HomePage() {
       const result = await calculateRoute(requestData)
       console.log('Server response:', result)
       setInitialRoute(result)
+      
+      // Show success state on button
+      setShowCalculateSuccess(true)
+      setTimeout(() => setShowCalculateSuccess(false), 3000)
+      
+      // Auto-scroll to results (subtle feedback)
+      setTimeout(() => {
+        const resultsSection = document.querySelector('.results-section')
+        if (resultsSection) {
+          resultsSection.scrollIntoView({ 
+            behavior: 'smooth',
+            block: 'start'
+          })
+        }
+      }, 100)
       
     } catch (error) {
       console.error('Route calculation failed:', error)
@@ -84,7 +147,10 @@ export default function HomePage() {
           
           <AddressInput 
             addresses={addresses} 
-            onChange={setAddresses} 
+            onChange={(newAddresses) => {
+              setAddresses(newAddresses)
+              resetSuccessState()
+            }} 
           />
           
           <div className="starting-point-container">
@@ -93,7 +159,10 @@ export default function HomePage() {
               id="starting-point" 
               className="starting-point-dropdown"
               value={startingPropertyIndex}
-              onChange={(e) => setStartingPropertyIndex(Number(e.target.value))}
+              onChange={(e) => {
+                setStartingPropertyIndex(Number(e.target.value))
+                resetSuccessState()
+              }}
             >
               {addressList.length === 0 ? (
                 <option value={0}>First property (auto-selected)</option>
@@ -114,22 +183,29 @@ export default function HomePage() {
               id="start-time"
               className="time-input"
               value={startTime}
-              onChange={(e) => setStartTime(e.target.value)}
+              onChange={(e) => {
+                setStartTime(e.target.value)
+                resetSuccessState()
+              }}
             />
           </div>
 
           <DurationSelector 
             selectedDuration={selectedDuration} 
-            onChange={setSelectedDuration} 
+            onChange={(newDuration) => {
+              setSelectedDuration(newDuration)
+              resetSuccessState()
+            }} 
           />
 
           <button 
-            className="calculate-btn" 
+            className={`calculate-btn ${showCalculateSuccess ? 'btn-success' : ''}`}
             onClick={handleCalculateRoute}
             disabled={isCalculating}
           >
-            <span className={`btn-text ${isCalculating ? 'hidden' : ''}`}>CALCULATE ROUTE</span>
+            <span className={`btn-text ${isCalculating || showCalculateSuccess ? 'hidden' : ''}`}>CALCULATE ROUTE</span>
             <span className={`btn-loader ${isCalculating ? '' : 'hidden'}`}>CALCULATING...</span>
+            <span className={`btn-success ${showCalculateSuccess ? '' : 'hidden'}`}>✓ RESULTS BELOW</span>
           </button>
         </section>
 
@@ -137,7 +213,7 @@ export default function HomePage() {
         <section className="results-section">
           <h2 className="section-title">OPTIMIZED ITINERARY</h2>
           <p className="section-description">
-            Review your route below. Adjust appointment times and lock specific slots as needed, then re-optimize if changes are made.
+            Review your route below. Adjust appointment times and lock specific slots as needed.
           </p>
           
           <RouteSummary 
@@ -162,13 +238,8 @@ export default function HomePage() {
             </div>
           </div>
 
-          <CopyButtons />
+          <CopyButtons route={calculatedRoute} />
 
-          <div className="action-buttons">
-            <button className="optimize-btn" id="re-optimize">
-              RE-OPTIMIZE ROUTE
-            </button>
-          </div>
         </section>
         )}
       </main>
@@ -176,6 +247,17 @@ export default function HomePage() {
       <div className="status-container">
         <div className="status-message hidden" id="status-message"></div>
       </div>
+
+      {/* Sticky Jump to Results Button */}
+      {showJumpButton && (
+        <button 
+          className="jump-to-results-btn"
+          onClick={handleJumpToResults}
+          aria-label="Jump to results"
+        >
+          ↓ VIEW RESULTS
+        </button>
+      )}
     </div>
   )
 }
