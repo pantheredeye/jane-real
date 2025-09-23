@@ -21,7 +21,7 @@ export default function HomePage() {
   // TODO: Add error handling and status messages
   // TODO: Add loading states during calculation
   
-  const [addresses, setAddresses] = useState('3633 Rhett Butler Road, Hernando MS\n5210 Waikiki Cove, Hernando MS\n11147 Horseshoe Bend, Hernando MS\n206 Swan Lake Drive, Coldwater MS\n2203 St Ives Ln, Hernando, MS')
+  const [addresses, setAddresses] = useState('')
   const [startingPropertyIndex, setStartingPropertyIndex] = useState(0)
   const [startTime, setStartTime] = useState('09:00')
   const [selectedDuration, setSelectedDuration] = useState(30)
