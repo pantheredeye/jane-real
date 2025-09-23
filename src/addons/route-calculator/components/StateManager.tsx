@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect } from 'react'
+import { addMinutes } from 'date-fns'
 import type { OptimizedRoute } from '../types'
 
 interface StateManagerProps {
@@ -38,17 +39,30 @@ export function StateManager({
         // Only restore if saved within last 24 hours (prevent stale data)
         const hoursSinceCalculation = (Date.now() - state.timestamp) / (1000 * 60 * 60)
         if (hoursSinceCalculation < 24) {
-          // Restore the route with proper Date objects
+          // Helper function to restore dates with proper timezone handling
+          const restoreDate = (dateString: string): Date => {
+            const restoredDate = new Date(dateString)
+
+            // If timezone has changed since saving, adjust the date
+            const savedOffset = state.timezoneOffset || 0
+            const currentOffset = new Date().getTimezoneOffset()
+            const offsetDiff = currentOffset - savedOffset
+
+            // Adjust the date to maintain the same local time
+            return addMinutes(restoredDate, offsetDiff)
+          }
+
+          // Restore the route with proper Date objects and timezone handling
           const restoredRoute = state.calculatedRoute ? {
             ...state.calculatedRoute,
-            startTime: new Date(state.calculatedRoute.startTime),
-            endTime: new Date(state.calculatedRoute.endTime),
+            startTime: restoreDate(state.calculatedRoute.startTime),
+            endTime: restoreDate(state.calculatedRoute.endTime),
             items: state.calculatedRoute.items.map((item: any) => ({
               ...item,
-              appointmentTime: new Date(item.appointmentTime),
+              appointmentTime: restoreDate(item.appointmentTime),
               property: {
                 ...item.property,
-                appointmentTime: new Date(item.property.appointmentTime)
+                appointmentTime: restoreDate(item.property.appointmentTime)
               }
             }))
           } : null
@@ -80,6 +94,7 @@ export function StateManager({
         startTime,
         selectedDuration,
         calculatedRoute,
+        timezoneOffset: new Date().getTimezoneOffset(), // Save current timezone offset
         timestamp: Date.now()
       }
       localStorage.setItem('routeCalculatorState', JSON.stringify(stateToSave))
