@@ -6,6 +6,7 @@ import { DurationSelector } from '../components/DurationSelector'
 import { PropertyCard } from '../components/PropertyCard'
 import { RouteSummary } from '../components/RouteSummary'
 import { CopyButtons } from '../components/CopyButtons'
+import { StateManager } from '../components/StateManager'
 import { calculateRoute } from '../server-functions/calculateRoute'
 import type { OptimizedRoute } from '../types'
 import { useRouteManager } from '../hooks/useRouteManager'
@@ -51,15 +52,23 @@ export default function HomePage() {
       return
     }
 
+    let scrollTimeout: NodeJS.Timeout
+
     const handleScroll = () => {
-      const resultsSection = document.querySelector('.results-section') as HTMLElement
-      if (!resultsSection) return
-      
-      const resultsTop = resultsSection.offsetTop
-      const scrollPosition = window.scrollY + window.innerHeight / 2
-      
-      // Hide button when user is near or past results section
-      setShowJumpButton(scrollPosition < resultsTop - 100)
+      // Debounce scroll events to prevent rapid toggling
+      clearTimeout(scrollTimeout)
+      scrollTimeout = setTimeout(() => {
+        const resultsSection = document.querySelector('.results-section') as HTMLElement
+        if (!resultsSection) return
+
+        const resultsTop = resultsSection.offsetTop
+        const resultsBottom = resultsTop + resultsSection.offsetHeight
+        const scrollPosition = window.scrollY + window.innerHeight / 2
+
+        // Hide button when user is in or past the results section (with buffer)
+        const isInResultsArea = scrollPosition >= (resultsTop - 200)
+        setShowJumpButton(!isInResultsArea)
+      }, 50) // 50ms debounce
     }
 
     // Show button initially when results are available
@@ -71,11 +80,37 @@ export default function HomePage() {
     // Initial check
     setTimeout(handleScroll, 200)
     
-    return () => window.removeEventListener('scroll', handleScroll)
+    return () => {
+      window.removeEventListener('scroll', handleScroll)
+      clearTimeout(scrollTimeout)
+    }
   }, [calculatedRoute])
 
   // Reset success state when inputs change
   const resetSuccessState = () => {
+    setShowCalculateSuccess(false)
+  }
+
+  // Handle state restoration from localStorage
+  const handleStateRestore = (restoredState: {
+    addresses: string
+    startingPropertyIndex: number
+    startTime: string
+    selectedDuration: number
+    calculatedRoute: OptimizedRoute | null
+  }) => {
+    setAddresses(restoredState.addresses)
+    setStartingPropertyIndex(restoredState.startingPropertyIndex)
+    setStartTime(restoredState.startTime)
+    setSelectedDuration(restoredState.selectedDuration)
+    if (restoredState.calculatedRoute) {
+      setInitialRoute(restoredState.calculatedRoute)
+    }
+  }
+
+  // Handle clearing route when inputs change significantly
+  const handleClearRoute = () => {
+    setInitialRoute(null)
     setShowCalculateSuccess(false)
   }
 
@@ -93,7 +128,7 @@ export default function HomePage() {
     // TODO: Add form validation (check addresses, startTime)
     // TODO: Add loading states
     // TODO: Add error handling
-    
+
     const requestData = {
       addresses: addressList,
       showingDuration: selectedDuration,
@@ -101,31 +136,32 @@ export default function HomePage() {
       startTime: startTime || undefined,
       timezoneOffset: new Date().getTimezoneOffset() // Client's timezone offset in minutes
     }
-    
+
     console.log('Calculating route with:', requestData)
     setIsCalculating(true)
-    
+
     try {
       // Call server function directly with plain object (RedwoodSDK best practice)
       const result = await calculateRoute(requestData)
       console.log('Server response:', result)
       setInitialRoute(result)
-      
+
+
       // Show success state on button
       setShowCalculateSuccess(true)
       setTimeout(() => setShowCalculateSuccess(false), 3000)
-      
+
       // Auto-scroll to results (subtle feedback)
       setTimeout(() => {
         const resultsSection = document.querySelector('.results-section')
         if (resultsSection) {
-          resultsSection.scrollIntoView({ 
+          resultsSection.scrollIntoView({
             behavior: 'smooth',
             block: 'start'
           })
         }
       }, 100)
-      
+
     } catch (error) {
       console.error('Route calculation failed:', error)
       // TODO: Show error message to user
@@ -136,6 +172,16 @@ export default function HomePage() {
   
   return (
     <div className="app-container">
+      <StateManager
+        addresses={addresses}
+        startingPropertyIndex={startingPropertyIndex}
+        startTime={startTime}
+        selectedDuration={selectedDuration}
+        calculatedRoute={calculatedRoute}
+        onStateRestore={handleStateRestore}
+        onClearRoute={handleClearRoute}
+      />
+
       <header className="app-header">
         <h1 className="app-title">ROUTE CALCULATOR</h1>
         <p className="app-subtitle">Real Estate Showing Planner</p>

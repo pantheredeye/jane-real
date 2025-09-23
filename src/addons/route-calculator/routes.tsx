@@ -19,15 +19,15 @@ export const routeCalculatorRoutes = [
   // No HTTP routes needed for calculate/re-optimize
   
   // Export endpoints
-  route("/api/export/:format", "GET", [exportItinerary]),
-  
+  route("/api/export/:format", [exportItinerary]),
+
   // Health check endpoint
-  route("/api/health", "GET", () => {
+  route("/api/health", [() => {
     return new Response(
       JSON.stringify({ status: "healthy", timestamp: new Date().toISOString() }),
       {
         headers: { "Content-Type": "application/json" },
       }
     );
-  }),
+  }]),
 ];

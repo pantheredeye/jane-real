@@ -58,7 +58,7 @@ export interface ExportRequest {
 // Google Maps API types
 export interface GeocodingResult {
   address: string
-  coordinates: Coordinates
+  coordinates: Coordinates | null
   formattedAddress: string
 }
 

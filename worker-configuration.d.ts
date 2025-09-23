@@ -6,6 +6,7 @@ declare namespace Cloudflare {
 		WEBAUTHN_APP_NAME: "jane-real";
 		WEBAUTHN_RP_ID: string;
 		AUTH_SECRET_KEY: string;
+		GOOGLE_MAPS_API_KEY_SERVER: string;
 		SESSION_DURABLE_OBJECT: DurableObjectNamespace<import("./src/worker").SessionDurableObject>;
 		DB: D1Database;
 		ASSETS: Fetcher;

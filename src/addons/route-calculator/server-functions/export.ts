@@ -3,7 +3,8 @@
 import { format } from 'date-fns'
 import type { OptimizedRoute, ExportRequest } from '../types'
 
-export async function exportItinerary(request: Request): Promise<Response> {
+export async function exportItinerary(requestInfo: any): Promise<Response> {
+  const request = requestInfo.request
   try {
     const url = new URL(request.url)
     const exportFormat = url.pathname.split('/').pop() as 'client' | 'detailed'
@@ -15,7 +16,7 @@ export async function exportItinerary(request: Request): Promise<Response> {
       })
     }
     
-    const body = await request.json()
+    const body = await request.json() as { route: OptimizedRoute }
     const route: OptimizedRoute = body.route
     
     if (!route || !route.items) {

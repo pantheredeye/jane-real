@@ -11,6 +11,7 @@ export function useRouteManager(initialRoute: OptimizedRoute | null) {
     if (!route) return
 
     setRoute(currentRoute => {
+      if (!currentRoute) return currentRoute
       const updatedItems = [...currentRoute.items]
       
       // Parse the new time and set it for the changed property
@@ -58,6 +59,7 @@ export function useRouteManager(initialRoute: OptimizedRoute | null) {
     if (!route) return
 
     setRoute(currentRoute => {
+      if (!currentRoute) return currentRoute
       const updatedItems = [...currentRoute.items]
       
       // Update the duration for the changed property
@@ -100,6 +102,7 @@ export function useRouteManager(initialRoute: OptimizedRoute | null) {
     if (!route) return
 
     setRoute(currentRoute => {
+      if (!currentRoute) return currentRoute
       const updatedItems = [...currentRoute.items]
       const currentItem = updatedItems[propertyIndex]
       
@@ -115,7 +118,7 @@ export function useRouteManager(initialRoute: OptimizedRoute | null) {
     })
   }, [route])
 
-  const setInitialRoute = useCallback((newRoute: OptimizedRoute) => {
+  const setInitialRoute = useCallback((newRoute: OptimizedRoute | null) => {
     setRoute(newRoute)
   }, [])
 
