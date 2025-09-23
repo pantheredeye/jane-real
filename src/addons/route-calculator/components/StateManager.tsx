@@ -71,7 +71,7 @@ export function StateManager({
     }
   }, []) // Empty dependency array - only run once on mount
 
-  // Save state only when calculatedRoute initially appears or changes
+  // Save state whenever any route-related data changes
   useEffect(() => {
     if (calculatedRoute) {
       const stateToSave = {
@@ -84,7 +84,7 @@ export function StateManager({
       }
       localStorage.setItem('routeCalculatorState', JSON.stringify(stateToSave))
     }
-  }, [calculatedRoute]) // Only depend on calculatedRoute, not other inputs
+  }, [calculatedRoute, addresses, startingPropertyIndex, startTime, selectedDuration]) // Save on any changes
 
   // Clear route when addresses change significantly (but only if we have a current route)
   useEffect(() => {
