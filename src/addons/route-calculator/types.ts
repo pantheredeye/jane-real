@@ -31,17 +31,21 @@ export interface OptimizedRoute {
   endTime: Date
 }
 
+// Server response type - no appointment times, only structure and durations
+export interface RouteStructure {
+  items: {
+    propertyIndex: number
+    property: Omit<Property, 'appointmentTime'> & { appointmentTime: null }
+    travelTime: number // Duration in minutes from previous property
+  }[]
+  totalDrivingTime: number
+}
+
 // Request/Response types
 export interface CalculateRouteRequest {
   addresses: string[]
   showingDuration: number
   startingPropertyIndex: number
-  startTime?: string
-  timezoneOffset?: number // Minutes difference from UTC (e.g., -300 for EST)
-  frozenAppointments?: Array<{
-    propertyIndex: number
-    appointmentTime: string
-  }>
 }
 
 export interface CalculateRouteResponse {
@@ -74,12 +78,6 @@ export const CalculateRouteRequestSchema = z.object({
   addresses: z.array(z.string().min(1)),
   showingDuration: z.number().min(5).max(120),
   startingPropertyIndex: z.number().min(0),
-  startTime: z.string().optional(),
-  timezoneOffset: z.number().optional(),
-  frozenAppointments: z.array(z.object({
-    propertyIndex: z.number(),
-    appointmentTime: z.string(),
-  })).optional(),
 })
 
 

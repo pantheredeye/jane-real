@@ -9,7 +9,7 @@ import { CopyButtons } from '../components/CopyButtons'
 import { StateManager } from '../components/StateManager'
 import { calculateRoute } from '../server-functions/calculateRoute'
 import type { OptimizedRoute } from '../types'
-import { useRouteManager } from '../hooks/useRouteManager'
+import { useRouteManager, calculateAppointmentTimes } from '../hooks/useRouteManager'
 
 export default function HomePage() {
   // TODO: Lift DurationSelector state up to HomePage (like we did with AddressInput)
@@ -125,26 +125,36 @@ export default function HomePage() {
   }
 
   const handleCalculateRoute = async () => {
-    // TODO: Add form validation (check addresses, startTime)
-    // TODO: Add loading states
-    // TODO: Add error handling
+    // Validate required fields
+    if (!startTime || startTime.trim() === '') {
+      alert('Please set a start time before calculating route.')
+      return
+    }
+
+    if (addressList.length === 0) {
+      alert('Please enter at least one address.')
+      return
+    }
 
     const requestData = {
       addresses: addressList,
       showingDuration: selectedDuration,
       startingPropertyIndex,
-      startTime: startTime || undefined,
-      timezoneOffset: new Date().getTimezoneOffset() // Client's timezone offset in minutes
     }
 
     console.log('Calculating route with:', requestData)
     setIsCalculating(true)
 
     try {
-      // Call server function directly with plain object (RedwoodSDK best practice)
-      const result = await calculateRoute(requestData)
-      console.log('Server response:', result)
-      setInitialRoute(result)
+      // Get route structure from server (optimized order + durations)
+      const routeStructure = await calculateRoute(requestData)
+      console.log('Server response:', routeStructure)
+
+      // Calculate appointment times on client using local timezone
+      const routeWithTimes = calculateAppointmentTimes(routeStructure, startTime)
+      console.log('Route with times:', routeWithTimes)
+
+      setInitialRoute(routeWithTimes)
 
 
       // Show success state on button
@@ -223,12 +233,13 @@ export default function HomePage() {
           </div>
 
           <div className="start-time-container">
-            <label htmlFor="start-time" className="input-label">START TIME</label>
+            <label htmlFor="start-time" className="input-label">START TIME *</label>
             <input
               type="time"
               id="start-time"
               className="time-input"
               value={startTime}
+              required
               onChange={(e) => {
                 setStartTime(e.target.value)
                 resetSuccessState()
