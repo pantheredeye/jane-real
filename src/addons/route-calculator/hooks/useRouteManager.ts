@@ -1,8 +1,60 @@
 'use client'
 
 import { useState, useCallback } from 'react'
-import { addMinutes, parse, format } from 'date-fns'
-import type { OptimizedRoute, RouteItem } from '../types'
+import { addMinutes, parse } from 'date-fns'
+import type { OptimizedRoute, RouteItem, RouteStructure } from '../types'
+
+// Helper function to calculate appointment times from route structure and start time
+export function calculateAppointmentTimes(routeStructure: RouteStructure, startTime: string): OptimizedRoute {
+  // Parse start time in local timezone
+  const [hours, minutes] = startTime.split(':').map(Number)
+  const currentDate = new Date()
+  currentDate.setHours(hours, minutes, 0, 0)
+
+  let currentTime = currentDate
+
+  const routeItems: RouteItem[] = routeStructure.items.map((item, index) => {
+    // Add travel time if not the first property
+    if (index > 0) {
+      currentTime = addMinutes(currentTime, item.travelTime)
+    }
+
+    const appointmentTime = new Date(currentTime)
+
+    // Move to next appointment (add showing duration)
+    currentTime = addMinutes(appointmentTime, item.property.showingDuration)
+
+    return {
+      propertyIndex: item.propertyIndex,
+      property: {
+        ...item.property,
+        appointmentTime,
+      },
+      appointmentTime,
+      travelTime: item.travelTime,
+    }
+  })
+
+  // Calculate totals
+  const totalDrivingTime = routeStructure.totalDrivingTime
+  const totalShowingTime = routeItems.reduce((sum, item) => sum + item.property.showingDuration, 0)
+  const totalTime = totalDrivingTime + totalShowingTime
+
+  const startTimeDate = routeItems[0]?.appointmentTime || currentDate
+  const lastItem = routeItems[routeItems.length - 1]
+  const endTime = lastItem
+    ? addMinutes(lastItem.appointmentTime, lastItem.property.showingDuration)
+    : startTimeDate
+
+  return {
+    items: routeItems,
+    totalTime,
+    totalDrivingTime,
+    totalShowingTime,
+    startTime: startTimeDate,
+    endTime,
+  }
+}
 
 export function useRouteManager(initialRoute: OptimizedRoute | null) {
   const [route, setRoute] = useState<OptimizedRoute | null>(initialRoute)

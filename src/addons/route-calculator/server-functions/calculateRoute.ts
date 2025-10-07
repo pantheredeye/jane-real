@@ -8,11 +8,15 @@
 // TODO: Current bundled approach works but limits user workflow flexibility
 // TODO: Separate endpoints allow granular updates without full recalculation
 // TODO: Add proper error handling and validation
-// TODO: Implement rate limiting and request throttling  
+// TODO: Implement rate limiting and request throttling
 // TODO: Add caching for repeated geocoding requests
 // TODO: Optimize TSP algorithm for larger property sets
 // TODO: Add support for time constraints and business hours
 // TODO: Implement real-time traffic data integration
+// TODO: CRITICAL - Remove all fallback/made-up distance/time estimates (lines 138, 228, 300, geocoding.ts:105-107)
+// TODO: When addresses fail to geocode or distance matrix fails, we should error or warn user explicitly
+// TODO: Made-up numbers are misleading - user needs to know when data is unreliable
+// TODO: Remove fallback startTime on line 121 - startTime should always come from client, throw error if missing
 
 // TODO: Add server persistence for route customizations (after custom hook implementation)
 // CONTEXT: User wants to persist route modifications (appointment time/duration changes) to server
@@ -28,30 +32,16 @@
 // RELATED: This works alongside the custom hook approach for client-side cascading
 
 import { z } from 'zod'
-import { format, parse, addMinutes, subMinutes } from 'date-fns'
 import { geocodeAddresses, calculateDistanceMatrix } from './geocoding'
-import type { 
-  Property, 
-  OptimizedRoute, 
-  RouteItem, 
-  CalculateRouteRequest, 
-  CalculateRouteResponse,
-  Coordinates 
+import type {
+  Property,
+  RouteStructure,
+  CalculateRouteRequest,
+  Coordinates
 } from '../types'
 import { CalculateRouteRequestSchema } from '../types'
 
-// Helper function to parse time strings in user's local timezone
-function parseTimeInUserTimezone(timeString: string, timezoneOffset: number): Date {
-  // Parse the time as if it's in UTC
-  const parsedTime = parse(timeString, 'HH:mm', new Date())
-  
-  // Adjust for the user's timezone offset
-  // timezoneOffset is minutes from UTC (negative for timezones ahead of UTC)
-  // We need to subtract the offset to convert from user's local time to UTC
-  return subMinutes(parsedTime, timezoneOffset)
-}
-
-export async function calculateRoute(requestData: CalculateRouteRequest): Promise<OptimizedRoute> {
+export async function calculateRoute(requestData: CalculateRouteRequest): Promise<RouteStructure> {
   try {
     const validatedData = CalculateRouteRequestSchema.parse(requestData)
     
@@ -64,13 +54,16 @@ export async function calculateRoute(requestData: CalculateRouteRequest): Promis
 }
 
 
-async function optimizeRoute(request: CalculateRouteRequest): Promise<OptimizedRoute> {
-  // Get timezone offset for time parsing
-  const timezoneOffset = request.timezoneOffset || 0
-  
+async function optimizeRoute(request: CalculateRouteRequest): Promise<RouteStructure> {
   // Step 1: Geocode all addresses
   const geocodingResults = await geocodeAddresses(request.addresses)
-  
+
+  // Check for failed geocoding - don't use fallback coordinates
+  const failedAddresses = geocodingResults.filter(r => r.coordinates === null)
+  if (failedAddresses.length > 0) {
+    throw new Error(`Failed to geocode addresses: ${failedAddresses.map(r => r.address).join(', ')}`)
+  }
+
   // Step 2: Create properties with coordinates
   const properties: Property[] = geocodingResults.map((result, index) => ({
     id: `prop_${index}`,
@@ -80,104 +73,63 @@ async function optimizeRoute(request: CalculateRouteRequest): Promise<OptimizedR
     isFrozen: false,
     coordinates: result.coordinates,
   }))
-  
-  // Step 3: Apply frozen appointments if provided
-  if (request.frozenAppointments) {
-    request.frozenAppointments.forEach(frozen => {
-      if (properties[frozen.propertyIndex]) {
-        properties[frozen.propertyIndex].isFrozen = true
-        properties[frozen.propertyIndex].appointmentTime = parseTimeInUserTimezone(frozen.appointmentTime, timezoneOffset)
-      }
-    })
-  }
-  
-  // Step 4: Calculate distance matrix for valid coordinates
-  const validProperties = properties.filter(p => p.coordinates !== null)
-  const validCoordinates = validProperties.map(p => p.coordinates!) as Coordinates[]
-  
+
+  // Step 3: Calculate distance matrix for all coordinates
+  const coordinates = properties.map(p => p.coordinates!) as Coordinates[]
+
   let distanceMatrix
-  if (validCoordinates.length > 1) {
-    distanceMatrix = await calculateDistanceMatrix(validCoordinates, validCoordinates)
+  if (coordinates.length > 1) {
+    distanceMatrix = await calculateDistanceMatrix(coordinates, coordinates)
   } else {
-    // Single property or no valid coordinates - create dummy matrix
+    // Single property - create dummy matrix
     distanceMatrix = {
-      origins: validCoordinates,
-      destinations: validCoordinates,
+      origins: coordinates,
+      destinations: coordinates,
       durations: [[0]],
       distances: [[0]],
     }
   }
-  
-  // Step 5: Optimize route using traveling salesman approach
+
+  // Step 4: Optimize route using traveling salesman approach
   const optimizedIndices = optimizeTravelingSalesman(
     distanceMatrix.durations,
     request.startingPropertyIndex,
     properties
   )
-  
-  // Step 6: Calculate appointment times
-  const startTime = request.startTime ? 
-    parseTimeInUserTimezone(request.startTime, timezoneOffset) : 
-    new Date(Date.now() + 60 * 60 * 1000) // Default to 1 hour from now
-    
-  startTime.setHours(Math.max(9, startTime.getHours())) // Ensure reasonable start time
-  
-  const routeItems: RouteItem[] = []
-  let currentTime = new Date(startTime)
-  
-  optimizedIndices.forEach((propertyIndex, routeIndex) => {
+
+  // Step 5: Build route structure with durations only (no appointment times)
+  const routeItems = optimizedIndices.map((propertyIndex, routeIndex) => {
     const property = properties[propertyIndex]
     let travelTime = 0
-    
+
     if (routeIndex > 0) {
       const prevPropertyIndex = optimizedIndices[routeIndex - 1]
-      const prevCoordIndex = validProperties.findIndex(p => p === properties[prevPropertyIndex])
-      const currentCoordIndex = validProperties.findIndex(p => p === property)
-      
-      if (prevCoordIndex >= 0 && currentCoordIndex >= 0 && distanceMatrix.durations[prevCoordIndex]) {
-        travelTime = distanceMatrix.durations[prevCoordIndex][currentCoordIndex] || 10
+
+      // Get travel time from distance matrix - no fallbacks
+      if (distanceMatrix.durations[prevPropertyIndex] &&
+          distanceMatrix.durations[prevPropertyIndex][propertyIndex] !== undefined) {
+        travelTime = distanceMatrix.durations[prevPropertyIndex][propertyIndex]
       } else {
-        travelTime = 10 // Default fallback
+        throw new Error(`Missing distance matrix data between properties ${prevPropertyIndex} and ${propertyIndex}`)
       }
-      
-      currentTime = addMinutes(currentTime, travelTime)
     }
-    
-    // Use frozen time if available, otherwise use calculated time
-    const appointmentTime = property.isFrozen && property.appointmentTime ? 
-      property.appointmentTime : 
-      new Date(currentTime)
-    
-    routeItems.push({
+
+    return {
       propertyIndex,
       property: {
         ...property,
-        appointmentTime,
+        appointmentTime: null,
       },
-      appointmentTime,
       travelTime,
-    })
-    
-    // Move to next appointment (add showing duration)
-    currentTime = addMinutes(appointmentTime, property.showingDuration)
+    }
   })
-  
-  // Step 7: Calculate totals
+
+  // Step 6: Calculate total driving time
   const totalDrivingTime = routeItems.reduce((sum, item) => sum + item.travelTime, 0)
-  const totalShowingTime = routeItems.reduce((sum, item) => sum + item.property.showingDuration, 0)
-  const totalTime = totalDrivingTime + totalShowingTime
-  
-  const endTime = routeItems.length > 0 ? 
-    addMinutes(routeItems[routeItems.length - 1].appointmentTime, routeItems[routeItems.length - 1].property.showingDuration) :
-    startTime
-  
+
   return {
     items: routeItems,
-    totalTime,
     totalDrivingTime,
-    totalShowingTime,
-    startTime,
-    endTime,
   }
 }
 
