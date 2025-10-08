@@ -1,34 +1,44 @@
 import type { PropertyInput } from '../types'
+import { parseZillowUrl, isZillowUrl } from './urlParsers/zillow'
+import { parseRealtorUrl, isRealtorUrl } from './urlParsers/realtor'
 
 /**
- * Parse user input to detect if it's a Zillow URL or plain address
+ * Parse user input to detect if it's a listing URL or plain address
  * Supports:
  * - Plain addresses: "123 Main St, City, State"
- * - Zillow URLs: https://www.zillow.com/homedetails/123-Main-St-City-State-12345/123456789_zpid/
+ * - Zillow URLs: https://www.zillow.com/homedetails/...
+ * - Realtor.com URLs: https://www.realtor.com/realestateandhomes-detail/...
  */
 export function parsePropertyInput(rawInput: string): PropertyInput {
   const trimmed = rawInput.trim()
 
-  // Check if input is a Zillow URL
-  const zillowMatch = trimmed.match(/zillow\.com\/homedetails\/([^\/]+)/)
-
-  if (zillowMatch) {
-    // Extract address from URL slug
-    const urlSlug = zillowMatch[1]
-    // Convert URL slug to readable address
-    // Example: "123-Main-St-City-State-12345" -> "123 Main St City State"
-    const addressParts = urlSlug.split('-').slice(0, -1) // Remove ZIP code at end
-    const parsedAddress = addressParts.join(' ')
-
-    return {
-      id: crypto.randomUUID(),
-      rawInput: trimmed,
-      parsedAddress,
-      sourceUrl: trimmed
+  // Try parsing as Zillow URL
+  if (isZillowUrl(trimmed)) {
+    const parsedAddress = parseZillowUrl(trimmed)
+    if (parsedAddress) {
+      return {
+        id: crypto.randomUUID(),
+        rawInput: trimmed,
+        parsedAddress,
+        sourceUrl: trimmed
+      }
     }
   }
 
-  // Plain address input
+  // Try parsing as Realtor.com URL
+  if (isRealtorUrl(trimmed)) {
+    const parsedAddress = parseRealtorUrl(trimmed)
+    if (parsedAddress) {
+      return {
+        id: crypto.randomUUID(),
+        rawInput: trimmed,
+        parsedAddress,
+        sourceUrl: trimmed
+      }
+    }
+  }
+
+  // Plain address input (or unparseable URL)
   return {
     id: crypto.randomUUID(),
     rawInput: trimmed,

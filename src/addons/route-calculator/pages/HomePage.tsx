@@ -9,6 +9,7 @@ import { RouteSummary } from '../components/RouteSummary'
 import { CopyButtons } from '../components/CopyButtons'
 import { StateManager } from '../components/StateManager'
 import { Toast, ToastType } from '../components/Toast'
+import { isDuplicateAddress } from '../utils/addressNormalizer'
 import { calculateRoute } from '../server-functions/calculateRoute'
 import type { OptimizedRoute, PropertyInput } from '../types'
 import { useRouteManager, calculateAppointmentTimes } from '../hooks/useRouteManager'
@@ -88,14 +89,14 @@ export default function HomePage() {
 
   // Property list handlers
   const handleAddProperty = (property: PropertyInput) => {
-    // Check for duplicates (normalize for comparison)
+    // Check for duplicates using robust address normalizer
     const isDuplicate = propertyList.some(
-      p => p.parsedAddress.trim().toLowerCase() === property.parsedAddress.trim().toLowerCase()
+      p => isDuplicateAddress(p.parsedAddress, property.parsedAddress)
     )
 
     if (isDuplicate) {
       setToast({
-        message: 'This address is already in your list',
+        message: 'This address is already in your list (different format detected)',
         type: 'warning'
       })
       // Still add it anyway (warn, don't block)

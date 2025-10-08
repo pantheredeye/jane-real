@@ -29,6 +29,7 @@ src/
 │   │   ├── PropertyInputBox.tsx     # "use client" - Smart input with Add button
 │   │   ├── PropertyList.tsx         # "use client" - Property list container
 │   │   ├── PropertyListItem.tsx     # "use client" - List item with edit/delete
+│   │   ├── Toast.tsx                # "use client" - Toast notifications
 │   │   ├── DurationSelector.tsx     # "use client" - State management
 │   │   ├── PropertyCard.tsx         # "use client" - Display with listing link
 │   │   ├── PropertyControls.tsx     # "use client" - Form controls
@@ -36,7 +37,12 @@ src/
 │   │   ├── CopyButtons.tsx          # "use client" - Clipboard
 │   │   └── [DEPRECATED] AddressInput.tsx  # Being replaced by PropertyInputBox
 │   ├── utils/
-│   │   └── parsePropertyInput.ts    # URL parsing & validation logic
+│   │   ├── parsePropertyInput.ts    # Main URL/address parser
+│   │   ├── addressNormalizer.ts     # Duplicate detection logic
+│   │   └── urlParsers/
+│   │       ├── zillow.ts            # Zillow URL parser
+│   │       ├── realtor.ts           # Realtor.com URL parser
+│   │       └── redfin.ts            # Redfin URL parser (future)
 │   └── server-functions/
 │       ├── calculateRoute.ts        # "use server" - Route optimization
 │       ├── geocoding.ts             # "use server" - Google Maps API
