@@ -955,6 +955,40 @@ body {
   cursor: not-allowed;
 }
 
+/* Input error states */
+.property-input-field.input-error {
+  border-color: var(--accent-danger);
+  background: rgba(239, 68, 68, 0.05);
+}
+
+.property-input-field.input-error:focus {
+  border-color: var(--accent-danger);
+  box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.1);
+}
+
+.input-error-message {
+  margin-top: var(--space-xs);
+  padding: var(--space-xs) var(--space-sm);
+  background: rgba(239, 68, 68, 0.1);
+  border-left: 3px solid var(--accent-danger);
+  border-radius: var(--radius-sm);
+  color: var(--accent-danger);
+  font-size: 14px;
+  font-weight: 600;
+  animation: slideDown 0.2s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 /* PropertyList - Container for property list items */
 .property-list {
   display: flex;
