@@ -24,14 +24,25 @@ src/
 │   ├── interruptors.ts              # Auth & validation middleware
 │   ├── styles.css                   # Component styles
 │   ├── pages/
-│   │   └── HomePage.tsx             # Main calculator page (Server Component)
+│   │   └── HomePage.tsx             # Main calculator page ("use client")
 │   ├── components/
-│   │   ├── AddressInput.tsx         # "use client" - Input handling
+│   │   ├── PropertyInputBox.tsx     # "use client" - Smart input with Add button
+│   │   ├── PropertyList.tsx         # "use client" - Property list container
+│   │   ├── PropertyListItem.tsx     # "use client" - List item with edit/delete
+│   │   ├── Toast.tsx                # "use client" - Toast notifications
 │   │   ├── DurationSelector.tsx     # "use client" - State management
-│   │   ├── PropertyCard.tsx         # Server Component - Display
+│   │   ├── PropertyCard.tsx         # "use client" - Display with listing link
 │   │   ├── PropertyControls.tsx     # "use client" - Form controls
 │   │   ├── RouteSummary.tsx         # Server Component - Statistics
-│   │   └── CopyButtons.tsx          # "use client" - Clipboard
+│   │   ├── CopyButtons.tsx          # "use client" - Clipboard
+│   │   └── [DEPRECATED] AddressInput.tsx  # Being replaced by PropertyInputBox
+│   ├── utils/
+│   │   ├── parsePropertyInput.ts    # Main URL/address parser
+│   │   ├── addressNormalizer.ts     # Duplicate detection logic
+│   │   └── urlParsers/
+│   │       ├── zillow.ts            # Zillow URL parser
+│   │       ├── realtor.ts           # Realtor.com URL parser
+│   │       └── redfin.ts            # Redfin URL parser (future)
 │   └── server-functions/
 │       ├── calculateRoute.ts        # "use server" - Route optimization
 │       ├── geocoding.ts             # "use server" - Google Maps API
@@ -74,12 +85,13 @@ pnpm run format        # Format code with Prettier
 ## Key Features
 
 ### Route Calculator Functionality
-1. **Address Input**: Paste multiple property addresses
+1. **Smart Property Input**: Paste addresses or Zillow URLs, parse and preview before calculating
 2. **Duration Selection**: Set showing duration (15/30/45/60 minutes)
 3. **Route Optimization**: Calculate optimal visiting order
 4. **Time Management**: Set and freeze specific appointment times
-5. **Export Options**: Client-friendly and detailed itineraries
-6. **Google Maps Integration**: Directions and geocoding
+5. **Listing Links**: Access Zillow/MLS listings from property cards during showings
+6. **Export Options**: Client-friendly and detailed itineraries
+7. **Google Maps Integration**: Directions and geocoding
 
 ### Authentication & Security
 - WebAuthn passkey authentication
@@ -96,7 +108,9 @@ pnpm run format        # Format code with Prettier
 - `RouteSummary.tsx` - Statistics rendering
 
 ### Client Components ("use client")
-- `AddressInput.tsx` - Real-time input parsing
+- `PropertyInputBox.tsx` - Smart input with URL/address parsing
+- `PropertyList.tsx` - Property list with edit/remove controls
+- `PropertyListItem.tsx` - Individual property with swipe-to-delete
 - `DurationSelector.tsx` - Interactive buttons
 - `PropertyControls.tsx` - Form controls and state
 - `CopyButtons.tsx` - Clipboard operations

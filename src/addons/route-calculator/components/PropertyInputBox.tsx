@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, KeyboardEvent } from 'react'
+import { useState, KeyboardEvent, useEffect } from 'react'
 import { parsePropertyInput, validatePropertyInput } from '../utils/parsePropertyInput'
 import type { PropertyInput } from '../types'
 
@@ -10,16 +10,32 @@ interface PropertyInputBoxProps {
 
 export function PropertyInputBox({ onAdd }: PropertyInputBoxProps) {
   const [inputValue, setInputValue] = useState('')
+  const [error, setError] = useState<string | null>(null)
+
+  // Auto-clear error after 5 seconds
+  useEffect(() => {
+    if (error) {
+      const timeout = setTimeout(() => setError(null), 5000)
+      return () => clearTimeout(timeout)
+    }
+  }, [error])
 
   const handleAdd = () => {
     if (!validatePropertyInput(inputValue)) {
-      alert('Please enter a valid address or listing URL')
+      if (inputValue.trim().length === 0) {
+        setError('Please enter an address or listing URL')
+      } else if (inputValue.trim().length < 5) {
+        setError('Address is too short (minimum 5 characters)')
+      } else {
+        setError('Invalid address or URL format')
+      }
       return
     }
 
     const property = parsePropertyInput(inputValue)
     onAdd(property)
     setInputValue('') // Clear input after successful add
+    setError(null) // Clear any previous errors
   }
 
   const handleKeyPress = (e: KeyboardEvent<HTMLInputElement>) => {
@@ -43,12 +59,17 @@ export function PropertyInputBox({ onAdd }: PropertyInputBoxProps) {
         <input
           id="property-input"
           type="text"
-          className="property-input-field"
+          className={`property-input-field ${error ? 'input-error' : ''}`}
           placeholder="Paste address or Zillow URL..."
           value={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
+          onChange={(e) => {
+            setInputValue(e.target.value)
+            if (error) setError(null) // Clear error on typing
+          }}
           onKeyPress={handleKeyPress}
           onPaste={handlePaste}
+          aria-invalid={error ? 'true' : 'false'}
+          aria-describedby={error ? 'property-input-error' : undefined}
         />
         <button
           className="property-add-btn"
@@ -58,6 +79,11 @@ export function PropertyInputBox({ onAdd }: PropertyInputBoxProps) {
           ADD
         </button>
       </div>
+      {error && (
+        <div id="property-input-error" className="input-error-message" role="alert">
+          {error}
+        </div>
+      )}
     </div>
   )
 }
