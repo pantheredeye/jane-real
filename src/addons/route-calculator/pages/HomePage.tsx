@@ -8,6 +8,7 @@ import { PropertyCard } from '../components/PropertyCard'
 import { RouteSummary } from '../components/RouteSummary'
 import { CopyButtons } from '../components/CopyButtons'
 import { StateManager } from '../components/StateManager'
+import { Toast, ToastType } from '../components/Toast'
 import { calculateRoute } from '../server-functions/calculateRoute'
 import type { OptimizedRoute, PropertyInput } from '../types'
 import { useRouteManager, calculateAppointmentTimes } from '../hooks/useRouteManager'
@@ -30,6 +31,7 @@ export default function HomePage() {
   const [isCalculating, setIsCalculating] = useState(false)
   const [showJumpButton, setShowJumpButton] = useState(false)
   const [showCalculateSuccess, setShowCalculateSuccess] = useState(false)
+  const [toast, setToast] = useState<{ message: string; type: ToastType } | null>(null)
   const {
     route: calculatedRoute,
     updateAppointmentTime,
@@ -86,7 +88,28 @@ export default function HomePage() {
 
   // Property list handlers
   const handleAddProperty = (property: PropertyInput) => {
+    // Check for duplicates (normalize for comparison)
+    const isDuplicate = propertyList.some(
+      p => p.parsedAddress.trim().toLowerCase() === property.parsedAddress.trim().toLowerCase()
+    )
+
+    if (isDuplicate) {
+      setToast({
+        message: 'This address is already in your list',
+        type: 'warning'
+      })
+      // Still add it anyway (warn, don't block)
+    }
+
     setPropertyList(prev => [...prev, property])
+
+    if (!isDuplicate) {
+      setToast({
+        message: 'Property added!',
+        type: 'success'
+      })
+    }
+
     resetSuccessState()
   }
 
@@ -101,6 +124,29 @@ export default function HomePage() {
 
   const handleDeleteProperty = (id: string) => {
     setPropertyList(prev => prev.filter(prop => prop.id !== id))
+    setToast({
+      message: 'Property removed',
+      type: 'info'
+    })
+    resetSuccessState()
+  }
+
+  const handleClearAll = () => {
+    if (propertyList.length === 0) return
+
+    // Show confirmation for 3+ items
+    if (propertyList.length >= 3) {
+      const confirmed = window.confirm(
+        `Are you sure you want to clear all ${propertyList.length} properties?`
+      )
+      if (!confirmed) return
+    }
+
+    setPropertyList([])
+    setToast({
+      message: `Cleared ${propertyList.length} ${propertyList.length === 1 ? 'property' : 'properties'}`,
+      type: 'info'
+    })
     resetSuccessState()
   }
 
@@ -238,6 +284,7 @@ export default function HomePage() {
             properties={propertyList}
             onEdit={handleEditProperty}
             onDelete={handleDeleteProperty}
+            onClearAll={handleClearAll}
           />
 
           <div className="starting-point-container">
@@ -338,13 +385,22 @@ export default function HomePage() {
 
       {/* Sticky Jump to Results Button */}
       {showJumpButton && (
-        <button 
+        <button
           className="jump-to-results-btn"
           onClick={handleJumpToResults}
           aria-label="Jump to results"
         >
           ↓ VIEW RESULTS
         </button>
+      )}
+
+      {/* Toast Notifications */}
+      {toast && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast(null)}
+        />
       )}
     </div>
   )
