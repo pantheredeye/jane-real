@@ -885,3 +885,313 @@ body {
     font-size: 12px;
   }
 }
+
+/* ==================== Smart Property Input Components ==================== */
+
+/* PropertyInputBox - Input field with Add button */
+.property-input-box {
+  margin-bottom: var(--space-md);
+}
+
+.property-input-row {
+  display: flex;
+  gap: var(--space-xs);
+  align-items: stretch;
+}
+
+.property-input-field {
+  flex: 1;
+  padding: var(--space-sm);
+  font-size: 16px;
+  border: 3px solid rgba(59, 130, 246, 0.3);
+  border-radius: var(--radius-md);
+  background: var(--bg-glass);
+  backdrop-filter: var(--blur-medium);
+  color: var(--text-primary);
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.property-input-field:focus {
+  outline: none;
+  border-color: var(--accent-electric);
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+  background: var(--bg-glass-elevated);
+}
+
+.property-input-field::placeholder {
+  color: var(--text-secondary);
+  opacity: 0.6;
+}
+
+.property-add-btn {
+  min-width: 80px;
+  padding: var(--space-sm) var(--space-md);
+  font-size: 16px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  border: 3px solid var(--accent-electric);
+  border-radius: var(--radius-md);
+  background: var(--accent-electric);
+  color: var(--text-white);
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: var(--shadow-glass);
+}
+
+.property-add-btn:hover:not(:disabled) {
+  background: #2563eb;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-elevated);
+}
+
+.property-add-btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.property-add-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* PropertyList - Container for property list items */
+.property-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  margin-bottom: var(--space-md);
+}
+
+.property-list-empty {
+  padding: var(--space-lg);
+  text-align: center;
+  background: var(--bg-glass);
+  backdrop-filter: var(--blur-light);
+  border-radius: var(--radius-md);
+  border: 2px dashed rgba(51, 65, 85, 0.3);
+}
+
+.property-list-empty-text {
+  color: var(--text-secondary);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* PropertyListItem - Individual list item */
+.property-list-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-sm);
+  background: var(--bg-glass-elevated);
+  backdrop-filter: var(--blur-medium);
+  border-radius: var(--radius-md);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  box-shadow: var(--shadow-glass);
+  transition: all 0.2s;
+  animation: slideInItem 0.3s ease-out;
+}
+
+@keyframes slideInItem {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.property-list-item:hover {
+  transform: translateX(4px);
+  box-shadow: var(--shadow-elevated);
+}
+
+.property-list-item-number {
+  min-width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--accent-electric);
+  color: var(--text-white);
+  font-weight: 700;
+  font-size: 14px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.property-list-item-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.property-list-item-address {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.property-list-item-badge {
+  font-size: 12px;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.property-list-item-edit-input {
+  padding: 6px 10px;
+  font-size: 14px;
+  border: 2px solid var(--accent-electric);
+  border-radius: var(--radius-sm);
+  background: white;
+  color: var(--text-primary);
+  font-weight: 600;
+  width: 100%;
+}
+
+.property-list-item-edit-input:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+}
+
+.property-list-item-actions {
+  display: flex;
+  gap: var(--space-xs);
+  flex-shrink: 0;
+}
+
+.property-list-item-btn {
+  min-width: 44px;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid;
+  border-radius: var(--radius-sm);
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: white;
+}
+
+.property-list-item-btn-edit {
+  border-color: var(--accent-electric);
+  color: var(--accent-electric);
+}
+
+.property-list-item-btn-edit:hover {
+  background: var(--accent-electric);
+  color: white;
+  transform: scale(1.05);
+}
+
+.property-list-item-btn-delete {
+  border-color: var(--accent-danger);
+  color: var(--accent-danger);
+}
+
+.property-list-item-btn-delete:hover {
+  background: var(--accent-danger);
+  color: white;
+  transform: scale(1.05);
+}
+
+.property-list-item-btn-save {
+  border-color: var(--accent-success);
+  color: var(--accent-success);
+}
+
+.property-list-item-btn-save:hover {
+  background: var(--accent-success);
+  color: white;
+  transform: scale(1.05);
+}
+
+.property-list-item-btn-cancel {
+  border-color: var(--text-secondary);
+  color: var(--text-secondary);
+}
+
+.property-list-item-btn-cancel:hover {
+  background: var(--text-secondary);
+  color: white;
+  transform: scale(1.05);
+}
+
+/* PropertyCard enhancements */
+.property-listing-badge {
+  margin-left: var(--space-xs);
+  font-size: 12px;
+  color: var(--accent-success);
+  font-weight: 600;
+  padding: 2px 8px;
+  background: rgba(16, 185, 129, 0.1);
+  border-radius: 12px;
+  display: inline-block;
+}
+
+.property-actions {
+  display: flex;
+  gap: var(--space-xs);
+  flex-wrap: wrap;
+}
+
+.listing-btn {
+  padding: 10px 16px;
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border: 3px solid var(--accent-success);
+  border-radius: var(--radius-md);
+  background: white;
+  color: var(--accent-success);
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: var(--shadow-glass);
+  min-height: var(--touch-minimum);
+}
+
+.listing-btn:hover {
+  background: var(--accent-success);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-elevated);
+}
+
+.listing-btn:active {
+  transform: translateY(0);
+}
+
+/* Mobile responsive adjustments for new components */
+@media (max-width: 768px) {
+  .property-input-field {
+    font-size: 16px; /* Prevent zoom on iOS */
+  }
+
+  .property-list-item {
+    padding: var(--space-xs);
+  }
+
+  .property-list-item-address {
+    font-size: 13px;
+  }
+
+  .property-actions {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .listing-btn,
+  .maps-btn {
+    width: 100%;
+  }
+}
