@@ -6,6 +6,7 @@ interface Property {
   showingDuration: number
   appointmentTime: Date | null
   isFrozen: boolean
+  sourceUrl?: string
 }
 
 interface RouteItem {
@@ -36,8 +37,14 @@ export function PropertyCard({ routeItem, routeIndex, onTimeChange, onDurationCh
 
   const handleDirections = () => {
     const encodedAddress = encodeURIComponent(property.address)
-    const mapsUrl = `https://maps.google.com/maps?q=${encodedAddress}`
-    window.open(mapsUrl, '_blank')
+    const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodedAddress}`
+    window.open(mapsUrl, '_blank', 'noopener,noreferrer')
+  }
+
+  const handleViewListing = () => {
+    if (property.sourceUrl) {
+      window.open(property.sourceUrl, '_blank', 'noopener,noreferrer')
+    }
   }
 
   return (
@@ -46,17 +53,34 @@ export function PropertyCard({ routeItem, routeIndex, onTimeChange, onDurationCh
         <div className="property-number">{routeIndex + 1}</div>
         <div className="property-info">
           <div className="property-time">{formatDisplayTime(routeItem.appointmentTime)}</div>
-          <div className="property-address">{property.address}</div>
+          <div className="property-address">
+            {property.address}
+            {property.sourceUrl && (
+              <span className="property-listing-badge">🏠 Listing</span>
+            )}
+          </div>
           {routeItem.travelTime > 0 && (
             <div className="travel-time">Drive time: {routeItem.travelTime} min</div>
           )}
         </div>
-        <button 
-          className="maps-btn"
-          onClick={handleDirections}
-        >
-          📍 DIRECTIONS
-        </button>
+        <div className="property-actions">
+          {property.sourceUrl && (
+            <button
+              className="listing-btn"
+              onClick={handleViewListing}
+              aria-label="View listing"
+            >
+              🏠 VIEW LISTING
+            </button>
+          )}
+          <button
+            className="maps-btn"
+            onClick={handleDirections}
+            aria-label="Get directions"
+          >
+            📍 DIRECTIONS
+          </button>
+        </div>
       </div>
       
       <PropertyControls 
