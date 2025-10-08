@@ -1,14 +1,15 @@
 'use client'
 
 import { useState, useMemo, useEffect } from 'react'
-import { AddressInput } from '../components/AddressInput'
+import { PropertyInputBox } from '../components/PropertyInputBox'
+import { PropertyList } from '../components/PropertyList'
 import { DurationSelector } from '../components/DurationSelector'
 import { PropertyCard } from '../components/PropertyCard'
 import { RouteSummary } from '../components/RouteSummary'
 import { CopyButtons } from '../components/CopyButtons'
 import { StateManager } from '../components/StateManager'
 import { calculateRoute } from '../server-functions/calculateRoute'
-import type { OptimizedRoute } from '../types'
+import type { OptimizedRoute, PropertyInput } from '../types'
 import { useRouteManager, calculateAppointmentTimes } from '../hooks/useRouteManager'
 
 export default function HomePage() {
@@ -22,28 +23,25 @@ export default function HomePage() {
   // TODO: Add error handling and status messages
   // TODO: Add loading states during calculation
   
-  const [addresses, setAddresses] = useState('')
+  const [propertyList, setPropertyList] = useState<PropertyInput[]>([])
   const [startingPropertyIndex, setStartingPropertyIndex] = useState(0)
   const [startTime, setStartTime] = useState('09:00')
   const [selectedDuration, setSelectedDuration] = useState(30)
   const [isCalculating, setIsCalculating] = useState(false)
   const [showJumpButton, setShowJumpButton] = useState(false)
   const [showCalculateSuccess, setShowCalculateSuccess] = useState(false)
-  const { 
-    route: calculatedRoute, 
-    updateAppointmentTime, 
-    updateShowingDuration, 
-    toggleFreezeAppointment, 
-    setInitialRoute 
+  const {
+    route: calculatedRoute,
+    updateAppointmentTime,
+    updateShowingDuration,
+    toggleFreezeAppointment,
+    setInitialRoute
   } = useRouteManager(null)
-  
-  // Parse addresses into array and filter empty lines
+
+  // Extract addresses for route calculation
   const addressList = useMemo(() => {
-    return addresses
-      .split('\n')
-      .map(addr => addr.trim())
-      .filter(addr => addr.length > 0)
-  }, [addresses])
+    return propertyList.map(prop => prop.parsedAddress)
+  }, [propertyList])
 
   // Handle jump button visibility based on scroll position and results availability
   useEffect(() => {
@@ -86,6 +84,26 @@ export default function HomePage() {
     }
   }, [calculatedRoute])
 
+  // Property list handlers
+  const handleAddProperty = (property: PropertyInput) => {
+    setPropertyList(prev => [...prev, property])
+    resetSuccessState()
+  }
+
+  const handleEditProperty = (id: string, newAddress: string) => {
+    setPropertyList(prev =>
+      prev.map(prop =>
+        prop.id === id ? { ...prop, parsedAddress: newAddress } : prop
+      )
+    )
+    resetSuccessState()
+  }
+
+  const handleDeleteProperty = (id: string) => {
+    setPropertyList(prev => prev.filter(prop => prop.id !== id))
+    resetSuccessState()
+  }
+
   // Reset success state when inputs change
   const resetSuccessState = () => {
     setShowCalculateSuccess(false)
@@ -99,7 +117,15 @@ export default function HomePage() {
     selectedDuration: number
     calculatedRoute: OptimizedRoute | null
   }) => {
-    setAddresses(restoredState.addresses)
+    // Convert old addresses format to new property list format
+    const addresses = restoredState.addresses.split('\n').filter(a => a.trim())
+    const convertedPropertyList: PropertyInput[] = addresses.map(address => ({
+      id: crypto.randomUUID(),
+      rawInput: address,
+      parsedAddress: address,
+      sourceUrl: undefined
+    }))
+    setPropertyList(convertedPropertyList)
     setStartingPropertyIndex(restoredState.startingPropertyIndex)
     setStartTime(restoredState.startTime)
     setSelectedDuration(restoredState.selectedDuration)
@@ -180,10 +206,15 @@ export default function HomePage() {
     }
   }
   
+  // Convert propertyList to addresses string for StateManager compatibility
+  const addressesString = useMemo(() => {
+    return propertyList.map(p => p.parsedAddress).join('\n')
+  }, [propertyList])
+
   return (
     <div className="app-container">
       <StateManager
-        addresses={addresses}
+        addresses={addressesString}
         startingPropertyIndex={startingPropertyIndex}
         startTime={startTime}
         selectedDuration={selectedDuration}
@@ -200,19 +231,19 @@ export default function HomePage() {
       <main className="main-content">
         <section className="input-section glass-card">
           <h2 className="section-title">PROPERTY ADDRESSES</h2>
-          
-          <AddressInput 
-            addresses={addresses} 
-            onChange={(newAddresses) => {
-              setAddresses(newAddresses)
-              resetSuccessState()
-            }} 
+
+          <PropertyInputBox onAdd={handleAddProperty} />
+
+          <PropertyList
+            properties={propertyList}
+            onEdit={handleEditProperty}
+            onDelete={handleDeleteProperty}
           />
-          
+
           <div className="starting-point-container">
             <label htmlFor="starting-point" className="input-label">STARTING POINT (First Address Auto-Selected)</label>
-            <select 
-              id="starting-point" 
+            <select
+              id="starting-point"
               className="starting-point-dropdown"
               value={startingPropertyIndex}
               onChange={(e) => {
@@ -220,12 +251,12 @@ export default function HomePage() {
                 resetSuccessState()
               }}
             >
-              {addressList.length === 0 ? (
+              {propertyList.length === 0 ? (
                 <option value={0}>First property (auto-selected)</option>
               ) : (
-                addressList.map((address, index) => (
-                  <option key={index} value={index}>
-                    {index + 1}. {address.length > 40 ? address.substring(0, 40) + '...' : address}
+                propertyList.map((property, index) => (
+                  <option key={property.id} value={index}>
+                    {index + 1}. {property.parsedAddress.length > 40 ? property.parsedAddress.substring(0, 40) + '...' : property.parsedAddress}
                   </option>
                 ))
               )}
