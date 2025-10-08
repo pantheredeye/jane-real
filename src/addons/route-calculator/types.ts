@@ -8,6 +8,15 @@ export interface Property {
   appointmentTime: Date | null
   isFrozen: boolean
   coordinates: Coordinates | null
+  sourceUrl?: string // Optional URL to listing (Zillow, Redfin, etc.)
+}
+
+// Input type for property before geocoding
+export interface PropertyInput {
+  id: string
+  rawInput: string // Original user input (address or URL)
+  parsedAddress: string // Extracted/cleaned address
+  sourceUrl?: string // URL if input was a listing URL
 }
 
 export interface Coordinates {
