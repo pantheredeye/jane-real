@@ -9,6 +9,7 @@ export interface Property {
   isFrozen: boolean
   coordinates: Coordinates | null
   sourceUrl?: string // Optional URL to listing (Zillow, Redfin, etc.)
+  thumbnailUrl?: string // Optional og:image URL from listing
 }
 
 // Input type for property before geocoding
@@ -17,6 +18,7 @@ export interface PropertyInput {
   rawInput: string // Original user input (address or URL)
   parsedAddress: string // Extracted/cleaned address
   sourceUrl?: string // URL if input was a listing URL
+  thumbnailUrl?: string // Optional og:image URL from listing
 }
 
 export interface Coordinates {
@@ -53,6 +55,8 @@ export interface RouteStructure {
 // Request/Response types
 export interface CalculateRouteRequest {
   addresses: string[]
+  sourceUrls?: (string | undefined)[] // Optional URLs corresponding to each address
+  thumbnailUrls?: (string | undefined)[] // Optional thumbnail URLs corresponding to each address
   showingDuration: number
   startingPropertyIndex: number
 }
@@ -85,6 +89,8 @@ export interface DistanceMatrixResult {
 // Zod validation schemas
 export const CalculateRouteRequestSchema = z.object({
   addresses: z.array(z.string().min(1)),
+  sourceUrls: z.array(z.string().optional()).optional(),
+  thumbnailUrls: z.array(z.string().optional()).optional(),
   showingDuration: z.number().min(5).max(120),
   startingPropertyIndex: z.number().min(0),
 })

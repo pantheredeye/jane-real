@@ -1,3 +1,6 @@
+'use client'
+
+import { useState } from 'react'
 import { PropertyControls } from './PropertyControls'
 
 interface Property {
@@ -7,6 +10,7 @@ interface Property {
   appointmentTime: Date | null
   isFrozen: boolean
   sourceUrl?: string
+  thumbnailUrl?: string
 }
 
 interface RouteItem {
@@ -32,8 +36,14 @@ function formatDisplayTime(date: Date): string {
   })
 }
 
+function shortenAddress(address: string, maxLength: number = 40): string {
+  if (address.length <= maxLength) return address
+  return address.substring(0, maxLength) + '...'
+}
+
 export function PropertyCard({ routeItem, routeIndex, onTimeChange, onDurationChange, onToggleFreeze }: PropertyCardProps) {
   const { property } = routeItem
+  const [isExpanded, setIsExpanded] = useState(false)
 
   const handleDirections = () => {
     const encodedAddress = encodeURIComponent(property.address)
@@ -47,9 +57,66 @@ export function PropertyCard({ routeItem, routeIndex, onTimeChange, onDurationCh
     }
   }
 
+  // Collapsed view (compact timeline)
+  if (!isExpanded) {
+    return (
+      <div className="property-card-compact" onClick={() => setIsExpanded(true)}>
+        {/* Thumbnail or placeholder */}
+        <div className="property-thumbnail-compact">
+          {property.thumbnailUrl ? (
+            <img
+              src={property.thumbnailUrl}
+              alt={property.address}
+              className="property-thumbnail-image"
+            />
+          ) : (
+            <div className="property-thumbnail-placeholder">
+              🏠
+            </div>
+          )}
+        </div>
+
+        {/* Property info (compact) */}
+        <div className="property-compact-info">
+          <div className="property-compact-header">
+            <span className="property-number-compact">#{routeIndex + 1}</span>
+            <span className="property-time-compact">{formatDisplayTime(routeItem.appointmentTime)}</span>
+          </div>
+          <div className="property-address-compact">
+            {shortenAddress(property.address)}
+          </div>
+        </div>
+
+        {/* Expand indicator */}
+        <div className="property-expand-indicator">▼</div>
+      </div>
+    )
+  }
+
+  // Expanded view (full details)
   return (
-    <div className={`property-card ${property.isFrozen ? 'locked' : ''}`}>
+    <div className={`property-card-expanded ${property.isFrozen ? 'locked' : ''}`}>
+      {/* Collapse button */}
+      <button
+        className="property-collapse-btn"
+        onClick={() => setIsExpanded(false)}
+        aria-label="Collapse property details"
+      >
+        ▲ COLLAPSE
+      </button>
+
       <div className="property-main">
+        {/* Larger thumbnail */}
+        {property.thumbnailUrl && (
+          <div className="property-thumbnail-expanded">
+            <img
+              src={property.thumbnailUrl}
+              alt={property.address}
+              className="property-thumbnail-image-large"
+            />
+          </div>
+        )}
+
         <div className="property-number">{routeIndex + 1}</div>
         <div className="property-info">
           <div className="property-time">{formatDisplayTime(routeItem.appointmentTime)}</div>
@@ -82,9 +149,9 @@ export function PropertyCard({ routeItem, routeIndex, onTimeChange, onDurationCh
           </button>
         </div>
       </div>
-      
-      <PropertyControls 
-        property={property} 
+
+      <PropertyControls
+        property={property}
         appointmentTime={routeItem.appointmentTime}
         propertyIndex={routeIndex}
         onTimeChange={onTimeChange}
