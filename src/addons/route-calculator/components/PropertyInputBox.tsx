@@ -2,6 +2,7 @@
 
 import { useState, KeyboardEvent, useEffect } from 'react'
 import { parsePropertyInput, validatePropertyInput } from '../utils/parsePropertyInput'
+import { fetchOgImage } from '../server-functions/fetchOgImage'
 import type { PropertyInput } from '../types'
 
 interface PropertyInputBoxProps {
@@ -11,6 +12,7 @@ interface PropertyInputBoxProps {
 export function PropertyInputBox({ onAdd }: PropertyInputBoxProps) {
   const [inputValue, setInputValue] = useState('')
   const [error, setError] = useState<string | null>(null)
+  const [isLoadingThumbnail, setIsLoadingThumbnail] = useState(false)
 
   // Auto-clear error after 5 seconds
   useEffect(() => {
@@ -20,7 +22,7 @@ export function PropertyInputBox({ onAdd }: PropertyInputBoxProps) {
     }
   }, [error])
 
-  const handleAdd = () => {
+  const handleAdd = async () => {
     if (!validatePropertyInput(inputValue)) {
       if (inputValue.trim().length === 0) {
         setError('Please enter an address or listing URL')
@@ -33,6 +35,21 @@ export function PropertyInputBox({ onAdd }: PropertyInputBoxProps) {
     }
 
     const property = parsePropertyInput(inputValue)
+
+    // If it's a listing URL, fetch the thumbnail
+    if (property.sourceUrl) {
+      setIsLoadingThumbnail(true)
+      try {
+        const ogData = await fetchOgImage(property.sourceUrl)
+        property.thumbnailUrl = ogData.thumbnailUrl || undefined
+      } catch (err) {
+        console.error('Failed to fetch thumbnail:', err)
+        // Continue without thumbnail - not a critical failure
+      } finally {
+        setIsLoadingThumbnail(false)
+      }
+    }
+
     onAdd(property)
     setInputValue('') // Clear input after successful add
     setError(null) // Clear any previous errors
@@ -74,9 +91,9 @@ export function PropertyInputBox({ onAdd }: PropertyInputBoxProps) {
         <button
           className="property-add-btn"
           onClick={handleAdd}
-          disabled={!inputValue.trim()}
+          disabled={!inputValue.trim() || isLoadingThumbnail}
         >
-          ADD
+          {isLoadingThumbnail ? 'LOADING...' : 'ADD'}
         </button>
       </div>
       {error && (

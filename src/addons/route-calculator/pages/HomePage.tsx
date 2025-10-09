@@ -5,6 +5,7 @@ import { PropertyInputBox } from '../components/PropertyInputBox'
 import { PropertyList } from '../components/PropertyList'
 import { DurationSelector } from '../components/DurationSelector'
 import { PropertyCard } from '../components/PropertyCard'
+import { DriveTimeConnector } from '../components/DriveTimeConnector'
 import { RouteSummary } from '../components/RouteSummary'
 import { CopyButtons } from '../components/CopyButtons'
 import { StateManager } from '../components/StateManager'
@@ -41,9 +42,17 @@ export default function HomePage() {
     setInitialRoute
   } = useRouteManager(null)
 
-  // Extract addresses for route calculation
+  // Extract addresses and sourceUrls for route calculation
   const addressList = useMemo(() => {
     return propertyList.map(prop => prop.parsedAddress)
+  }, [propertyList])
+
+  const sourceUrlList = useMemo(() => {
+    return propertyList.map(prop => prop.sourceUrl)
+  }, [propertyList])
+
+  const thumbnailUrlList = useMemo(() => {
+    return propertyList.map(prop => prop.thumbnailUrl)
   }, [propertyList])
 
   // Handle jump button visibility based on scroll position and results availability
@@ -211,6 +220,8 @@ export default function HomePage() {
 
     const requestData = {
       addresses: addressList,
+      sourceUrls: sourceUrlList,
+      thumbnailUrls: thumbnailUrlList,
       showingDuration: selectedDuration,
       startingPropertyIndex,
     }
@@ -362,14 +373,21 @@ export default function HomePage() {
           <div className="itinerary-container">
             <div className="itinerary-list">
               {calculatedRoute.items.map((item, index) => (
-                <PropertyCard 
-                  key={item.propertyIndex}
-                  routeItem={item}
-                  routeIndex={index}
-                  onTimeChange={updateAppointmentTime}
-                  onDurationChange={updateShowingDuration}
-                  onToggleFreeze={toggleFreezeAppointment}
-                />
+                <div key={item.propertyIndex}>
+                  <PropertyCard
+                    routeItem={item}
+                    routeIndex={index}
+                    onTimeChange={updateAppointmentTime}
+                    onDurationChange={updateShowingDuration}
+                    onToggleFreeze={toggleFreezeAppointment}
+                  />
+                  {/* Show drive time connector between cards */}
+                  {index < calculatedRoute.items.length - 1 && (
+                    <DriveTimeConnector
+                      travelTime={calculatedRoute.items[index + 1].travelTime}
+                    />
+                  )}
+                </div>
               ))}
             </div>
           </div>

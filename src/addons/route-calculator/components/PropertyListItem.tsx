@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import type { PropertyInput } from '../types'
 import { isListingUrl } from '../utils/parsePropertyInput'
 
@@ -14,6 +14,8 @@ interface PropertyListItemProps {
 export function PropertyListItem({ property, index, onEdit, onDelete }: PropertyListItemProps) {
   const [isEditing, setIsEditing] = useState(false)
   const [editValue, setEditValue] = useState(property.parsedAddress)
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const menuRef = useRef<HTMLDivElement>(null)
 
   const handleSaveEdit = () => {
     if (editValue.trim()) {
@@ -35,6 +37,46 @@ export function PropertyListItem({ property, index, onEdit, onDelete }: Property
     }
   }
 
+  // Close menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setIsMenuOpen(false)
+      }
+    }
+
+    if (isMenuOpen) {
+      document.addEventListener('mousedown', handleClickOutside)
+      return () => document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [isMenuOpen])
+
+  // Close menu on Escape key
+  useEffect(() => {
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setIsMenuOpen(false)
+      }
+    }
+
+    if (isMenuOpen) {
+      document.addEventListener('keydown', handleEscape)
+      return () => document.removeEventListener('keydown', handleEscape)
+    }
+  }, [isMenuOpen])
+
+  const handleEdit = () => {
+    setIsMenuOpen(false)
+    setIsEditing(true)
+  }
+
+  const handleDelete = () => {
+    setIsMenuOpen(false)
+    onDelete(property.id)
+  }
+
+  const hasListingUrl = property.sourceUrl && isListingUrl(property.sourceUrl)
+
   return (
     <div className="property-list-item">
       <div className="property-list-item-number">{index + 1}</div>
@@ -50,14 +92,7 @@ export function PropertyListItem({ property, index, onEdit, onDelete }: Property
             autoFocus
           />
         ) : (
-          <>
-            <div className="property-list-item-address">{property.parsedAddress}</div>
-            {property.sourceUrl && (
-              <div className="property-list-item-badge">
-                {isListingUrl(property.sourceUrl) ? '🏠 Listing' : '🔗 URL'}
-              </div>
-            )}
-          </>
+          <div className="property-list-item-address">{property.parsedAddress}</div>
         )}
       </div>
 
@@ -81,20 +116,47 @@ export function PropertyListItem({ property, index, onEdit, onDelete }: Property
           </>
         ) : (
           <>
-            <button
-              className="property-list-item-btn property-list-item-btn-edit"
-              onClick={() => setIsEditing(true)}
-              aria-label="Edit property"
-            >
-              ✎
-            </button>
-            <button
-              className="property-list-item-btn property-list-item-btn-delete"
-              onClick={() => onDelete(property.id)}
-              aria-label="Delete property"
-            >
-              🗑
-            </button>
+            {/* View Listing button - only show for listing URLs */}
+            {hasListingUrl && (
+              <a
+                href={property.sourceUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="property-list-item-btn property-list-item-btn-view-listing"
+                aria-label="View listing"
+              >
+                View Listing
+              </a>
+            )}
+
+            {/* Three-dot menu */}
+            <div className="property-list-item-menu" ref={menuRef}>
+              <button
+                className="property-list-item-btn property-list-item-btn-menu"
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+                aria-label="More actions"
+                aria-expanded={isMenuOpen}
+              >
+                ⋮
+              </button>
+
+              {isMenuOpen && (
+                <div className="property-list-item-dropdown">
+                  <button
+                    className="property-list-item-dropdown-item"
+                    onClick={handleEdit}
+                  >
+                    ✎ Edit
+                  </button>
+                  <button
+                    className="property-list-item-dropdown-item property-list-item-dropdown-item-delete"
+                    onClick={handleDelete}
+                  >
+                    🗑 Delete
+                  </button>
+                </div>
+              )}
+            </div>
           </>
         )}
       </div>

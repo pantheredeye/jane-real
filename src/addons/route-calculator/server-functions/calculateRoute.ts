@@ -72,6 +72,8 @@ async function optimizeRoute(request: CalculateRouteRequest): Promise<RouteStruc
     appointmentTime: null,
     isFrozen: false,
     coordinates: result.coordinates,
+    sourceUrl: request.sourceUrls?.[index],
+    thumbnailUrl: request.thumbnailUrls?.[index],
   }))
 
   // Step 3: Calculate distance matrix for all coordinates
