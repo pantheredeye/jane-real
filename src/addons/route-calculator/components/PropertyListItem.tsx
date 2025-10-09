@@ -115,49 +115,44 @@ export function PropertyListItem({ property, index, onEdit, onDelete }: Property
             </button>
           </>
         ) : (
-          <>
-            {/* View Listing button - only show for listing URLs */}
-            {hasListingUrl && (
-              <a
-                href={property.sourceUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="property-list-item-btn property-list-item-btn-view-listing"
-                aria-label="View listing"
-              >
-                View Listing
-              </a>
+          <div className="property-list-item-menu" ref={menuRef}>
+            <button
+              className="property-list-item-btn property-list-item-btn-menu"
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              aria-label="More actions"
+              aria-expanded={isMenuOpen}
+            >
+              ⋮
+            </button>
+
+            {isMenuOpen && (
+              <div className="property-list-item-dropdown">
+                {hasListingUrl && (
+                  <a
+                    href={property.sourceUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="property-list-item-dropdown-item property-list-item-dropdown-link"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    🏠 View Listing
+                  </a>
+                )}
+                <button
+                  className="property-list-item-dropdown-item"
+                  onClick={handleEdit}
+                >
+                  ✎ Edit
+                </button>
+                <button
+                  className="property-list-item-dropdown-item property-list-item-dropdown-item-delete"
+                  onClick={handleDelete}
+                >
+                  🗑 Delete
+                </button>
+              </div>
             )}
-
-            {/* Three-dot menu */}
-            <div className="property-list-item-menu" ref={menuRef}>
-              <button
-                className="property-list-item-btn property-list-item-btn-menu"
-                onClick={() => setIsMenuOpen(!isMenuOpen)}
-                aria-label="More actions"
-                aria-expanded={isMenuOpen}
-              >
-                ⋮
-              </button>
-
-              {isMenuOpen && (
-                <div className="property-list-item-dropdown">
-                  <button
-                    className="property-list-item-dropdown-item"
-                    onClick={handleEdit}
-                  >
-                    ✎ Edit
-                  </button>
-                  <button
-                    className="property-list-item-dropdown-item property-list-item-dropdown-item-delete"
-                    onClick={handleDelete}
-                  >
-                    🗑 Delete
-                  </button>
-                </div>
-              )}
-            </div>
-          </>
+          </div>
         )}
       </div>
     </div>

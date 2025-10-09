@@ -1160,37 +1160,6 @@ body {
   transform: scale(1.05);
 }
 
-/* View Listing Button */
-.property-list-item-btn-view-listing {
-  padding: 8px 12px;
-  font-size: 13px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  border: 2px solid var(--accent-electric);
-  border-radius: var(--radius-sm);
-  background: white;
-  color: var(--accent-electric);
-  text-decoration: none;
-  cursor: pointer;
-  transition: all 0.2s;
-  white-space: nowrap;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.property-list-item-btn-view-listing:hover {
-  background: var(--accent-electric);
-  color: white;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
-}
-
-.property-list-item-btn-view-listing:active {
-  transform: translateY(0);
-}
-
 /* Three-dot Menu */
 .property-list-item-menu {
   position: relative;
@@ -1252,7 +1221,8 @@ body {
   }
 }
 
-.property-list-item-dropdown-item {
+.property-list-item-dropdown-item,
+.property-list-item-dropdown-link {
   width: 100%;
   padding: 10px 12px;
   font-size: 14px;
@@ -1267,9 +1237,11 @@ body {
   display: flex;
   align-items: center;
   gap: 8px;
+  text-decoration: none;
 }
 
-.property-list-item-dropdown-item:hover {
+.property-list-item-dropdown-item:hover,
+.property-list-item-dropdown-link:hover {
   background: var(--bg-glass-elevated);
   color: var(--accent-electric);
   transform: translateX(2px);
@@ -1446,32 +1418,12 @@ body {
     font-size: 16px; /* Prevent zoom on iOS */
   }
 
-  /* Two-row layout for property list items on mobile */
   .property-list-item {
     padding: var(--space-xs);
-    flex-wrap: wrap;
-  }
-
-  .property-list-item-number {
-    order: 1;
-  }
-
-  .property-list-item-content {
-    order: 2;
-    flex: 1;
-    min-width: 0;
   }
 
   .property-list-item-address {
     font-size: 13px;
-  }
-
-  .property-list-item-actions {
-    order: 3;
-    width: 100%;
-    justify-content: flex-start;
-    margin-top: var(--space-xs);
-    padding-left: calc(32px + var(--space-sm)); /* Align with address (number width + gap) */
   }
 
   .property-actions {
