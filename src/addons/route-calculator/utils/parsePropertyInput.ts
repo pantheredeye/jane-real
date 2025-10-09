@@ -1,6 +1,7 @@
 import type { PropertyInput } from '../types'
 import { parseZillowUrl, isZillowUrl } from './urlParsers/zillow'
 import { parseRealtorUrl, isRealtorUrl } from './urlParsers/realtor'
+import { formatAddress } from './addressFormatter'
 
 /**
  * Parse user input to detect if it's a listing URL or plain address
@@ -19,7 +20,7 @@ export function parsePropertyInput(rawInput: string): PropertyInput {
       return {
         id: crypto.randomUUID(),
         rawInput: trimmed,
-        parsedAddress,
+        parsedAddress: formatAddress(parsedAddress),
         sourceUrl: trimmed
       }
     }
@@ -32,7 +33,7 @@ export function parsePropertyInput(rawInput: string): PropertyInput {
       return {
         id: crypto.randomUUID(),
         rawInput: trimmed,
-        parsedAddress,
+        parsedAddress: formatAddress(parsedAddress),
         sourceUrl: trimmed
       }
     }
@@ -42,7 +43,7 @@ export function parsePropertyInput(rawInput: string): PropertyInput {
   return {
     id: crypto.randomUUID(),
     rawInput: trimmed,
-    parsedAddress: trimmed,
+    parsedAddress: formatAddress(trimmed),
     sourceUrl: undefined
   }
 }
