@@ -78,7 +78,7 @@ export function PropertyListItem({ property, index, onEdit, onDelete }: Property
   const hasListingUrl = property.sourceUrl && isListingUrl(property.sourceUrl)
 
   return (
-    <div className="property-list-item">
+    <div className={`property-list-item ${isMenuOpen ? 'menu-open' : ''}`}>
       <div className="property-list-item-number">{index + 1}</div>
 
       <div className="property-list-item-content">
