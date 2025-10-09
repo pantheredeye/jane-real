@@ -1232,11 +1232,10 @@ body {
   top: calc(100% + 4px);
   right: 0;
   min-width: 140px;
-  background: var(--bg-glass-strong);
-  backdrop-filter: var(--blur-heavy);
+  background: white;
   border-radius: var(--radius-md);
-  border: 2px solid rgba(255, 255, 255, 0.4);
-  box-shadow: var(--shadow-elevated);
+  border: 1px solid rgba(15, 23, 42, 0.1);
+  box-shadow: 0 10px 40px rgba(15, 23, 42, 0.2), 0 4px 12px rgba(15, 23, 42, 0.15);
   padding: 6px;
   z-index: 100;
   animation: dropdownSlideIn 0.2s ease-out;

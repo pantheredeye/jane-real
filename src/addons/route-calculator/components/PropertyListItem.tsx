@@ -92,14 +92,7 @@ export function PropertyListItem({ property, index, onEdit, onDelete }: Property
             autoFocus
           />
         ) : (
-          <>
-            <div className="property-list-item-address">{property.parsedAddress}</div>
-            {property.sourceUrl && (
-              <div className="property-list-item-badge">
-                {isListingUrl(property.sourceUrl) ? '🏠 Listing' : '🔗 URL'}
-              </div>
-            )}
-          </>
+          <div className="property-list-item-address">{property.parsedAddress}</div>
         )}
       </div>
 
