@@ -4,6 +4,8 @@ import { DurableObject } from "cloudflare:workers";
 export interface Session {
   userId?: string | null;
   challenge?: string | null;
+  tenantId?: string | null;
+  membershipId?: string | null;
   createdAt: number;
 }
 
@@ -17,13 +19,19 @@ export class SessionDurableObject extends DurableObject {
   async saveSession({
     userId = null,
     challenge = null,
+    tenantId = null,
+    membershipId = null,
   }: {
     userId?: string | null;
     challenge?: string | null;
+    tenantId?: string | null;
+    membershipId?: string | null;
   }): Promise<Session> {
     const session: Session = {
       userId,
       challenge,
+      tenantId,
+      membershipId,
       createdAt: Date.now(),
     };
 
