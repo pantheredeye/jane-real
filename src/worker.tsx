@@ -7,13 +7,15 @@ import { userRoutes } from "@/app/pages/user/routes";
 import { routeCalculatorRoutes } from "@/addons/route-calculator/routes";
 import { sessions, setupSessionStore } from "./session/store";
 import { Session } from "./session/durableObject";
-import { type User, db, setupDb } from "@/db";
+import { type User, type Tenant, type TenantMembership, db, setupDb } from "@/db";
 import { env } from "cloudflare:workers";
 export { SessionDurableObject } from "./session/durableObject";
 
 export type AppContext = {
   session: Session | null;
   user: User | null;
+  tenant: Tenant | null;
+  membership: TenantMembership | null;
 };
 
 export default defineApp([
@@ -44,6 +46,21 @@ export default defineApp([
           id: ctx.session.userId,
         },
       });
+
+      // Load tenant and membership if available in session
+      if (ctx.session.tenantId && ctx.session.membershipId) {
+        ctx.tenant = await db.tenant.findUnique({
+          where: {
+            id: ctx.session.tenantId,
+          },
+        });
+
+        ctx.membership = await db.tenantMembership.findUnique({
+          where: {
+            id: ctx.session.membershipId,
+          },
+        });
+      }
     }
   },
   render(Document, [

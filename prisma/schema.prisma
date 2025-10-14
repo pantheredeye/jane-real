@@ -21,12 +21,27 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// ============================================================================
+// AUTHENTICATION MODELS
+// ============================================================================
+
 model User {
   id          String      @id @default(uuid()) // User ID (UUID-based)
   username    String      @unique
+  email       String?     @unique
+  name        String?
+  avatar      String?
   createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
 
-  credentials Credential[] // Relationship: One user can have many credentials
+  credentials     Credential[]       // WebAuthn credentials
+  memberships     TenantMembership[] // Many-to-many with tenants
+  createdRoutes   Route[]            // Routes created by this user
+  routeShares     RouteShare[]       // Routes shared by this user
+  auditLogs       AuditLog[]         // Activity logs
+
+  @@index([email])
+  @@index([username])
 }
 
 model Credential {
@@ -37,7 +52,131 @@ model Credential {
   credentialId  String   @unique // WebAuthn credential identifier
   publicKey     Bytes
   counter       Int      @default(0)
-  
+
   @@index([credentialId])
   @@index([userId])
+}
+
+// ============================================================================
+// MULTI-TENANT MODELS
+// ============================================================================
+
+model Tenant {
+  id        String       @id @default(uuid())
+  name      String       // "Jane Smith Realty"
+  slug      String       @unique
+  domain    String?      @unique
+  status    TenantStatus @default(TRIAL)
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+
+  memberships TenantMembership[]
+  routes      Route[]
+  auditLogs   AuditLog[]
+
+  @@index([slug])
+  @@index([status])
+}
+
+enum TenantStatus {
+  ACTIVE      // Paid subscription ($9/month)
+  TRIAL       // 14-day trial
+  SUSPENDED   // Payment failed
+  CANCELLED   // Cancelled subscription
+}
+
+// Many-to-many: Users can belong to multiple tenants
+model TenantMembership {
+  id        String     @id @default(uuid())
+  tenantId  String
+  userId    String
+  role      MemberRole @default(GUEST)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  tenant    Tenant     @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([tenantId, userId])
+  @@index([tenantId])
+  @@index([userId])
+}
+
+enum MemberRole {
+  OWNER      // Realtor who owns the tenant
+  MEMBER     // Assistant or colleague
+  GUEST      // Client (view-only)
+}
+
+// ============================================================================
+// BUSINESS MODELS - Route Calculator
+// ============================================================================
+
+model Route {
+  id          String   @id @default(uuid())
+  tenantId    String   // Which realtor owns this route
+  createdById String   // Who created it (realtor or assistant)
+
+  name        String   // "Downtown Showings - March 15"
+  date        DateTime
+  startTime   String?  // "09:00"
+  properties  String   // JSON array of property objects
+  optimized   Int      @default(0) // Boolean as Int (0/1) for SQLite
+  frozen      String?  // JSON frozen time slots
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  tenant      Tenant      @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  createdBy   User        @relation(fields: [createdById], references: [id])
+  shares      RouteShare[]
+
+  @@index([tenantId])
+  @@index([createdById])
+  @@index([date])
+}
+
+// Sharing routes within and across tenants
+model RouteShare {
+  id                 String          @id @default(uuid())
+  routeId            String
+  sharedById         String          // Who shared it
+  sharedWithUserId   String?         // Specific user (null = tenant-wide)
+  sharedWithTenantId String?         // Specific tenant (null = same tenant)
+  permission         SharePermission @default(VIEW)
+  createdAt          DateTime        @default(now())
+
+  route      Route    @relation(fields: [routeId], references: [id], onDelete: Cascade)
+  sharedBy   User     @relation(fields: [sharedById], references: [id])
+
+  @@unique([routeId, sharedWithUserId, sharedWithTenantId])
+  @@index([routeId])
+  @@index([sharedWithUserId])
+  @@index([sharedWithTenantId])
+}
+
+enum SharePermission {
+  VIEW    // Can view route
+  COPY    // Can view and copy to their tenant
+}
+
+// Audit log for tracking activity
+model AuditLog {
+  id        String   @id @default(uuid())
+  tenantId  String
+  userId    String?
+  action    String   // "route.created", "route.shared", etc
+  entity    String   // "Route", "RouteShare"
+  entityId  String
+  metadata  String?  // JSON metadata
+  ipAddress String?
+  createdAt DateTime @default(now())
+
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  user   User?  @relation(fields: [userId], references: [id])
+
+  @@index([tenantId])
+  @@index([userId])
+  @@index([createdAt])
+  @@index([entity, entityId])
 }
