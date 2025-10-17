@@ -12,6 +12,7 @@ import { StateManager } from '../components/StateManager'
 import { Toast, ToastType } from '../components/Toast'
 import { isDuplicateAddress } from '../utils/addressNormalizer'
 import { calculateRoute } from '../server-functions/calculateRoute'
+import { saveRoute, getRoutes, deleteRoute } from '../server-functions/routePersistence'
 import type { OptimizedRoute, PropertyInput } from '../types'
 import { useRouteManager, calculateAppointmentTimes } from '../hooks/useRouteManager'
 
@@ -34,6 +35,14 @@ export default function HomePage() {
   const [showJumpButton, setShowJumpButton] = useState(false)
   const [showCalculateSuccess, setShowCalculateSuccess] = useState(false)
   const [toast, setToast] = useState<{ message: string; type: ToastType } | null>(null)
+
+  // Route persistence state
+  const [showSaveDialog, setShowSaveDialog] = useState(false)
+  const [routeName, setRouteName] = useState('')
+  const [routeDate, setRouteDate] = useState(new Date().toISOString().split('T')[0])
+  const [isSaving, setIsSaving] = useState(false)
+  const [savedRoutes, setSavedRoutes] = useState<any[]>([])
+  const [isLoadingRoutes, setIsLoadingRoutes] = useState(false)
   const {
     route: calculatedRoute,
     updateAppointmentTime,
@@ -167,21 +176,13 @@ export default function HomePage() {
 
   // Handle state restoration from localStorage
   const handleStateRestore = (restoredState: {
-    addresses: string
+    propertyList: PropertyInput[]
     startingPropertyIndex: number
     startTime: string
     selectedDuration: number
     calculatedRoute: OptimizedRoute | null
   }) => {
-    // Convert old addresses format to new property list format
-    const addresses = restoredState.addresses.split('\n').filter(a => a.trim())
-    const convertedPropertyList: PropertyInput[] = addresses.map(address => ({
-      id: crypto.randomUUID(),
-      rawInput: address,
-      parsedAddress: address,
-      sourceUrl: undefined
-    }))
-    setPropertyList(convertedPropertyList)
+    setPropertyList(restoredState.propertyList)
     setStartingPropertyIndex(restoredState.startingPropertyIndex)
     setStartTime(restoredState.startTime)
     setSelectedDuration(restoredState.selectedDuration)
@@ -258,21 +259,82 @@ export default function HomePage() {
 
     } catch (error) {
       console.error('Route calculation failed:', error)
-      // TODO: Show error message to user
+      setToast({
+        message: 'Failed to calculate route. Please try again.',
+        type: 'error'
+      })
     } finally {
       setIsCalculating(false)
     }
   }
-  
-  // Convert propertyList to addresses string for StateManager compatibility
-  const addressesString = useMemo(() => {
-    return propertyList.map(p => p.parsedAddress).join('\n')
-  }, [propertyList])
+
+  // Load saved routes on mount
+  useEffect(() => {
+    loadSavedRoutes()
+  }, [])
+
+  const loadSavedRoutes = async () => {
+    setIsLoadingRoutes(true)
+    try {
+      const routes = await getRoutes()
+      setSavedRoutes(routes)
+    } catch (error) {
+      console.error('Failed to load saved routes:', error)
+    } finally {
+      setIsLoadingRoutes(false)
+    }
+  }
+
+  const handleSaveRoute = async () => {
+    if (!calculatedRoute || !routeName.trim()) {
+      setToast({ message: 'Please enter a route name', type: 'warning' })
+      return
+    }
+
+    setIsSaving(true)
+    try {
+      await saveRoute({
+        name: routeName,
+        date: new Date(routeDate),
+        startTime,
+        properties: calculatedRoute.items.map(item => item.property),
+        optimized: true,
+        frozen: Object.fromEntries(
+          calculatedRoute.items
+            .filter(item => item.property.isFrozen)
+            .map((item, idx) => [idx, item.appointmentTime.toISOString()])
+        )
+      })
+
+      setToast({ message: 'Route saved successfully!', type: 'success' })
+      setShowSaveDialog(false)
+      setRouteName('')
+      await loadSavedRoutes() // Reload list
+    } catch (error) {
+      console.error('Failed to save route:', error)
+      setToast({ message: 'Failed to save route', type: 'error' })
+    } finally {
+      setIsSaving(false)
+    }
+  }
+
+  const handleDeleteRoute = async (routeId: string) => {
+    if (!confirm('Are you sure you want to delete this route?')) return
+
+    try {
+      await deleteRoute(routeId)
+      setToast({ message: 'Route deleted', type: 'success' })
+      await loadSavedRoutes()
+    } catch (error) {
+      console.error('Failed to delete route:', error)
+      setToast({ message: 'Failed to delete route', type: 'error' })
+    }
+  }
 
   return (
     <div className="app-container">
       <StateManager
-        addresses={addressesString}
+        propertyList={propertyList}
         startingPropertyIndex={startingPropertyIndex}
         startTime={startTime}
         selectedDuration={selectedDuration}
@@ -394,7 +456,85 @@ export default function HomePage() {
 
           <CopyButtons route={calculatedRoute} />
 
+          {/* Save Route Button */}
+          <div style={{ marginTop: '2rem', textAlign: 'center' }}>
+            <button
+              className="calculate-btn"
+              onClick={() => setShowSaveDialog(true)}
+              style={{ maxWidth: '300px' }}
+            >
+              💾 SAVE ROUTE
+            </button>
+          </div>
+
         </section>
+        )}
+
+        {/* Saved Routes Section */}
+        {savedRoutes.length > 0 && (
+          <section className="input-section glass-card" style={{ marginTop: '2rem' }}>
+            <h2 className="section-title">MY SAVED ROUTES</h2>
+            <p className="section-description">
+              Load previously saved routes or delete them.
+            </p>
+
+            {isLoadingRoutes ? (
+              <p style={{ textAlign: 'center', color: '#666' }}>Loading routes...</p>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                {savedRoutes.map((route) => (
+                  <div
+                    key={route.id}
+                    style={{
+                      padding: '1rem',
+                      border: '1px solid rgba(255,255,255,0.1)',
+                      borderRadius: '8px',
+                      backgroundColor: 'rgba(255,255,255,0.05)',
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      flexWrap: 'wrap',
+                      gap: '0.5rem'
+                    }}
+                  >
+                    <div style={{ flex: 1 }}>
+                      <h3 style={{ margin: 0, fontSize: '1.1rem' }}>{route.name}</h3>
+                      <p style={{ margin: '0.25rem 0 0 0', fontSize: '0.9rem', opacity: 0.7 }}>
+                        {new Date(route.date).toLocaleDateString()} • {route.properties.length} properties • Created by {route.createdBy.name || route.createdBy.email}
+                      </p>
+                    </div>
+                    <div style={{ display: 'flex', gap: '0.5rem' }}>
+                      <button
+                        className="calculate-btn"
+                        style={{
+                          padding: '0.5rem 1rem',
+                          fontSize: '0.9rem',
+                          minWidth: 'auto'
+                        }}
+                        onClick={async () => {
+                          setToast({ message: 'Load route feature coming soon!', type: 'info' })
+                        }}
+                      >
+                        📂 LOAD
+                      </button>
+                      <button
+                        className="calculate-btn"
+                        style={{
+                          padding: '0.5rem 1rem',
+                          fontSize: '0.9rem',
+                          minWidth: 'auto',
+                          backgroundColor: '#dc3545'
+                        }}
+                        onClick={() => handleDeleteRoute(route.id)}
+                      >
+                        🗑️ DELETE
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </section>
         )}
       </main>
 
@@ -420,6 +560,86 @@ export default function HomePage() {
           type={toast.type}
           onClose={() => setToast(null)}
         />
+      )}
+
+      {/* Save Route Dialog */}
+      {showSaveDialog && (
+        <div
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: 'rgba(0,0,0,0.7)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 1000,
+            padding: '1rem'
+          }}
+          onClick={() => setShowSaveDialog(false)}
+        >
+          <div
+            className="glass-card"
+            style={{
+              maxWidth: '500px',
+              width: '100%',
+              padding: '2rem'
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h2 className="section-title" style={{ marginTop: 0 }}>SAVE ROUTE</h2>
+
+            <div style={{ marginBottom: '1rem' }}>
+              <label htmlFor="route-name" className="input-label">ROUTE NAME *</label>
+              <input
+                id="route-name"
+                type="text"
+                className="time-input"
+                style={{ width: '100%' }}
+                value={routeName}
+                onChange={(e) => setRouteName(e.target.value)}
+                placeholder="e.g., Downtown Showings - March 15"
+                autoFocus
+              />
+            </div>
+
+            <div style={{ marginBottom: '1.5rem' }}>
+              <label htmlFor="route-date" className="input-label">DATE</label>
+              <input
+                id="route-date"
+                type="date"
+                className="time-input"
+                style={{ width: '100%' }}
+                value={routeDate}
+                onChange={(e) => setRouteDate(e.target.value)}
+              />
+            </div>
+
+            <div style={{ display: 'flex', gap: '1rem', justifyContent: 'flex-end' }}>
+              <button
+                className="calculate-btn"
+                style={{
+                  backgroundColor: '#6c757d',
+                  minWidth: '100px'
+                }}
+                onClick={() => setShowSaveDialog(false)}
+                disabled={isSaving}
+              >
+                CANCEL
+              </button>
+              <button
+                className="calculate-btn"
+                style={{ minWidth: '100px' }}
+                onClick={handleSaveRoute}
+                disabled={isSaving || !routeName.trim()}
+              >
+                {isSaving ? 'SAVING...' : 'SAVE'}
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   )

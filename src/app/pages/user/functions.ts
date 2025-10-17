@@ -102,6 +102,19 @@ export async function finishPasskeyRegistration(
     },
   });
 
+  // Check if user has any tenant memberships
+  const membership = await db.tenantMembership.findFirst({
+    where: { userId: user.id },
+  });
+
+  // Save session with tenant context if available
+  await sessions.save(headers, {
+    userId: user.id,
+    challenge: null,
+    tenantId: membership?.tenantId ?? null,
+    membershipId: membership?.id ?? null,
+  });
+
   return true;
 }
 
@@ -162,9 +175,17 @@ export async function finishPasskeyLogin(login: AuthenticationResponseJSON) {
     return false;
   }
 
+  // Load user's tenant membership (use first one for now)
+  const membership = await db.tenantMembership.findFirst({
+    where: { userId: user.id },
+    orderBy: { createdAt: "asc" }, // Use oldest membership (primary tenant)
+  });
+
   await sessions.save(headers, {
     userId: user.id,
     challenge: null,
+    tenantId: membership?.tenantId ?? null,
+    membershipId: membership?.id ?? null,
   });
 
   return true;
