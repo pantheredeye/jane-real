@@ -30,29 +30,18 @@ Created complete CRUD API in `src/addons/route-calculator/server-functions/route
 - Includes creator info with each route
 - Role-based delete permissions
 
-## 🔨 In Progress
+## ✅ Completed (4/4 commits)
 
 ### 3. HomePage UI Integration
-**File**: `src/addons/route-calculator/pages/HomePage.tsx`
+**Commit**: `aa89db0` - "Add route persistence UI to HomePage"
 
-**Needs**:
-- [ ] Add "Save Route" button/dialog
-  - Route name input
-  - Date selection
-  - Call `saveRoute()` with current route state
-- [ ] Add "My Saved Routes" section
-  - Load routes with `getRoutes()` on mount
-  - Display route cards with:
-    - Route name
-    - Date
-    - Property count
-    - Creator name
-    - Load/Delete buttons
-- [ ] Add "Load Route" functionality
-  - Call `getRoute(id)`
-  - Populate state with saved route
-  - Trigger recalculation if needed
-- [ ] Add delete confirmation dialog
+- ✅ Added "Save Route" button after calculated route
+- ✅ Save Route modal dialog with name/date inputs
+- ✅ "My Saved Routes" section loads on mount
+- ✅ Route cards display name, date, property count, creator
+- ✅ Delete functionality with confirmation
+- ✅ Toast notifications for save/delete actions
+- ⏸️ Load Route functionality (deferred to Phase 5)
 
 ## 📋 Remaining Tasks
 
