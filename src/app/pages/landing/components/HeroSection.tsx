@@ -1,0 +1,35 @@
+import CTAButton from "./CTAButton";
+import DemoButton from "./demo/DemoButton";
+
+export default function HeroSection() {
+  return (
+    <section className="hero">
+      <div className="halftone-shadow"></div>
+
+      {/* Clean Oval Badge */}
+      <div className="hero-badge">
+        <span>
+          15 SEC
+          <br />
+          NOT
+          <br />
+          15 MIN!
+        </span>
+      </div>
+
+      <h1>See Jane Sell!</h1>
+      <p className="tagline">From Property Links to Perfect Route in Seconds</p>
+      <p className="description">
+        Paste Zillow URLs. Type addresses. Mix and match.
+        <br />
+        Calculate optimal route. Lock in appointment times.
+        <br />
+        <strong>Done in 15 seconds, not 15 minutes.</strong>
+      </p>
+      <div style={{ display: "flex", gap: "20px", justifyContent: "center", flexWrap: "wrap" }}>
+        <DemoButton />
+        <CTAButton />
+      </div>
+    </section>
+  );
+}
