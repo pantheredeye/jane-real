@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import TheaterCloseButton from "./TheaterCloseButton";
 import "./theater-modal.css";
 
 interface TheaterModalProps {
@@ -55,6 +56,9 @@ export default function TheaterModal({ isOpen, onClose, children }: TheaterModal
       }}
     >
       <div className="theater-modal-container">
+        {/* Close button */}
+        <TheaterCloseButton onClick={onClose} />
+
         {/* Comic borders that expand during animation */}
         <div className="theater-modal-border theater-modal-border-top"></div>
         <div className="theater-modal-border theater-modal-border-right"></div>
