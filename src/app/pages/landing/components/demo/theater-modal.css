@@ -37,9 +37,10 @@ body[data-demo-speed="fast"] {
 /* Container - The modal itself */
 .theater-modal-container {
   position: relative;
-  width: 100%;
+  width: 95%; /* Leave 2.5% gap on each side */
   height: 20vh; /* Start as bottom sheet */
-  max-width: 100vw;
+  max-width: 95vw;
+  margin: 0 auto; /* Center horizontally */
   background: white;
   transform: translateY(100%); /* Start off-screen */
   transition: all var(--theater-animation-duration) var(--theater-animation-easing);
@@ -47,7 +48,7 @@ body[data-demo-speed="fast"] {
 }
 
 .theater-modal-open .theater-modal-container {
-  height: 100vh; /* Expand to full screen */
+  height: 95vh; /* 5vh gap at top, goes to bottom */
   transform: translateY(0); /* Slide into view */
 }
 
@@ -133,6 +134,12 @@ body[data-demo-speed="fast"] {
 @media (max-width: 768px) {
   .theater-modal-container {
     height: 30vh; /* Taller starting height on mobile */
+    width: 100%; /* Full width on mobile for better use of space */
+    max-width: 100vw;
+  }
+
+  .theater-modal-open .theater-modal-container {
+    height: 100vh; /* Full height on mobile */
   }
 
   .theater-modal-content {
