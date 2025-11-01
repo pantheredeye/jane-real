@@ -17,10 +17,11 @@ export default function TheaterModal({ isOpen, onClose, children }: TheaterModal
   useEffect(() => {
     if (isOpen) {
       setShouldRender(true);
-      // Small delay to trigger animation after render
-      requestAnimationFrame(() => {
+      // Need longer delay to ensure initial state is painted before animating
+      const timer = setTimeout(() => {
         setIsAnimating(true);
-      });
+      }, 50); // 50ms delay ensures browser paints initial state first
+      return () => clearTimeout(timer);
     } else {
       setIsAnimating(false);
       // Wait for animation to complete before unmounting
