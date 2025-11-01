@@ -48,7 +48,7 @@ body[data-demo-speed="fast"] {
 }
 
 .theater-modal-open .theater-modal-container {
-  height: 95vh; /* 5vh gap at top, goes to bottom */
+  height: 96vh; /* 4vh gap at top, goes to bottom */
   transform: translateY(0); /* Slide into view */
 }
 
