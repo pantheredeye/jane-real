@@ -15,6 +15,12 @@ export const userRoutes = [
     },
     Login,
   ]),
+  route("/signup", () => {
+    return new Response(null, {
+      status: 302,
+      headers: { Location: "/user/login" },
+    });
+  }),
   route("/logout", async function ({ request }) {
     const headers = new Headers();
     await sessions.remove(request, headers);

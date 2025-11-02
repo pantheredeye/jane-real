@@ -64,70 +64,85 @@ export async function finishPasskeyRegistration(
   username: string,
   registration: RegistrationResponseJSON,
 ) {
-  const { request, headers } = requestInfo;
-  const { origin } = new URL(request.url);
+  try {
+    const { request, headers } = requestInfo;
+    const { origin } = new URL(request.url);
 
-  const session = await sessions.load(request);
-  const challenge = session?.challenge;
+    const session = await sessions.load(request);
+    const challenge = session?.challenge;
 
-  if (!challenge) {
-    return false;
-  }
+    if (!challenge) {
+      console.error("finishPasskeyRegistration: No challenge in session");
+      return false;
+    }
 
-  const verification = await verifyRegistrationResponse({
-    response: registration,
-    expectedChallenge: challenge,
-    expectedOrigin: origin,
-    expectedRPID: env.WEBAUTHN_RP_ID || new URL(request.url).hostname,
-  });
-
-  if (!verification.verified || !verification.registrationInfo) {
-    return false;
-  }
-
-  await sessions.save(headers, { challenge: null });
-
-  const user = await db.user.create({
-    data: {
+    const rpID = env.WEBAUTHN_RP_ID || new URL(request.url).hostname;
+    console.log("finishPasskeyRegistration verification params:", {
+      origin,
+      rpID,
       username,
-    },
-  });
+    });
 
-  await db.credential.create({
-    data: {
+    const verification = await verifyRegistrationResponse({
+      response: registration,
+      expectedChallenge: challenge,
+      expectedOrigin: origin,
+      expectedRPID: rpID,
+    });
+
+    if (!verification.verified || !verification.registrationInfo) {
+      console.error("finishPasskeyRegistration: Verification failed");
+      return false;
+    }
+
+    await sessions.save(headers, { challenge: null });
+
+    const user = await db.user.create({
+      data: {
+        username,
+      },
+    });
+
+    await db.credential.create({
+      data: {
+        userId: user.id,
+        credentialId: verification.registrationInfo.credential.id,
+        publicKey: verification.registrationInfo.credential.publicKey,
+        counter: verification.registrationInfo.credential.counter,
+      },
+    });
+
+    // Auto-create personal tenant for new user
+    const tenant = await db.tenant.create({
+      data: {
+        name: `${username}'s Workspace`,
+        slug: `${username}-${Date.now()}`, // Ensure unique slug
+        status: "ACTIVE",
+      },
+    });
+
+    const membership = await db.tenantMembership.create({
+      data: {
+        userId: user.id,
+        tenantId: tenant.id,
+        role: "OWNER",
+      },
+    });
+
+    // Save session with tenant context
+    await sessions.save(headers, {
       userId: user.id,
-      credentialId: verification.registrationInfo.credential.id,
-      publicKey: verification.registrationInfo.credential.publicKey,
-      counter: verification.registrationInfo.credential.counter,
-    },
-  });
-
-  // Auto-create personal tenant for new user
-  const tenant = await db.tenant.create({
-    data: {
-      name: `${username}'s Workspace`,
-      slug: `${username}-${Date.now()}`, // Ensure unique slug
-      status: "ACTIVE",
-    },
-  });
-
-  const membership = await db.tenantMembership.create({
-    data: {
-      userId: user.id,
+      challenge: null,
       tenantId: tenant.id,
-      role: "OWNER",
-    },
-  });
+      membershipId: membership.id,
+    });
 
-  // Save session with tenant context
-  await sessions.save(headers, {
-    userId: user.id,
-    challenge: null,
-    tenantId: tenant.id,
-    membershipId: membership.id,
-  });
-
-  return true;
+    console.log("finishPasskeyRegistration: Success for user:", username);
+    return true;
+  } catch (error) {
+    console.error("finishPasskeyRegistration: Error:", error);
+    throw error; // Re-throw so we get the 500 with details
+  }
 }
 
 export async function finishPasskeyLogin(login: AuthenticationResponseJSON) {
@@ -138,6 +153,7 @@ export async function finishPasskeyLogin(login: AuthenticationResponseJSON) {
   const challenge = session?.challenge;
 
   if (!challenge) {
+    console.error("finishPasskeyLogin: No challenge in session");
     return false;
   }
 
@@ -148,23 +164,38 @@ export async function finishPasskeyLogin(login: AuthenticationResponseJSON) {
   });
 
   if (!credential) {
+    console.error("finishPasskeyLogin: Credential not found:", login.id);
     return false;
   }
 
-  const verification = await verifyAuthenticationResponse({
-    response: login,
-    expectedChallenge: challenge,
-    expectedOrigin: origin,
-    expectedRPID: env.WEBAUTHN_RP_ID || new URL(request.url).hostname,
-    requireUserVerification: false,
-    credential: {
-      id: credential.credentialId,
-      publicKey: credential.publicKey,
-      counter: credential.counter,
-    },
+  const rpID = env.WEBAUTHN_RP_ID || new URL(request.url).hostname;
+  console.log("finishPasskeyLogin verification params:", {
+    origin,
+    rpID,
+    credentialId: credential.credentialId,
   });
 
-  if (!verification.verified) {
+  let verification;
+  try {
+    verification = await verifyAuthenticationResponse({
+      response: login,
+      expectedChallenge: challenge,
+      expectedOrigin: origin,
+      expectedRPID: rpID,
+      requireUserVerification: false,
+      credential: {
+        id: credential.credentialId,
+        publicKey: credential.publicKey,
+        counter: credential.counter,
+      },
+    });
+
+    if (!verification.verified) {
+      console.error("finishPasskeyLogin: Verification failed");
+      return false;
+    }
+  } catch (error) {
+    console.error("finishPasskeyLogin: Verification error:", error);
     return false;
   }
 

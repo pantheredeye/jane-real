@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>See Jane Sell - Brand Guide & Landing Page Mockup</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Archivo+Black&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f5f1e8;
+            color: #1a1a1a;
+        }
+
+        /* ========== BRAND GUIDE SECTION ========== */
+        .brand-guide {
+            background: white;
+            padding: 40px;
+            margin: 20px;
+            border: 3px solid #1a1a1a;
+            box-shadow: 8px 8px 0 rgba(0,0,0,0.1);
+        }
+
+        .brand-guide h1 {
+            font-family: 'Archivo Black', sans-serif;
+            font-size: 42px;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+        }
+
+        .brand-section {
+            margin-bottom: 40px;
+        }
+
+        .brand-section h2 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 28px;
+            letter-spacing: 2px;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+        }
+
+        /* Color Palette */
+        .color-palette {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+        }
+
+        .color-swatch {
+            text-align: center;
+        }
+
+        .color-box {
+            height: 100px;
+            border: 2px solid #1a1a1a;
+            margin-bottom: 10px;
+        }
+
+        .color-swatch h3 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+
+        .color-swatch code {
+            font-size: 12px;
+            color: #666;
+        }
+
+        /* Typography Examples */
+        .type-example {
+            margin-bottom: 20px;
+            padding: 20px;
+            background: #f5f1e8;
+            border: 2px solid #1a1a1a;
+        }
+
+        .type-example .label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+
+        /* Motif Examples */
+        .motif-examples {
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+
+        .starburst {
+            position: relative;
+            width: 160px;
+            height: 160px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 28px;
+            text-align: center;
+        }
+
+        .starburst svg {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+
+        .starburst span {
+            position: relative;
+            z-index: 2;
+        }
+
+        .badge {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            background: #d32f2f;
+            border: 4px solid #1a1a1a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 20px;
+            text-align: center;
+            padding: 20px;
+            transform: rotate(-5deg);
+            box-shadow: 4px 4px 0 rgba(0,0,0,0.2);
+        }
+
+        /* ========== LANDING PAGE MOCKUP ========== */
+        .landing-page {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 80px 20px;
+            background: white;
+            border: 4px solid #1a1a1a;
+            box-shadow: 12px 12px 0 rgba(0,0,0,0.1);
+            position: relative;
+            margin-bottom: 40px;
+        }
+
+        .hero-starburst {
+            position: absolute;
+            top: -40px;
+            right: 60px;
+            width: 140px;
+            height: 140px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 18px;
+            text-align: center;
+            line-height: 1.2;
+            padding: 10px;
+        }
+
+        .hero-starburst svg {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+
+        .hero-starburst span {
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero h1 {
+            font-family: 'Archivo Black', sans-serif;
+            font-size: 72px;
+            color: #d32f2f;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            line-height: 1;
+        }
+
+        .hero .tagline {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 32px;
+            letter-spacing: 2px;
+            margin-bottom: 30px;
+            color: #1a1a1a;
+        }
+
+        .hero .description {
+            font-size: 18px;
+            line-height: 1.6;
+            max-width: 600px;
+            margin: 0 auto 40px;
+            color: #333;
+        }
+
+        /* Pricing Section */
+        .pricing {
+            background: #d32f2f;
+            color: white;
+            padding: 60px 40px;
+            text-align: center;
+            border: 4px solid #1a1a1a;
+            box-shadow: 12px 12px 0 rgba(0,0,0,0.1);
+            margin-bottom: 40px;
+        }
+
+        .pricing h2 {
+            font-family: 'Archivo Black', sans-serif;
+            font-size: 48px;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+
+        .pricing .price-big {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 72px;
+            letter-spacing: 3px;
+            margin-bottom: 10px;
+        }
+
+        .pricing .price-sub {
+            font-size: 20px;
+            margin-bottom: 30px;
+            opacity: 0.9;
+        }
+
+        .pricing .value-prop {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 40px;
+            padding: 20px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 4px;
+        }
+
+        /* CTA Button */
+        .cta-button {
+            display: inline-block;
+            background: white;
+            color: #d32f2f;
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 32px;
+            letter-spacing: 2px;
+            padding: 20px 60px;
+            border: 4px solid #1a1a1a;
+            text-decoration: none;
+            text-transform: uppercase;
+            box-shadow: 6px 6px 0 rgba(0,0,0,0.3);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .cta-button:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 8px 8px 0 rgba(0,0,0,0.3);
+        }
+
+        .cta-button:active {
+            transform: translate(2px, 2px);
+            box-shadow: 4px 4px 0 rgba(0,0,0,0.3);
+        }
+
+        /* Features */
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .feature {
+            background: white;
+            padding: 30px;
+            border: 3px solid #1a1a1a;
+            box-shadow: 6px 6px 0 rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .feature-badge {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: #d32f2f;
+            border: 3px solid #1a1a1a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 36px;
+            margin: 0 auto 20px;
+        }
+
+        .feature h3 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 24px;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+        }
+
+        .feature p {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 48px;
+            }
+
+            .hero .tagline {
+                font-size: 24px;
+            }
+
+            .pricing h2 {
+                font-size: 36px;
+            }
+
+            .pricing .price-big {
+                font-size: 56px;
+            }
+
+            .cta-button {
+                font-size: 24px;
+                padding: 15px 40px;
+            }
+
+            .hero-starburst {
+                width: 110px;
+                height: 110px;
+                font-size: 14px;
+                top: -30px;
+                right: 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- BRAND GUIDE SECTION -->
+<div class="brand-guide">
+    <h1>See Jane Sell - Brand Guide</h1>
+
+    <div class="brand-section">
+        <h2>Color Palette</h2>
+        <div class="color-palette">
+            <div class="color-swatch">
+                <div class="color-box" style="background: #d32f2f;"></div>
+                <h3>Primary Red</h3>
+                <code>#d32f2f</code>
+            </div>
+            <div class="color-swatch">
+                <div class="color-box" style="background: #f5f1e8;"></div>
+                <h3>Dirty White</h3>
+                <code>#f5f1e8</code>
+            </div>
+            <div class="color-swatch">
+                <div class="color-box" style="background: #1a1a1a;"></div>
+                <h3>Ink Black</h3>
+                <code>#1a1a1a</code>
+            </div>
+            <div class="color-swatch">
+                <div class="color-box" style="background: white; border-color: #ccc;"></div>
+                <h3>Pure White</h3>
+                <code>#ffffff</code>
+            </div>
+        </div>
+    </div>
+
+    <div class="brand-section">
+        <h2>Typography</h2>
+        <div class="type-example">
+            <div class="label">Headline Font - Archivo Black</div>
+            <div style="font-family: 'Archivo Black', sans-serif; font-size: 48px; text-transform: uppercase;">See Jane Sell!</div>
+        </div>
+        <div class="type-example">
+            <div class="label">Display Font - Bebas Neue</div>
+            <div style="font-family: 'Bebas Neue', sans-serif; font-size: 36px; letter-spacing: 2px;">Schedule your showings faster than ever!</div>
+        </div>
+        <div class="type-example">
+            <div class="label">Body Font - Inter</div>
+            <div style="font-family: 'Inter', sans-serif; font-size: 16px; line-height: 1.6;">
+                Clean, readable body text for descriptions and content. Professional yet approachable.
+            </div>
+        </div>
+    </div>
+
+    <div class="brand-section">
+        <h2>Graphic Motifs</h2>
+        <div class="motif-examples">
+            <div>
+                <div class="starburst">
+                    <svg viewBox="0 0 100 100">
+                        <path d="M 50,5 L 56,38 L 90,35 L 63,55 L 75,87 L 50,68 L 25,87 L 37,55 L 10,35 L 44,38 Z"
+                              fill="#d32f2f"
+                              stroke="#1a1a1a"
+                              stroke-width="2"/>
+                    </svg>
+                    <span>NEW!</span>
+                </div>
+                <p style="margin-top: 10px; font-size: 14px;">Starburst</p>
+            </div>
+            <div>
+                <div class="badge">Only<br>$1<br>Per Day!</div>
+                <p style="margin-top: 10px; font-size: 14px;">Badge</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="brand-section">
+        <h2>Voice & Tone</h2>
+        <p style="font-size: 16px; line-height: 1.8;">
+            <strong>Confident, helpful, no-nonsense professional.</strong> We speak directly to real estate agents who value their time. Clear value propositions, simple pricing, and a touch of nostalgic charm without being cutesy.
+        </p>
+    </div>
+</div>
+
+<!-- LANDING PAGE MOCKUP -->
+<div class="landing-page">
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-starburst">
+            <svg viewBox="0 0 100 100">
+                <path d="M 50,5 L 56,38 L 90,35 L 63,55 L 75,87 L 50,68 L 25,87 L 37,55 L 10,35 L 44,38 Z"
+                      fill="#d32f2f"
+                      stroke="#1a1a1a"
+                      stroke-width="2"/>
+            </svg>
+            <span>SAVE<br>TIME!</span>
+        </div>
+        <h1>See Jane Sell!</h1>
+        <p class="tagline">Schedule Your Showings Faster Than Ever!</p>
+        <p class="description">
+            Stop wasting time planning routes. Paste your property addresses, and we'll calculate the perfect showing schedule in seconds. Simple, fast, and worth every penny.
+        </p>
+        <a href="#" class="cta-button">Get Started Now</a>
+    </section>
+
+    <!-- Pricing Section -->
+    <section class="pricing">
+        <h2>Simple Pricing</h2>
+        <div class="price-big">$1 / Day</div>
+        <p class="price-sub">Only pay for the days you use it. Billed monthly.</p>
+        <div class="value-prop">
+            "Is using this app to schedule your routing worth $1.00 to you?"
+        </div>
+        <p style="font-size: 18px; margin-bottom: 30px;">
+            Use it every day? That's ~$30/month. Use it 5 times? $5. You only pay for what you use.
+        </p>
+        <a href="#" class="cta-button">Sign Up Today</a>
+    </section>
+
+    <!-- Features -->
+    <section class="features">
+        <div class="feature">
+            <div class="feature-badge">1</div>
+            <h3>Paste Addresses</h3>
+            <p>Add properties from any source - Zillow, MLS, or plain text addresses.</p>
+        </div>
+        <div class="feature">
+            <div class="feature-badge">2</div>
+            <h3>Optimize Route</h3>
+            <p>We calculate the fastest route and perfect timing for your showings.</p>
+        </div>
+        <div class="feature">
+            <div class="feature-badge">3</div>
+            <h3>Export & Share</h3>
+            <p>Send professional itineraries to clients with one click.</p>
+        </div>
+    </section>
+
+</div>
+
+</body>
+</html>
