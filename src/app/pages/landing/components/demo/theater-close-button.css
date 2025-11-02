@@ -1,0 +1,56 @@
+/* TheaterCloseButton - Comic-styled X button */
+
+.theater-close-button {
+  position: fixed;
+  top: 30px;
+  right: 30px;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: white;
+  border: 4px solid var(--border-color, #1a1a1a);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.2);
+  transition: all 0.2s ease;
+  z-index: 10000; /* Above modal content */
+}
+
+.theater-close-button:hover {
+  transform: translate(-2px, -2px) rotate(-5deg);
+  box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.3);
+}
+
+.theater-close-button:active {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.2);
+}
+
+.theater-close-icon {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 32px;
+  font-weight: bold;
+  color: var(--primary-color, #d32f2f);
+  line-height: 1;
+  transition: color 0.2s ease;
+}
+
+.theater-close-button:hover .theater-close-icon {
+  color: var(--text-color, #1a1a1a);
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+  .theater-close-button {
+    top: 20px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+  }
+
+  .theater-close-icon {
+    font-size: 28px;
+  }
+}

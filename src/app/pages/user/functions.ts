@@ -102,17 +102,29 @@ export async function finishPasskeyRegistration(
     },
   });
 
-  // Check if user has any tenant memberships
-  const membership = await db.tenantMembership.findFirst({
-    where: { userId: user.id },
+  // Auto-create personal tenant for new user
+  const tenant = await db.tenant.create({
+    data: {
+      name: `${username}'s Workspace`,
+      slug: `${username}-${Date.now()}`, // Ensure unique slug
+      status: "ACTIVE",
+    },
   });
 
-  // Save session with tenant context if available
+  const membership = await db.tenantMembership.create({
+    data: {
+      userId: user.id,
+      tenantId: tenant.id,
+      role: "OWNER",
+    },
+  });
+
+  // Save session with tenant context
   await sessions.save(headers, {
     userId: user.id,
     challenge: null,
-    tenantId: membership?.tenantId ?? null,
-    membershipId: membership?.id ?? null,
+    tenantId: tenant.id,
+    membershipId: membership.id,
   });
 
   return true;
