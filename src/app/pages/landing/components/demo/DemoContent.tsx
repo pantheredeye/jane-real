@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { PropertyInputBox } from "@/addons/route-calculator/components/PropertyInputBox";
 import type { PropertyInput } from "@/addons/route-calculator/types";
-import "../../../../../../addons/route-calculator/styles.css"; // Import route-calculator styles for PropertyInputBox
 import "./demo-content.css";
 
 interface DemoContentProps {
