@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { PropertyInputBox } from "@/addons/route-calculator/components/PropertyInputBox";
 import type { PropertyInput } from "@/addons/route-calculator/types";
 import "./demo-content.css";
@@ -69,6 +69,20 @@ export default function DemoContent({ onSignupClick }: DemoContentProps) {
       <div className="demo-results">
         <h2 className="demo-results-title">Your Optimized Route</h2>
 
+        {!usedExamples && (
+          <div style={{
+            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+            border: '1px solid rgba(59, 130, 246, 0.3)',
+            borderRadius: '8px',
+            padding: '0.75rem 1rem',
+            marginBottom: '1.5rem',
+            fontSize: '0.9rem',
+            textAlign: 'center'
+          }}>
+            ℹ️ <strong>Demo Preview:</strong> Times and distances are randomized. Sign up for real Google Maps routing!
+          </div>
+        )}
+
         <div className="demo-results-list">
           {properties.map((property, index) => (
             <div key={index} className="demo-result-item">
@@ -94,8 +108,13 @@ export default function DemoContent({ onSignupClick }: DemoContentProps) {
 
         <div className="demo-cta">
           <h3 className="demo-cta-title">
-            {usedExamples ? "These are examples." : ""} Sign up for real routes!
+            {usedExamples
+              ? "These are examples. Sign up for real routes!"
+              : "Demo uses random times. Sign up for actual Google Maps routing!"}
           </h3>
+          <p style={{ fontSize: '0.9rem', opacity: 0.8, margin: '0.5rem 0 1rem 0' }}>
+            {!usedExamples && "Your addresses are saved and will be imported after signup!"}
+          </p>
           <button onClick={onSignupClick} className="cta-button">
             Start Routing Faster
           </button>
