@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import TheaterModal from "./TheaterModal";
+import TheaterModal from "@/app/components/shared/theaterModal/TheaterModal";
 import DemoContent from "./DemoContent";
 
 export default function DemoButton() {
