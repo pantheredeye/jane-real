@@ -282,9 +282,14 @@ export default function HomePage() {
     if (storedDemo) {
       try {
         const parsedProperties = JSON.parse(storedDemo) as PropertyInput[]
-        if (parsedProperties.length > 0) {
-          setDemoProperties(parsedProperties)
+        // Filter out example addresses - only import user-entered addresses
+        const realProperties = parsedProperties.filter(prop => !prop.isExample)
+        if (realProperties.length > 0) {
+          setDemoProperties(realProperties)
           setShowDemoImportBanner(true)
+        } else {
+          // Only had example addresses, clear them
+          localStorage.removeItem(DEMO_PROPERTIES_KEY)
         }
       } catch (error) {
         console.error('Failed to parse demo properties:', error)

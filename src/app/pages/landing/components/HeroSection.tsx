@@ -17,7 +17,7 @@ export default function HeroSection() {
         </span>
       </div>
 
-      <h1>See Jane Sell!</h1>
+      <h1>RouteFast!</h1>
       <p className="tagline">From Property Links to Perfect Route in Seconds</p>
       <p className="description">
         Paste Zillow URLs. Type addresses. Mix and match.

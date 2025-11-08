@@ -72,7 +72,7 @@ export function Login() {
       <div className="login-container">
         <div className="halftone-shadow"></div>
 
-        <h1 className="login-title">See Jane Sell</h1>
+        <h1 className="login-title">RouteFast</h1>
         <p className="login-subtitle">Welcome Back!</p>
 
         <div className="login-form">

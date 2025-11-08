@@ -35,6 +35,7 @@ export default function DemoContent({ onSignupClick }: DemoContentProps) {
         parsedAddress: "123 Main St, Denver, CO 80202",
         sourceUrl: undefined,
         thumbnailUrl: undefined,
+        isExample: true, // Mark as example
       },
       {
         id: crypto.randomUUID(),
@@ -42,6 +43,7 @@ export default function DemoContent({ onSignupClick }: DemoContentProps) {
         parsedAddress: "456 Oak Ave, Denver, CO 80203",
         sourceUrl: undefined,
         thumbnailUrl: undefined,
+        isExample: true, // Mark as example
       },
       {
         id: crypto.randomUUID(),
@@ -49,6 +51,7 @@ export default function DemoContent({ onSignupClick }: DemoContentProps) {
         parsedAddress: "789 Elm St, Denver, CO 80204",
         sourceUrl: undefined,
         thumbnailUrl: undefined,
+        isExample: true, // Mark as example
       },
     ];
     setProperties(exampleProperties);
@@ -79,7 +82,7 @@ export default function DemoContent({ onSignupClick }: DemoContentProps) {
             fontSize: '0.9rem',
             textAlign: 'center'
           }}>
-            ℹ️ <strong>Demo Preview:</strong> Times and distances are randomized. Sign up for real Google Maps routing!
+            ℹ️ <strong>Demo Preview:</strong> Times and distances are randomized. Sign up for real routing!
           </div>
         )}
 
@@ -110,7 +113,7 @@ export default function DemoContent({ onSignupClick }: DemoContentProps) {
           <h3 className="demo-cta-title">
             {usedExamples
               ? "These are examples. Sign up for real routes!"
-              : "Demo uses random times. Sign up for actual Google Maps routing!"}
+              : "Demo uses random times. Sign up for actual routing!"}
           </h3>
           <p style={{ fontSize: '0.9rem', opacity: 0.8, margin: '0.5rem 0 1rem 0' }}>
             {!usedExamples && "Your addresses are saved and will be imported after signup!"}

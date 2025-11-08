@@ -19,6 +19,7 @@ export interface PropertyInput {
   parsedAddress: string // Extracted/cleaned address
   sourceUrl?: string // URL if input was a listing URL
   thumbnailUrl?: string // Optional og:image URL from listing
+  isExample?: boolean // True if this is an example address (not user-entered)
 }
 
 export interface Coordinates {
