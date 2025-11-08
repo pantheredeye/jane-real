@@ -6,7 +6,7 @@ interface CTAButtonProps {
 
 export default function CTAButton({ showNote = false }: CTAButtonProps) {
   const handleClick = () => {
-    window.location.href = "/user/login";
+    window.location.href = "/user/signup";
   };
 
   return (

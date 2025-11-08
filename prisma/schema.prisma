@@ -27,8 +27,8 @@ datasource db {
 
 model User {
   id          String      @id @default(uuid()) // User ID (UUID-based)
-  username    String      @unique
-  email       String?     @unique
+  email       String      @unique // Primary identifier - email address
+  username    String?     // Optional display name/username
   name        String?
   avatar      String?
   createdAt   DateTime    @default(now())

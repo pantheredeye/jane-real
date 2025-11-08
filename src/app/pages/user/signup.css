@@ -1,6 +1,6 @@
-/* Login Page - 50s Retro Theme */
+/* Signup Page - 50s Retro Theme */
 
-.login-page {
+.signup-page {
   min-height: 100vh;
   display: flex;
   align-items: center;
@@ -9,7 +9,7 @@
   background: var(--bg-color, #f5f1e8);
 }
 
-.login-container {
+.signup-container {
   max-width: 500px;
   width: 100%;
   background: white;
@@ -35,7 +35,7 @@
   border-radius: var(--border-radius, 0px);
 }
 
-.login-title {
+.signup-title {
   font-family: 'Archivo Black', sans-serif;
   font-size: 42px;
   color: var(--primary-color, #d32f2f);
@@ -46,37 +46,76 @@
   transition: all 0.4s ease;
 }
 
-body.theme-diner .login-title {
+body.theme-diner .signup-title {
   text-shadow: var(--text-shadow, 0 2px 8px rgba(77, 182, 172, 0.4));
 }
 
-.login-subtitle {
+.signup-subtitle {
   font-family: 'Bebas Neue', sans-serif;
-  font-size: 24px;
+  font-size: 28px;
   letter-spacing: 2px;
   text-align: center;
   margin: 0 0 40px 0;
   color: var(--text-color, #1a1a1a);
 }
 
-.login-form {
+.signup-form {
   margin-bottom: 30px;
 }
 
-.login-explainer {
-  font-size: 16px;
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-group label {
+  display: block;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 20px;
+  letter-spacing: 1px;
+  margin-bottom: 10px;
+  color: var(--text-color, #1a1a1a);
+}
+
+.signup-input {
+  width: 100%;
+  padding: 20px;
+  font-size: 18px;
+  border: 4px solid var(--border-color, #1a1a1a);
+  border-radius: var(--border-radius, 0px);
+  background: white;
+  transition: all 0.3s ease;
+  font-family: inherit;
+  box-sizing: border-box;
+}
+
+.signup-input:focus {
+  outline: none;
+  border-color: var(--primary-color, #d32f2f);
+  box-shadow: 6px 6px 0 rgba(0,0,0,0.1);
+  transform: translate(-2px, -2px);
+}
+
+.signup-input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.signup-explainer {
+  font-size: 15px;
   line-height: 1.6;
   color: #666;
   margin: 0 0 24px 0;
   text-align: center;
 }
 
-.login-button {
+.signup-button {
   width: 100%;
   padding: 20px 40px;
   font-family: 'Bebas Neue', sans-serif;
   font-size: 28px;
   letter-spacing: 2px;
+  background: var(--primary-color, #d32f2f);
+  color: white;
   border: 4px solid var(--border-color, #1a1a1a);
   border-radius: var(--border-radius, 0px);
   cursor: pointer;
@@ -85,36 +124,31 @@ body.theme-diner .login-title {
   box-shadow: 6px 6px 0 rgba(0,0,0,0.3);
 }
 
-.login-button:hover:not(:disabled) {
+body.theme-diner .signup-button {
+  box-shadow: 6px 6px 0 rgba(0,0,0,0.2), 0 0 20px rgba(77, 182, 172, 0.3);
+}
+
+.signup-button:hover:not(:disabled) {
   transform: translate(-2px, -2px);
   box-shadow: 8px 8px 0 rgba(0,0,0,0.3);
 }
 
-.login-button:active:not(:disabled) {
+body.theme-diner .signup-button:hover:not(:disabled) {
+  box-shadow: 8px 8px 0 rgba(0,0,0,0.2), 0 0 24px rgba(77, 182, 172, 0.4);
+}
+
+.signup-button:active:not(:disabled) {
   transform: translate(2px, 2px);
   box-shadow: 4px 4px 0 rgba(0,0,0,0.3);
 }
 
-.login-button:disabled {
+.signup-button:disabled {
   opacity: 0.7;
   cursor: not-allowed;
   transform: none;
 }
 
-.login-button-primary {
-  background: var(--primary-color, #d32f2f);
-  color: white;
-}
-
-body.theme-diner .login-button-primary {
-  box-shadow: 6px 6px 0 rgba(0,0,0,0.2), 0 0 20px rgba(77, 182, 172, 0.3);
-}
-
-body.theme-diner .login-button-primary:hover:not(:disabled) {
-  box-shadow: 8px 8px 0 rgba(0,0,0,0.2), 0 0 24px rgba(77, 182, 172, 0.4);
-}
-
-.login-result {
+.signup-result {
   margin-top: 20px;
   padding: 16px;
   border: 3px solid;
@@ -125,57 +159,62 @@ body.theme-diner .login-button-primary:hover:not(:disabled) {
   letter-spacing: 1px;
 }
 
-.login-result.success {
+.signup-result.success {
   background: #e8f5e9;
   border-color: #4caf50;
   color: #2e7d32;
 }
 
-.login-result.error {
+.signup-result.error {
   background: #ffebee;
   border-color: #f44336;
   color: #c62828;
 }
 
-.login-footer {
+.signup-footer {
   text-align: center;
   padding-top: 30px;
   border-top: 2px solid #eee;
 }
 
-.login-footer p {
+.signup-footer p {
   margin: 0;
   font-size: 16px;
   color: #666;
 }
 
-.login-link {
+.signup-link {
   color: var(--primary-color, #d32f2f);
   text-decoration: none;
   font-weight: 600;
   transition: all 0.2s ease;
 }
 
-.login-link:hover {
+.signup-link:hover {
   text-decoration: underline;
 }
 
 /* Mobile responsive */
 @media (max-width: 600px) {
-  .login-container {
+  .signup-container {
     padding: 40px 24px;
   }
 
-  .login-title {
+  .signup-title {
     font-size: 36px;
   }
 
-  .login-subtitle {
+  .signup-subtitle {
     font-size: 24px;
   }
 
-  .login-button {
+  .signup-button {
     font-size: 24px;
     padding: 18px 32px;
+  }
+
+  .signup-input {
+    font-size: 16px;
+    padding: 18px;
   }
 }
