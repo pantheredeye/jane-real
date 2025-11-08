@@ -24,14 +24,14 @@ function getWebAuthnConfig(request: Request) {
   };
 }
 
-export async function startPasskeyRegistration(username: string) {
+export async function startPasskeyRegistration(email: string) {
   const { rpName, rpID } = getWebAuthnConfig(requestInfo.request);
   const { response } = requestInfo;
 
   const options = await generateRegistrationOptions({
     rpName,
     rpID,
-    userName: username,
+    userName: email,
     authenticatorSelection: {
       // Require the authenticator to store the credential, enabling a username-less login experience
       residentKey: "required",
@@ -61,7 +61,7 @@ export async function startPasskeyLogin() {
 }
 
 export async function finishPasskeyRegistration(
-  username: string,
+  email: string,
   registration: RegistrationResponseJSON,
 ) {
   try {
@@ -80,7 +80,7 @@ export async function finishPasskeyRegistration(
     console.log("finishPasskeyRegistration verification params:", {
       origin,
       rpID,
-      username,
+      email,
     });
 
     const verification = await verifyRegistrationResponse({
@@ -99,7 +99,8 @@ export async function finishPasskeyRegistration(
 
     const user = await db.user.create({
       data: {
-        username,
+        email,
+        username: email.split('@')[0], // Optional: use email prefix as username
       },
     });
 
@@ -115,8 +116,8 @@ export async function finishPasskeyRegistration(
     // Auto-create personal tenant for new user
     const tenant = await db.tenant.create({
       data: {
-        name: `${username}'s Workspace`,
-        slug: `${username}-${Date.now()}`, // Ensure unique slug
+        name: `${email.split('@')[0]}'s Workspace`,
+        slug: `${email.split('@')[0]}-${Date.now()}`, // Ensure unique slug
         status: "ACTIVE",
       },
     });
@@ -137,7 +138,7 @@ export async function finishPasskeyRegistration(
       membershipId: membership.id,
     });
 
-    console.log("finishPasskeyRegistration: Success for user:", username);
+    console.log("finishPasskeyRegistration: Success for user:", email);
     return true;
   } catch (error) {
     console.error("finishPasskeyRegistration: Error:", error);

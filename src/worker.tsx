@@ -69,7 +69,7 @@ export default defineApp([
     route("/signup", () => {
       return new Response(null, {
         status: 302,
-        headers: { Location: "/user/login" },
+        headers: { Location: "/user/signup" },
       });
     }),
     route("/protected", [
