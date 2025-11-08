@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Screenshot Style V3 - Polaroid Style</title>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Bebas+Neue&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary-red: #d32f2f;
+      --primary-mint: #4db6ac;
+      --bg-color: #f5f1e8;
+      --text-color: #1a1a1a;
+      --border-color: #1a1a1a;
+    }
+
+    body {
+      font-family: 'Bebas Neue', sans-serif;
+      background: var(--bg-color);
+      color: var(--text-color);
+      padding: 40px 20px;
+      margin: 0;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      font-family: 'Archivo Black', sans-serif;
+      font-size: 48px;
+      color: var(--primary-red);
+      text-align: center;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+    }
+
+    .subtitle {
+      text-align: center;
+      font-size: 20px;
+      margin-bottom: 40px;
+      opacity: 0.7;
+    }
+
+    /* Polaroid style with white frame */
+    .panels-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 40px;
+    }
+
+    .panel {
+      position: relative;
+    }
+
+    /* Polaroid frame - white border with extra space at bottom */
+    .polaroid-frame {
+      background: white;
+      padding: 15px 15px 60px 15px;
+      box-shadow: 10px 10px 20px rgba(0,0,0,0.2);
+      transition: transform 0.3s ease;
+    }
+
+    .panel-action .polaroid-frame {
+      transform: rotate(-2deg);
+      border: 4px solid var(--primary-red);
+    }
+
+    .panel-result .polaroid-frame {
+      transform: rotate(2deg);
+      border: 4px solid var(--primary-mint);
+    }
+
+    .polaroid-frame:hover {
+      transform: scale(1.05) rotate(0deg) !important;
+    }
+
+    .screenshot {
+      width: 100%;
+      aspect-ratio: 1 / 1; /* Square image in polaroid */
+      background: #e0e0e0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      color: #999;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Label written in the white bottom space */
+    .polaroid-caption {
+      position: absolute;
+      bottom: 15px;
+      left: 0;
+      right: 0;
+      text-align: center;
+      font-size: 24px;
+      font-weight: bold;
+      letter-spacing: 0.5px;
+    }
+
+    .panel-action .polaroid-caption {
+      color: var(--primary-red);
+    }
+
+    .panel-result .polaroid-caption {
+      color: var(--primary-mint);
+    }
+
+    .description {
+      text-align: center;
+      margin-top: 16px;
+      font-size: 18px;
+      letter-spacing: 0.5px;
+    }
+
+    @media (max-width: 768px) {
+      .panels-container {
+        grid-template-columns: 1fr;
+        gap: 50px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>V3: Polaroid Style</h1>
+    <p class="subtitle">Retro instant photo vibes, labels in white bottom border</p>
+
+    <div class="panels-container">
+      <div class="panel panel-action">
+        <div class="polaroid-frame">
+          <div class="screenshot">
+            Screenshot Here
+          </div>
+          <div class="polaroid-caption">1: Add Addresses</div>
+        </div>
+        <p class="description">Paste Zillow URLs or type addresses</p>
+      </div>
+
+      <div class="panel panel-result">
+        <div class="polaroid-frame">
+          <div class="screenshot">
+            Screenshot Here
+          </div>
+          <div class="polaroid-caption">2: Build List</div>
+        </div>
+        <p class="description">See properties added to your route</p>
+      </div>
+
+      <div class="panel panel-action">
+        <div class="polaroid-frame">
+          <div class="screenshot">
+            Screenshot Here
+          </div>
+          <div class="polaroid-caption">3: Calculate</div>
+        </div>
+        <p class="description">Optimize the order and timing</p>
+      </div>
+
+      <div class="panel panel-result">
+        <div class="polaroid-frame">
+          <div class="screenshot">
+            Screenshot Here
+          </div>
+          <div class="polaroid-caption">4: Results</div>
+        </div>
+        <p class="description">Get your perfect showing schedule</p>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
