@@ -38,6 +38,58 @@ body.theme-diner .comic-strip-title {
   margin: 0 auto;
 }
 
+/* Action vs Result Panel Distinction */
+/* Action panels (1, 3): Bold, dynamic with red accent */
+.panel-action .screenshot-placeholder {
+  border-color: #d32f2f;
+  border-width: 6px;
+  border-style: solid;
+  transform: rotate(-1deg);
+  box-shadow:
+    20px 20px 0 rgba(211, 47, 47, 0.15),
+    inset 0 0 0 2px rgba(255,255,255,0.3);
+}
+
+.panel-action .step-label {
+  color: #d32f2f;
+  text-shadow:
+    -2px -2px 0 #fff,
+    2px -2px 0 #fff,
+    -2px 2px 0 #fff,
+    2px 2px 0 #fff,
+    0 -2px 0 #fff,
+    0 2px 0 #fff,
+    -2px 0 0 #fff,
+    2px 0 0 #fff,
+    0 0 12px rgba(255, 255, 255, 0.9);
+}
+
+/* Result panels (2, 4): Softer, showcase with mint accent */
+.panel-result .screenshot-placeholder {
+  border-color: #4db6ac;
+  border-width: 5px;
+  border-style: dashed;
+  transform: rotate(1deg);
+  box-shadow:
+    15px 15px 8px rgba(77, 182, 172, 0.2),
+    inset 0 0 0 2px rgba(255,255,255,0.3),
+    0 0 20px rgba(77, 182, 172, 0.3);
+}
+
+.panel-result .step-label {
+  color: #1a1a1a;
+  text-shadow:
+    -2px -2px 0 #fff,
+    2px -2px 0 #fff,
+    -2px 2px 0 #fff,
+    2px 2px 0 #fff,
+    0 -2px 0 #fff,
+    0 2px 0 #fff,
+    -2px 0 0 #fff,
+    2px 0 0 #fff,
+    0 0 8px rgba(255, 255, 255, 0.8);
+}
+
 /* Screenshot placeholder - will be replaced with actual images */
 .screenshot-placeholder {
   position: relative;
