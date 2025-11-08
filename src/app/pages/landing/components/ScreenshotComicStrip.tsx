@@ -1,10 +1,10 @@
 "use client";
 
 import "./screenshot-comic-strip.css";
-import enterAddressImg from "./images/Enter Address.webp";
-import buildListImg from "./images/Build List.webp";
-import calculateImg from "./images/Calculate.webp";
-import resultsImg from "./images/Results.webp";
+import enterAddressImg from "./images/squareAddAddress.webp";
+import buildListImg from "./images/squareBuildList.webp";
+import calculateImg from "./images/squareCalculate.webp";
+import resultsImg from "./images/squareResults.webp";
 
 const steps = [
   { number: 1, label: "Add Addresses", description: "Paste Zillow URLs or type addresses", type: "action", image: enterAddressImg },
@@ -21,19 +21,19 @@ export default function ScreenshotComicStrip() {
       <div className="comic-strip-container">
         {steps.map((step) => (
           <div key={step.number} className={`comic-panel panel-${step.type}`} data-type={step.type}>
-            {/* Screenshot */}
-            <div className="screenshot-placeholder">
+            {/* Screenshot container */}
+            <div className="screenshot-container">
               <img
                 src={step.image}
                 alt={`Step ${step.number}: ${step.label}`}
                 className="screenshot-image"
               />
-            </div>
 
-            {/* Step label overlay */}
-            <div className="step-label">
-              <span className="step-number">{step.number}:</span>
-              <span className="step-title">{step.label}</span>
+              {/* Step number badge */}
+              <div className="step-badge">{step.number}</div>
+
+              {/* Step title at bottom */}
+              <div className="step-title">{step.label}</div>
             </div>
 
             {/* Optional description below */}

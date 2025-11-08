@@ -38,106 +38,44 @@ body.theme-diner .comic-strip-title {
   margin: 0 auto;
 }
 
-/* Action vs Result Panel Distinction */
-/* Action panels (1, 3): Bold, dynamic with red accent */
-.panel-action .screenshot-placeholder {
-  border-color: #d32f2f;
-  border-width: 6px;
-  border-style: solid;
-  transform: rotate(-0.5deg);
-  box-shadow:
-    20px 20px 0 rgba(211, 47, 47, 0.15),
-    inset 0 0 0 2px rgba(255,255,255,0.3);
-}
-
-.panel-action .step-label {
-  color: #d32f2f;
-  text-shadow:
-    -2px -2px 0 #fff,
-    2px -2px 0 #fff,
-    -2px 2px 0 #fff,
-    2px 2px 0 #fff,
-    0 -2px 0 #fff,
-    0 2px 0 #fff,
-    -2px 0 0 #fff,
-    2px 0 0 #fff,
-    0 0 12px rgba(255, 255, 255, 0.9);
-}
-
-/* Result panels (2, 4): Softer, showcase with mint accent */
-.panel-result .screenshot-placeholder {
-  border-color: #4db6ac;
-  border-width: 5px;
-  border-style: dashed;
-  transform: rotate(0.5deg);
-  box-shadow:
-    15px 15px 8px rgba(77, 182, 172, 0.2),
-    inset 0 0 0 2px rgba(255,255,255,0.3),
-    0 0 20px rgba(77, 182, 172, 0.3);
-}
-
-.panel-result .step-label {
-  color: #1a1a1a;
-  text-shadow:
-    -2px -2px 0 #fff,
-    2px -2px 0 #fff,
-    -2px 2px 0 #fff,
-    2px 2px 0 #fff,
-    0 -2px 0 #fff,
-    0 2px 0 #fff,
-    -2px 0 0 #fff,
-    2px 0 0 #fff,
-    0 0 8px rgba(255, 255, 255, 0.8);
-}
-
-/* Screenshot placeholder - will be replaced with actual images */
-.screenshot-placeholder {
+/* Screenshot container - minimal, clean style */
+.screenshot-container {
   position: relative;
   width: 100%;
-  aspect-ratio: 4 / 3; /* LANDSCAPE aspect ratio */
+  aspect-ratio: 1 / 1; /* SQUARE */
   background: #e0e0e0;
-  border: var(--border-width) var(--border-style) var(--border-color);
-  border-radius: var(--border-radius);
-  box-shadow:
-    var(--shadow-offset) var(--shadow-offset) var(--shadow-blur) rgba(0,0,0,0.2),
-    inset 0 0 0 2px rgba(255,255,255,0.3);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  border: 2px solid var(--border-color);
+  border-radius: 4px;
+  box-shadow: 8px 8px 0 rgba(0,0,0,0.1);
   overflow: hidden;
-  transition: all 0.4s ease;
+  transition: all 0.3s ease;
 }
 
-/* Diner theme: add glow to panels */
-body.theme-diner .screenshot-placeholder {
-  box-shadow:
-    var(--shadow-offset) var(--shadow-offset) var(--shadow-blur) rgba(0,0,0,0.2),
-    inset 0 0 0 2px rgba(255,255,255,0.3),
-    var(--glow-shadow);
+.screenshot-container:hover {
+  transform: translateY(-4px);
+  box-shadow: 12px 12px 0 rgba(0,0,0,0.15);
 }
 
-/* Halftone effect for comic theme */
-body.theme-comic .screenshot-placeholder::after {
+/* Small colored accent bar on left */
+.screenshot-container::before {
   content: '';
   position: absolute;
-  top: 0;
   left: 0;
-  right: 0;
+  top: 0;
   bottom: 0;
-  background-image: radial-gradient(circle, var(--border-color) var(--halftone-size), transparent var(--halftone-size));
-  background-size: 16px 16px;
-  opacity: var(--halftone-opacity);
-  pointer-events: none;
+  width: 6px;
+  z-index: 5;
 }
 
-.placeholder-text {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 32px;
-  color: #999;
-  text-align: center;
+.panel-action .screenshot-container::before {
+  background: #d32f2f;
 }
 
-/* Actual screenshot images */
+.panel-result .screenshot-container::before {
+  background: #4db6ac;
+}
+
+/* Screenshot image */
 .screenshot-image {
   width: 100%;
   height: 100%;
@@ -145,67 +83,79 @@ body.theme-comic .screenshot-placeholder::after {
   display: block;
 }
 
-/* Step label overlay - positioned on screenshot */
-.step-label {
+/* Step number badge in top-right corner */
+.step-badge {
   position: absolute;
-  top: 20px;
-  left: 20px;
+  top: -12px;
+  right: -12px;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-family: 'Bebas Neue', sans-serif;
-  font-size: 36px;
+  font-size: 24px;
   font-weight: bold;
-  color: #1a1a1a;
-  /* White halo effect using multiple text-shadows */
-  text-shadow:
-    -2px -2px 0 #fff,
-    2px -2px 0 #fff,
-    -2px 2px 0 #fff,
-    2px 2px 0 #fff,
-    0 -2px 0 #fff,
-    0 2px 0 #fff,
-    -2px 0 0 #fff,
-    2px 0 0 #fff,
-    0 0 8px rgba(255, 255, 255, 0.8);
-  letter-spacing: 1px;
-  line-height: 1;
+  color: white;
+  border: 3px solid var(--border-color);
+  box-shadow: 4px 4px 0 rgba(0,0,0,0.2);
   z-index: 10;
 }
 
-.step-number {
-  margin-right: 8px;
+.panel-action .step-badge {
+  background: #d32f2f;
 }
 
+.panel-result .step-badge {
+  background: #4db6ac;
+}
+
+/* Step title at bottom of screenshot */
 .step-title {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  right: 20px;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 24px;
+  font-weight: bold;
+  text-align: left;
+  color: var(--text-color);
   text-transform: uppercase;
+  text-shadow:
+    -1px -1px 0 #fff,
+    1px -1px 0 #fff,
+    -1px 1px 0 #fff,
+    1px 1px 0 #fff;
+  letter-spacing: 0.5px;
+  z-index: 10;
 }
 
 /* Description below the screenshot */
 .step-description {
   font-family: 'Bebas Neue', sans-serif;
-  font-size: 20px;
+  font-size: 18px;
   text-align: center;
-  margin-top: 16px;
+  margin-top: 12px;
   color: var(--text-color);
   letter-spacing: 0.5px;
 }
 
-/* Mobile: reduce shadows to fit viewport */
+/* Mobile adjustments */
 @media (max-width: 767px) {
-  .panel-action .screenshot-placeholder {
-    box-shadow: 10px 10px 0 rgba(211, 47, 47, 0.15), inset 0 0 0 2px rgba(255,255,255,0.3);
-    transform: rotate(-0.5deg);
-  }
-
-  .panel-result .screenshot-placeholder {
-    box-shadow: 8px 8px 4px rgba(77, 182, 172, 0.2), inset 0 0 0 2px rgba(255,255,255,0.3), 0 0 20px rgba(77, 182, 172, 0.3);
-    transform: rotate(0.5deg);
-  }
-
-  .step-label {
-    font-size: 28px;
-  }
-
   .comic-strip-container {
-    gap: 30px;
+    gap: 40px;
+  }
+
+  .step-title {
+    font-size: 20px;
+  }
+
+  .step-badge {
+    width: 45px;
+    height: 45px;
+    font-size: 20px;
   }
 }
 
@@ -221,9 +171,5 @@ body.theme-comic .screenshot-placeholder::after {
   .comic-panel {
     width: 100%;
     max-width: none;
-  }
-
-  .step-label {
-    font-size: 36px;
   }
 }
