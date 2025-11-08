@@ -1,12 +1,16 @@
 "use client";
 
 import "./screenshot-comic-strip.css";
+import enterAddressImg from "./images/Enter Address.webp";
+import buildListImg from "./images/Build List.webp";
+import calculateImg from "./images/Calculate.webp";
+import resultsImg from "./images/Results.webp";
 
 const steps = [
-  { number: 1, label: "Add Addresses", description: "Paste Zillow URLs or type addresses", type: "action" },
-  { number: 2, label: "Build List", description: "See properties added to your route", type: "result" },
-  { number: 3, label: "Calculate", description: "Optimize the order and timing", type: "action" },
-  { number: 4, label: "Results", description: "Get your perfect showing schedule", type: "result" },
+  { number: 1, label: "Add Addresses", description: "Paste Zillow URLs or type addresses", type: "action", image: enterAddressImg },
+  { number: 2, label: "Build List", description: "See properties added to your route", type: "result", image: buildListImg },
+  { number: 3, label: "Calculate", description: "Optimize the order and timing", type: "action", image: calculateImg },
+  { number: 4, label: "Results", description: "Get your perfect showing schedule", type: "result", image: resultsImg },
 ];
 
 export default function ScreenshotComicStrip() {
@@ -17,9 +21,13 @@ export default function ScreenshotComicStrip() {
       <div className="comic-strip-container">
         {steps.map((step) => (
           <div key={step.number} className={`comic-panel panel-${step.type}`} data-type={step.type}>
-            {/* Screenshot placeholder */}
+            {/* Screenshot */}
             <div className="screenshot-placeholder">
-              <div className="placeholder-text">Screenshot {step.number}</div>
+              <img
+                src={step.image}
+                alt={`Step ${step.number}: ${step.label}`}
+                className="screenshot-image"
+              />
             </div>
 
             {/* Step label overlay */}
