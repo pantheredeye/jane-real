@@ -44,7 +44,7 @@ body.theme-diner .comic-strip-title {
   border-color: #d32f2f;
   border-width: 6px;
   border-style: solid;
-  transform: rotate(-1deg);
+  transform: rotate(-0.5deg);
   box-shadow:
     20px 20px 0 rgba(211, 47, 47, 0.15),
     inset 0 0 0 2px rgba(255,255,255,0.3);
@@ -69,7 +69,7 @@ body.theme-diner .comic-strip-title {
   border-color: #4db6ac;
   border-width: 5px;
   border-style: dashed;
-  transform: rotate(1deg);
+  transform: rotate(0.5deg);
   box-shadow:
     15px 15px 8px rgba(77, 182, 172, 0.2),
     inset 0 0 0 2px rgba(255,255,255,0.3),
@@ -94,7 +94,7 @@ body.theme-diner .comic-strip-title {
 .screenshot-placeholder {
   position: relative;
   width: 100%;
-  aspect-ratio: 9 / 16; /* Mobile screenshot aspect ratio */
+  aspect-ratio: 4 / 3; /* LANDSCAPE aspect ratio */
   background: #e0e0e0;
   border: var(--border-width) var(--border-style) var(--border-color);
   border-radius: var(--border-radius);
@@ -180,71 +180,42 @@ body.theme-comic .screenshot-placeholder::after {
   letter-spacing: 0.5px;
 }
 
-/* Tablet: 2x2 grid */
+/* Mobile: reduce shadows to fit viewport */
+@media (max-width: 767px) {
+  .panel-action .screenshot-placeholder {
+    box-shadow: 10px 10px 0 rgba(211, 47, 47, 0.15), inset 0 0 0 2px rgba(255,255,255,0.3);
+    transform: rotate(-0.5deg);
+  }
+
+  .panel-result .screenshot-placeholder {
+    box-shadow: 8px 8px 4px rgba(77, 182, 172, 0.2), inset 0 0 0 2px rgba(255,255,255,0.3), 0 0 20px rgba(77, 182, 172, 0.3);
+    transform: rotate(0.5deg);
+  }
+
+  .step-label {
+    font-size: 28px;
+  }
+
+  .comic-strip-container {
+    gap: 30px;
+  }
+}
+
+/* Tablet/Desktop: 2x2 grid */
 @media (min-width: 768px) {
   .comic-strip-container {
-    flex-direction: row;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
     gap: 30px;
     max-width: 900px;
   }
 
   .comic-panel {
-    width: calc(50% - 15px);
-  }
-
-  .screenshot-placeholder {
-    aspect-ratio: 9 / 16;
+    width: 100%;
+    max-width: none;
   }
 
   .step-label {
-    font-size: 32px;
-  }
-}
-
-/* Desktop: Horizontal scroll with larger images */
-@media (min-width: 1200px) {
-  .comic-strip-container {
-    flex-direction: row;
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    gap: 40px;
-    max-width: 100%;
-    padding: 20px 0;
-    scroll-snap-type: x mandatory;
-    -webkit-overflow-scrolling: touch;
-  }
-
-  .comic-panel {
-    flex: 0 0 400px;
-    width: 400px;
-    scroll-snap-align: center;
-  }
-
-  .screenshot-placeholder {
-    aspect-ratio: 9 / 16;
-  }
-
-  .step-label {
-    font-size: 40px;
-  }
-
-  /* Hide scrollbar but keep functionality */
-  .comic-strip-container::-webkit-scrollbar {
-    height: 8px;
-  }
-
-  .comic-strip-container::-webkit-scrollbar-track {
-    background: rgba(0,0,0,0.05);
-    border-radius: 4px;
-  }
-
-  .comic-strip-container::-webkit-scrollbar-thumb {
-    background: var(--primary-color);
-    border-radius: 4px;
-  }
-
-  .comic-strip-container::-webkit-scrollbar-thumb:hover {
-    background: var(--border-color);
+    font-size: 36px;
   }
 }
