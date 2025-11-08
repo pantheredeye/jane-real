@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { PropertyInputBox } from "@/addons/route-calculator/components/PropertyInputBox";
 import type { PropertyInput } from "@/addons/route-calculator/types";
 import "./demo-content.css";
@@ -9,10 +9,19 @@ interface DemoContentProps {
   onSignupClick: () => void;
 }
 
+export const DEMO_PROPERTIES_KEY = 'demo-properties';
+
 export default function DemoContent({ onSignupClick }: DemoContentProps) {
   const [properties, setProperties] = useState<PropertyInput[]>([]);
   const [isCalculated, setIsCalculated] = useState(false);
   const [usedExamples, setUsedExamples] = useState(false);
+
+  // Save properties to localStorage whenever they change
+  useEffect(() => {
+    if (properties.length > 0) {
+      localStorage.setItem(DEMO_PROPERTIES_KEY, JSON.stringify(properties));
+    }
+  }, [properties]);
 
   const handleAddProperty = (property: PropertyInput) => {
     setProperties([...properties, property]);
@@ -21,19 +30,28 @@ export default function DemoContent({ onSignupClick }: DemoContentProps) {
   const handleUseExamples = () => {
     const exampleProperties: PropertyInput[] = [
       {
-        address: "123 Main St, Denver, CO 80202",
-        sourceUrl: null,
+        id: crypto.randomUUID(),
+        rawInput: "123 Main St, Denver, CO 80202",
+        parsedAddress: "123 Main St, Denver, CO 80202",
+        sourceUrl: undefined,
         thumbnailUrl: undefined,
+        isExample: true, // Mark as example
       },
       {
-        address: "456 Oak Ave, Denver, CO 80203",
-        sourceUrl: null,
+        id: crypto.randomUUID(),
+        rawInput: "456 Oak Ave, Denver, CO 80203",
+        parsedAddress: "456 Oak Ave, Denver, CO 80203",
+        sourceUrl: undefined,
         thumbnailUrl: undefined,
+        isExample: true, // Mark as example
       },
       {
-        address: "789 Elm St, Denver, CO 80204",
-        sourceUrl: null,
+        id: crypto.randomUUID(),
+        rawInput: "789 Elm St, Denver, CO 80204",
+        parsedAddress: "789 Elm St, Denver, CO 80204",
+        sourceUrl: undefined,
         thumbnailUrl: undefined,
+        isExample: true, // Mark as example
       },
     ];
     setProperties(exampleProperties);
@@ -54,12 +72,26 @@ export default function DemoContent({ onSignupClick }: DemoContentProps) {
       <div className="demo-results">
         <h2 className="demo-results-title">Your Optimized Route</h2>
 
+        {!usedExamples && (
+          <div style={{
+            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+            border: '1px solid rgba(59, 130, 246, 0.3)',
+            borderRadius: '8px',
+            padding: '0.75rem 1rem',
+            marginBottom: '1.5rem',
+            fontSize: '0.9rem',
+            textAlign: 'center'
+          }}>
+            ℹ️ <strong>Demo Preview:</strong> Times and distances are randomized. Sign up for real routing!
+          </div>
+        )}
+
         <div className="demo-results-list">
           {properties.map((property, index) => (
             <div key={index} className="demo-result-item">
               <div className="demo-result-number">{index + 1}</div>
               <div className="demo-result-details">
-                <div className="demo-result-address">{property.address}</div>
+                <div className="demo-result-address">{property.parsedAddress}</div>
                 <div className="demo-result-time">
                   Start: {getFakeTime(index)} {index < properties.length - 1 && `• ${getFakeDuration()} min drive`}
                 </div>
@@ -79,8 +111,13 @@ export default function DemoContent({ onSignupClick }: DemoContentProps) {
 
         <div className="demo-cta">
           <h3 className="demo-cta-title">
-            {usedExamples ? "These are examples." : ""} Sign up for real routes!
+            {usedExamples
+              ? "These are examples. Sign up for real routes!"
+              : "Demo uses random times. Sign up for actual routing!"}
           </h3>
+          <p style={{ fontSize: '0.9rem', opacity: 0.8, margin: '0.5rem 0 1rem 0' }}>
+            {!usedExamples && "Your addresses are saved and will be imported after signup!"}
+          </p>
           <button onClick={onSignupClick} className="cta-button">
             Start Routing Faster
           </button>
@@ -104,7 +141,7 @@ export default function DemoContent({ onSignupClick }: DemoContentProps) {
           <h3 className="demo-properties-title">Added Properties ({properties.length})</h3>
           {properties.map((property, index) => (
             <div key={index} className="demo-property-item">
-              {index + 1}. {property.address}
+              {index + 1}. {property.parsedAddress}
             </div>
           ))}
         </div>

@@ -2,16 +2,16 @@
 
 import { useEffect } from 'react'
 import { addMinutes } from 'date-fns'
-import type { OptimizedRoute } from '../types'
+import type { OptimizedRoute, PropertyInput } from '../types'
 
 interface StateManagerProps {
-  addresses: string
+  propertyList: PropertyInput[]
   startingPropertyIndex: number
   startTime: string
   selectedDuration: number
   calculatedRoute: OptimizedRoute | null
   onStateRestore: (state: {
-    addresses: string
+    propertyList: PropertyInput[]
     startingPropertyIndex: number
     startTime: string
     selectedDuration: number
@@ -21,7 +21,7 @@ interface StateManagerProps {
 }
 
 export function StateManager({
-  addresses,
+  propertyList,
   startingPropertyIndex,
   startTime,
   selectedDuration,
@@ -68,7 +68,7 @@ export function StateManager({
           } : null
 
           onStateRestore({
-            addresses: state.addresses || '',
+            propertyList: state.propertyList || [],
             startingPropertyIndex: state.startingPropertyIndex || 0,
             startTime: state.startTime || '09:00',
             selectedDuration: state.selectedDuration || 30,
@@ -89,7 +89,7 @@ export function StateManager({
   useEffect(() => {
     if (calculatedRoute) {
       const stateToSave = {
-        addresses,
+        propertyList,
         startingPropertyIndex,
         startTime,
         selectedDuration,
@@ -99,27 +99,30 @@ export function StateManager({
       }
       localStorage.setItem('routeCalculatorState', JSON.stringify(stateToSave))
     }
-  }, [calculatedRoute, addresses, startingPropertyIndex, startTime, selectedDuration]) // Save on any changes
+  }, [calculatedRoute, propertyList, startingPropertyIndex, startTime, selectedDuration]) // Save on any changes
 
-  // Clear route when addresses change significantly (but only if we have a current route)
+  // Clear route when property list changes significantly (but only if we have a current route)
   useEffect(() => {
     if (calculatedRoute && onClearRoute) {
-      // Get the saved addresses from when route was calculated
+      // Get the saved property list from when route was calculated
       try {
         const savedState = localStorage.getItem('routeCalculatorState')
         if (savedState) {
           const state = JSON.parse(savedState)
-          // If current addresses are significantly different from saved ones, clear the route
-          if (state.addresses !== addresses) {
+          // Compare property list lengths and IDs
+          const currentIds = propertyList.map(p => p.id).sort().join(',')
+          const savedIds = (state.propertyList || []).map((p: PropertyInput) => p.id).sort().join(',')
+
+          if (currentIds !== savedIds) {
             onClearRoute()
             localStorage.removeItem('routeCalculatorState')
           }
         }
       } catch (error) {
-        console.error('Error checking for address changes:', error)
+        console.error('Error checking for property list changes:', error)
       }
     }
-  }, [addresses, calculatedRoute, onClearRoute])
+  }, [propertyList, calculatedRoute, onClearRoute])
 
   // This component doesn't render anything
   return null

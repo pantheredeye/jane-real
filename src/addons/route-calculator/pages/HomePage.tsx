@@ -15,6 +15,7 @@ import { calculateRoute } from '../server-functions/calculateRoute'
 import { saveRoute, getRoutes, deleteRoute } from '../server-functions/routePersistence'
 import type { OptimizedRoute, PropertyInput } from '../types'
 import { useRouteManager, calculateAppointmentTimes } from '../hooks/useRouteManager'
+import { DEMO_PROPERTIES_KEY } from '@/app/pages/landing/components/demo/DemoContent'
 
 export default function HomePage() {
   // TODO: Lift DurationSelector state up to HomePage (like we did with AddressInput)
@@ -43,6 +44,8 @@ export default function HomePage() {
   const [isSaving, setIsSaving] = useState(false)
   const [savedRoutes, setSavedRoutes] = useState<any[]>([])
   const [isLoadingRoutes, setIsLoadingRoutes] = useState(false)
+  const [showDemoImportBanner, setShowDemoImportBanner] = useState(false)
+  const [demoProperties, setDemoProperties] = useState<PropertyInput[] | null>(null)
   const {
     route: calculatedRoute,
     updateAppointmentTime,
@@ -273,6 +276,29 @@ export default function HomePage() {
     loadSavedRoutes()
   }, [])
 
+  // Check for demo properties on mount
+  useEffect(() => {
+    const storedDemo = localStorage.getItem(DEMO_PROPERTIES_KEY)
+    if (storedDemo) {
+      try {
+        const parsedProperties = JSON.parse(storedDemo) as PropertyInput[]
+        // Filter out example addresses - only import user-entered addresses
+        const realProperties = parsedProperties.filter(prop => !prop.isExample)
+        if (realProperties.length > 0) {
+          setDemoProperties(realProperties)
+          setShowDemoImportBanner(true)
+        } else {
+          // Only had example addresses, clear them
+          localStorage.removeItem(DEMO_PROPERTIES_KEY)
+        }
+      } catch (error) {
+        console.error('Failed to parse demo properties:', error)
+        // Clear invalid data
+        localStorage.removeItem(DEMO_PROPERTIES_KEY)
+      }
+    }
+  }, [])
+
   const loadSavedRoutes = async () => {
     setIsLoadingRoutes(true)
     try {
@@ -331,6 +357,23 @@ export default function HomePage() {
     }
   }
 
+  const handleImportDemoProperties = () => {
+    if (demoProperties) {
+      setPropertyList(demoProperties)
+      setToast({
+        message: `Imported ${demoProperties.length} ${demoProperties.length === 1 ? 'property' : 'properties'} from demo!`,
+        type: 'success'
+      })
+      setShowDemoImportBanner(false)
+      localStorage.removeItem(DEMO_PROPERTIES_KEY)
+    }
+  }
+
+  const handleDismissDemoImport = () => {
+    setShowDemoImportBanner(false)
+    localStorage.removeItem(DEMO_PROPERTIES_KEY)
+  }
+
   return (
     <div className="app-container">
       <StateManager
@@ -347,6 +390,62 @@ export default function HomePage() {
         <h1 className="app-title">ROUTE CALCULATOR</h1>
         <p className="app-subtitle">Real Estate Showing Planner</p>
       </header>
+
+      {/* Demo Import Banner */}
+      {showDemoImportBanner && demoProperties && (
+        <div
+          style={{
+            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+            border: '2px solid rgba(59, 130, 246, 0.3)',
+            borderRadius: '12px',
+            padding: '1.5rem',
+            margin: '1rem auto',
+            maxWidth: '900px',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '1rem',
+            backdropFilter: 'blur(10px)'
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+            <span style={{ fontSize: '1.5rem' }}>🎉</span>
+            <div style={{ flex: 1 }}>
+              <h3 style={{ margin: 0, fontSize: '1.1rem', color: '#60a5fa' }}>
+                Continue from Demo?
+              </h3>
+              <p style={{ margin: '0.25rem 0 0 0', fontSize: '0.95rem', opacity: 0.9 }}>
+                You have {demoProperties.length} {demoProperties.length === 1 ? 'property' : 'properties'} from the demo. Import them to get started!
+              </p>
+            </div>
+          </div>
+          <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'flex-end', flexWrap: 'wrap' }}>
+            <button
+              className="calculate-btn"
+              style={{
+                backgroundColor: 'rgba(107, 114, 128, 0.3)',
+                padding: '0.5rem 1rem',
+                fontSize: '0.9rem',
+                minWidth: 'auto'
+              }}
+              onClick={handleDismissDemoImport}
+            >
+              No Thanks
+            </button>
+            <button
+              className="calculate-btn"
+              style={{
+                backgroundColor: '#3b82f6',
+                padding: '0.5rem 1.5rem',
+                fontSize: '0.9rem',
+                minWidth: 'auto'
+              }}
+              onClick={handleImportDemoProperties}
+            >
+              ✓ Import Properties
+            </button>
+          </div>
+        </div>
+      )}
 
       <main className="main-content">
         <section className="input-section glass-card">

@@ -5,6 +5,7 @@ import { Home } from "@/app/pages/Home";
 import { setCommonHeaders } from "@/app/headers";
 import { userRoutes } from "@/app/pages/user/routes";
 import { routeCalculatorRoutes } from "@/addons/route-calculator/routes";
+import landingRoutes from "@/app/pages/landing/routes";
 import { sessions, setupSessionStore } from "./session/store";
 import { Session } from "./session/durableObject";
 import { type User, type Tenant, type TenantMembership, db, setupDb } from "@/db";
@@ -64,7 +65,13 @@ export default defineApp([
     }
   },
   render(Document, [
-    route("/", () => new Response("Hello, World!")),
+    ...landingRoutes,
+    route("/signup", () => {
+      return new Response(null, {
+        status: 302,
+        headers: { Location: "/user/login" },
+      });
+    }),
     route("/protected", [
       ({ ctx }) => {
         if (!ctx.user) {

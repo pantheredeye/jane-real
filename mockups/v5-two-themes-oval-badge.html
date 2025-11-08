@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>See Jane Sell - Two Themes with Oval Badge v5</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Archivo+Black&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            /* Default theme: Comic Book Red */
+            --primary-color: #d32f2f;
+            --bg-color: #f5f1e8;
+            --text-color: #1a1a1a;
+            --border-color: #1a1a1a;
+            --border-width: 6px;
+            --border-style: solid;
+            --border-radius: 0px;
+            --badge-rotation: -12deg;
+            --shadow-offset: 20px;
+            --shadow-blur: 0px;
+            --halftone-size: 8px;
+            --halftone-opacity: 0.6;
+            --padding-multiplier: 0.8;
+            --text-shadow: none;
+            --glow-shadow: none;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-color);
+            color: var(--text-color);
+            transition: background-color 0.4s ease;
+        }
+
+        /* ========== THEME SWITCHER ========== */
+        .theme-switcher {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 12px;
+            z-index: 1000;
+        }
+
+        .theme-button {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 3px solid transparent;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            box-shadow: 4px 4px 0 rgba(0,0,0,0.2);
+        }
+
+        .theme-button:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0 rgba(0,0,0,0.3);
+        }
+
+        .theme-button.active {
+            border-color: #1a1a1a;
+            border-width: 4px;
+            transform: rotate(-5deg);
+        }
+
+        .theme-button.comic {
+            background: #d32f2f;
+        }
+
+        .theme-button.diner {
+            background: #4db6ac;
+        }
+
+        /* ========== THEME VARIATIONS ========== */
+        /* Comic Book - Bold & Dramatic */
+        body.theme-comic {
+            --primary-color: #d32f2f;
+            --border-width: 6px;
+            --border-style: solid;
+            --border-radius: 0px;
+            --badge-rotation: -12deg;
+            --shadow-offset: 20px;
+            --shadow-blur: 0px;
+            --halftone-size: 8px;
+            --halftone-opacity: 0.6;
+            --padding-multiplier: 0.8;
+            --text-shadow: none;
+            --glow-shadow: none;
+        }
+
+        /* Diner - Fun Americana */
+        body.theme-diner {
+            --primary-color: #4db6ac;
+            --border-width: 4px;
+            --border-style: dashed;
+            --border-radius: 4px;
+            --badge-rotation: 0deg;
+            --shadow-offset: 12px;
+            --shadow-blur: 8px;
+            --halftone-size: 0px;
+            --halftone-opacity: 0;
+            --padding-multiplier: 1;
+            --text-shadow: 0 2px 8px rgba(77, 182, 172, 0.4);
+            --glow-shadow: 0 0 20px rgba(77, 182, 172, 0.5);
+        }
+
+        /* Halftone pattern for shadows */
+        .halftone-shadow {
+            position: absolute;
+            top: var(--shadow-offset);
+            left: var(--shadow-offset);
+            width: 100%;
+            height: 100%;
+            background-image: radial-gradient(circle, rgba(0,0,0,0.5) 1.5px, transparent 1.5px);
+            background-size: var(--halftone-size) var(--halftone-size);
+            opacity: var(--halftone-opacity);
+            pointer-events: none;
+            z-index: -1;
+            border-radius: var(--border-radius);
+        }
+
+        /* ========== LANDING PAGE ========== */
+        .landing-page {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: calc(80px * var(--padding-multiplier)) calc(20px * var(--padding-multiplier));
+            background: white;
+            border: var(--border-width) var(--border-style) var(--border-color);
+            box-shadow: var(--shadow-offset) var(--shadow-offset) var(--shadow-blur) rgba(0,0,0,0.15);
+            border-radius: var(--border-radius);
+            position: relative;
+            margin-bottom: 40px;
+            transition: all 0.4s ease;
+        }
+
+        /* Clean Oval Badge */
+        .hero-badge {
+            position: absolute;
+            top: 30px;
+            right: 60px;
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            border: 5px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 18px;
+            text-align: center;
+            line-height: 1.3;
+            padding: 20px;
+            transform: rotate(-8deg);
+            box-shadow: 6px 6px 0 rgba(0,0,0,0.2);
+            transition: all 0.4s ease;
+        }
+
+        /* Make it an oval instead of circle */
+        .hero-badge {
+            border-radius: 50%;
+            width: 160px;
+            height: 130px;
+        }
+
+        body.theme-diner .hero-badge {
+            box-shadow: 6px 6px 0 rgba(0,0,0,0.2), 0 0 20px rgba(77, 182, 172, 0.5);
+        }
+
+        .hero h1 {
+            font-family: 'Archivo Black', sans-serif;
+            font-size: 72px;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            line-height: 1;
+            transition: all 0.4s ease;
+        }
+
+        /* Diner theme: add glow to headline */
+        body.theme-diner .hero h1 {
+            text-shadow: var(--text-shadow);
+        }
+
+        .hero .tagline {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 38px;
+            letter-spacing: 2px;
+            margin-bottom: calc(30px * var(--padding-multiplier));
+            color: var(--text-color);
+            transition: all 0.4s ease;
+        }
+
+        .hero .description {
+            font-size: 18px;
+            line-height: 1.8;
+            max-width: 650px;
+            margin: 0 auto calc(40px * var(--padding-multiplier));
+            color: #333;
+        }
+
+        .hero .description strong {
+            color: var(--primary-color);
+            transition: color 0.4s ease;
+        }
+
+        /* Pricing Section */
+        .pricing {
+            background: var(--primary-color);
+            color: white;
+            padding: calc(60px * var(--padding-multiplier)) calc(40px * var(--padding-multiplier));
+            text-align: center;
+            border: var(--border-width) var(--border-style) var(--border-color);
+            box-shadow: var(--shadow-offset) var(--shadow-offset) var(--shadow-blur) rgba(0,0,0,0.15);
+            border-radius: var(--border-radius);
+            margin-bottom: 40px;
+            transition: all 0.4s ease;
+            position: relative;
+        }
+
+        .pricing h2 {
+            font-family: 'Archivo Black', sans-serif;
+            font-size: 48px;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+
+        .pricing .price-big {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 72px;
+            letter-spacing: 3px;
+            margin-bottom: 10px;
+        }
+
+        .pricing .price-sub {
+            font-size: 22px;
+            margin-bottom: calc(30px * var(--padding-multiplier));
+            opacity: 0.95;
+            font-weight: 500;
+        }
+
+        .pricing .details {
+            font-size: 18px;
+            margin-bottom: calc(30px * var(--padding-multiplier));
+            opacity: 0.9;
+            line-height: 1.6;
+        }
+
+        .pricing .no-commitment {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: calc(40px * var(--padding-multiplier));
+        }
+
+        /* CTA Button */
+        .cta-button {
+            display: inline-block;
+            background: white;
+            color: var(--primary-color);
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 32px;
+            letter-spacing: 2px;
+            padding: 20px 60px;
+            border: 4px solid var(--border-color);
+            border-radius: var(--border-radius);
+            text-decoration: none;
+            text-transform: uppercase;
+            box-shadow: 6px 6px 0 rgba(0,0,0,0.3);
+            transition: all 0.4s ease;
+        }
+
+        .cta-button:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 8px 8px 0 rgba(0,0,0,0.3);
+        }
+
+        .cta-button:active {
+            transform: translate(2px, 2px);
+            box-shadow: 4px 4px 0 rgba(0,0,0,0.3);
+        }
+
+        .cta-note {
+            display: block;
+            margin-top: 15px;
+            font-size: 14px;
+            opacity: 0.8;
+            font-family: 'Inter', sans-serif;
+            text-transform: none;
+            letter-spacing: 0;
+        }
+
+        /* Features */
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .feature {
+            background: white;
+            padding: calc(30px * var(--padding-multiplier));
+            border: var(--border-width) var(--border-style) var(--border-color);
+            box-shadow: calc(var(--shadow-offset) / 2) calc(var(--shadow-offset) / 2) var(--shadow-blur) rgba(0,0,0,0.15);
+            border-radius: var(--border-radius);
+            text-align: center;
+            transition: all 0.4s ease;
+            position: relative;
+        }
+
+        .feature-badge {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            border: 3px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 36px;
+            margin: 0 auto calc(20px * var(--padding-multiplier));
+            transform: rotate(var(--badge-rotation));
+            transition: all 0.4s ease;
+        }
+
+        /* Diner theme: add glow to badges */
+        body.theme-diner .feature-badge {
+            box-shadow: var(--glow-shadow);
+        }
+
+        .feature h3 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 24px;
+            letter-spacing: 1px;
+            margin-bottom: calc(10px * var(--padding-multiplier));
+        }
+
+        .feature p {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        /* Theme labels for demo purposes */
+        .theme-label {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 18px;
+            letter-spacing: 1px;
+            z-index: 1000;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .theme-switcher {
+                top: 10px;
+                right: 10px;
+                gap: 8px;
+            }
+
+            .theme-button {
+                width: 40px;
+                height: 40px;
+            }
+
+            .hero h1 {
+                font-size: 48px;
+            }
+
+            .hero .tagline {
+                font-size: 28px;
+            }
+
+            .pricing h2 {
+                font-size: 36px;
+            }
+
+            .pricing .price-big {
+                font-size: 56px;
+            }
+
+            .cta-button {
+                font-size: 24px;
+                padding: 15px 40px;
+            }
+
+            .hero-badge {
+                width: 130px;
+                height: 110px;
+                font-size: 14px;
+                top: 20px;
+                right: 20px;
+            }
+
+            .theme-label {
+                bottom: 10px;
+                left: 10px;
+                font-size: 14px;
+                padding: 8px 15px;
+            }
+        }
+    </style>
+</head>
+<body class="theme-comic">
+
+<!-- Theme Switcher -->
+<div class="theme-switcher">
+    <button class="theme-button comic active" onclick="setTheme('comic')" aria-label="Comic Book Theme" title="Comic Book - Bold"></button>
+    <button class="theme-button diner" onclick="setTheme('diner')" aria-label="Diner Theme" title="Diner - Fun"></button>
+</div>
+
+<!-- Theme Label (for demo) -->
+<div class="theme-label" id="themeLabel">Comic Book</div>
+
+<div class="landing-page">
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="halftone-shadow"></div>
+
+        <!-- Clean Oval Badge -->
+        <div class="hero-badge">
+            <span>15 SEC<br>NOT<br>15 MIN!</span>
+        </div>
+
+        <h1>See Jane Sell!</h1>
+        <p class="tagline">From Property Links to Perfect Route in Seconds</p>
+        <p class="description">
+            Paste Zillow URLs. Type addresses. Mix and match.<br>
+            Calculate optimal route. Lock in appointment times.<br>
+            <strong>Done in 15 seconds, not 15 minutes.</strong>
+        </p>
+        <a href="#" class="cta-button">Start Routing Faster</a>
+    </section>
+
+    <!-- Pricing Section -->
+    <section class="pricing">
+        <div class="halftone-shadow"></div>
+        <h2>Just $1 Per Day</h2>
+        <div class="price-big">(Only When You Use It)</div>
+        <p class="price-sub">Billed monthly for days used.</p>
+        <p class="details">
+            Use it 5 times this month? Pay $5.<br>
+            Use it daily? ~$30/month.
+        </p>
+        <p class="no-commitment">No subscriptions. No surprises.</p>
+        <a href="#" class="cta-button">
+            Start Routing Faster
+            <span class="cta-note">Credit card required</span>
+        </a>
+    </section>
+
+    <!-- Features -->
+    <section class="features">
+        <div class="feature">
+            <div class="halftone-shadow"></div>
+            <div class="feature-badge">1</div>
+            <h3>Add Properties Fast</h3>
+            <p>Paste Zillow or Realtor.com URLs, type addresses, or mix both. Works with anything.</p>
+        </div>
+        <div class="feature">
+            <div class="halftone-shadow"></div>
+            <div class="feature-badge">2</div>
+            <h3>Get Optimal Route</h3>
+            <p>We calculate the fastest route and appointment times in seconds. Customize showing duration per property.</p>
+        </div>
+        <div class="feature">
+            <div class="halftone-shadow"></div>
+            <div class="feature-badge">3</div>
+            <h3>Book & Share</h3>
+            <p>Export professional itineraries. Times auto-cascade when you make changes. Simple and fast.</p>
+        </div>
+    </section>
+
+</div>
+
+<script>
+    const themeNames = {
+        comic: 'Comic Book',
+        diner: 'Diner'
+    };
+
+    function setTheme(themeName) {
+        // Remove all theme classes
+        document.body.classList.remove('theme-comic', 'theme-diner');
+
+        // Add new theme class
+        document.body.classList.add('theme-' + themeName);
+
+        // Update active button
+        document.querySelectorAll('.theme-button').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        document.querySelector('.theme-button.' + themeName).classList.add('active');
+
+        // Update theme label
+        document.getElementById('themeLabel').textContent = themeNames[themeName];
+
+        // Save preference
+        localStorage.setItem('seeJaneSellTheme', themeName);
+    }
+
+    // Load saved theme on page load
+    window.addEventListener('DOMContentLoaded', () => {
+        const savedTheme = localStorage.getItem('seeJaneSellTheme') || 'comic';
+        setTheme(savedTheme);
+    });
+</script>
+
+</body>
+</html>
