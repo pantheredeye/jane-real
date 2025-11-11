@@ -12,6 +12,12 @@
   "observability": {
     "enabled": true
   },
+  "routes": [
+    {
+      "pattern": "routefast.app",
+      "custom_domain": true
+    }
+  ],
   "durable_objects": {
     "bindings": [
       {
