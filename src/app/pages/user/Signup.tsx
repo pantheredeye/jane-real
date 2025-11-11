@@ -3,6 +3,7 @@
 import { useState, useTransition } from "react";
 import { startRegistration } from "@simplewebauthn/browser";
 import {
+  checkEmailAvailable,
   finishPasskeyRegistration,
   startPasskeyRegistration,
 } from "./functions";
@@ -27,13 +28,20 @@ export function Signup() {
     }
 
     try {
-      // 1. Get a challenge from the worker
+      // 1. Check if email is already registered
+      const isAvailable = await checkEmailAvailable(email);
+      if (!isAvailable) {
+        setResult("account-exists");
+        return;
+      }
+
+      // 2. Get a challenge from the worker
       const options = await startPasskeyRegistration(email);
 
-      // 2. Ask the browser to create a passkey
+      // 3. Ask the browser to create a passkey
       const registration = await startRegistration({ optionsJSON: options });
 
-      // 3. Finish the registration process
+      // 4. Finish the registration process
       const success = await finishPasskeyRegistration(email, registration);
 
       if (!success) {
@@ -96,7 +104,16 @@ export function Signup() {
 
           {result && (
             <div className={`signup-result ${result.includes("successful") ? "success" : "error"}`}>
-              {result}
+              {result === "account-exists" ? (
+                <>
+                  An account with this email already exists.{" "}
+                  <a href="/user/login" className="signup-link">
+                    Log in instead
+                  </a>
+                </>
+              ) : (
+                result
+              )}
             </div>
           )}
         </div>
