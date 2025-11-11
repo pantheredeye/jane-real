@@ -5,6 +5,7 @@ import { Home } from "@/app/pages/Home";
 import { setCommonHeaders } from "@/app/headers";
 import { userRoutes } from "@/app/pages/user/routes";
 import { routeCalculatorRoutes } from "@/addons/route-calculator/routes";
+import { subscriptionRoutes } from "@/addons/subscription/routes";
 import landingRoutes from "@/app/pages/landing/routes";
 import { sessions, setupSessionStore } from "./session/store";
 import { Session } from "./session/durableObject";
@@ -84,6 +85,7 @@ export default defineApp([
       Home,
     ]),
     prefix("/user", userRoutes),
+    prefix("/subscription", subscriptionRoutes),
     prefix("/route", routeCalculatorRoutes),
   ]),
 ]);

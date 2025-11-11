@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Screenshot Frame Variations</title>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Bebas+Neue&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary-red: #d32f2f;
+      --primary-mint: #4db6ac;
+      --bg-color: #f5f1e8;
+      --text-color: #1a1a1a;
+      --border-color: #1a1a1a;
+    }
+
+    body {
+      font-family: 'Bebas Neue', sans-serif;
+      background: var(--bg-color);
+      color: var(--text-color);
+      padding: 40px 20px;
+      margin: 0;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      font-family: 'Archivo Black', sans-serif;
+      font-size: 48px;
+      color: var(--primary-red);
+      text-align: center;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+    }
+
+    .subtitle {
+      text-align: center;
+      font-size: 20px;
+      margin-bottom: 60px;
+      opacity: 0.7;
+    }
+
+    .variations-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 60px;
+      margin-bottom: 80px;
+    }
+
+    .variation {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .variation-label {
+      font-family: 'Archivo Black', sans-serif;
+      font-size: 24px;
+      margin-bottom: 20px;
+      text-align: center;
+      color: var(--primary-red);
+    }
+
+    /* Shared screenshot base */
+    .screenshot {
+      width: 100%;
+      max-width: 400px;
+      aspect-ratio: 1 / 1;
+      background: #e0e0e0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      color: #999;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .step-title {
+      position: absolute;
+      top: 30px;
+      left: 30px;
+      right: 30px;
+      font-size: 28px;
+      font-weight: bold;
+      text-align: left;
+      color: var(--text-color);
+      z-index: 10;
+      text-shadow:
+        -2px -2px 0 #fff,
+        2px -2px 0 #fff,
+        -2px 2px 0 #fff,
+        2px 2px 0 #fff,
+        0 0 10px rgba(255, 255, 255, 0.9);
+    }
+
+    .description {
+      text-align: center;
+      margin-top: 12px;
+      font-size: 18px;
+      letter-spacing: 0.5px;
+    }
+
+    /* VARIATION 1: Classic Inset with CTA Border */
+    .var1-frame {
+      background: white;
+      padding: 20px;
+      border: 4px solid var(--border-color);
+      box-shadow: 6px 6px 0 rgba(0,0,0,0.3);
+      transition: all 0.3s ease;
+    }
+
+    .var1-frame:hover {
+      transform: translate(-2px, -2px);
+      box-shadow: 8px 8px 0 rgba(0,0,0,0.3);
+    }
+
+    /* VARIATION 2: Thick Inset with Colored Inner Border */
+    .var2-frame {
+      background: white;
+      padding: 25px;
+      border: 5px solid var(--border-color);
+      box-shadow: 8px 8px 0 rgba(0,0,0,0.2);
+      transition: all 0.3s ease;
+    }
+
+    .var2-frame .screenshot {
+      border: 3px solid var(--primary-red);
+    }
+
+    .var2-frame:hover {
+      transform: translate(-3px, -3px);
+      box-shadow: 11px 11px 0 rgba(0,0,0,0.2);
+    }
+
+    /* VARIATION 3: Minimal Inset with Accent Stripe */
+    .var3-frame {
+      background: white;
+      padding: 15px;
+      border: 3px solid var(--border-color);
+      box-shadow: 5px 5px 0 rgba(0,0,0,0.25);
+      position: relative;
+      transition: all 0.3s ease;
+    }
+
+    .var3-frame::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 8px;
+      background: var(--primary-red);
+    }
+
+    .var3-frame:hover {
+      transform: translateY(-3px);
+      box-shadow: 5px 8px 0 rgba(0,0,0,0.25);
+    }
+
+    /* VARIATION 4: Polaroid-Style Heavy Inset */
+    .var4-frame {
+      background: white;
+      padding: 20px 20px 70px 20px;
+      border: 4px solid var(--border-color);
+      box-shadow: 10px 10px 0 rgba(0,0,0,0.2);
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .var4-caption {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      right: 20px;
+      text-align: center;
+      font-size: 24px;
+      font-weight: bold;
+      color: var(--text-color);
+    }
+
+    .var4-frame:hover {
+      transform: scale(1.03);
+    }
+
+    /* VARIATION 5: Double Border with Thin Inset */
+    .var5-frame {
+      background: white;
+      padding: 12px;
+      border: 4px solid var(--border-color);
+      box-shadow: 6px 6px 0 rgba(0,0,0,0.3);
+      transition: all 0.3s ease;
+    }
+
+    .var5-frame .screenshot {
+      border: 2px solid #666;
+    }
+
+    .var5-frame:hover {
+      transform: translate(-2px, -2px);
+      box-shadow: 8px 8px 0 rgba(0,0,0,0.3);
+    }
+
+    /* VARIATION 6: Soft Shadow with Medium Inset */
+    .var6-frame {
+      background: white;
+      padding: 18px;
+      border: 3px solid var(--border-color);
+      box-shadow: 12px 12px 20px rgba(0,0,0,0.15);
+      transition: all 0.3s ease;
+    }
+
+    .var6-frame:hover {
+      transform: translateY(-4px);
+      box-shadow: 12px 16px 24px rgba(0,0,0,0.2);
+    }
+
+    /* VARIATION 7: Asymmetric Inset with Side Accent */
+    .var7-frame {
+      background: white;
+      padding: 20px 20px 20px 30px;
+      border: 4px solid var(--border-color);
+      box-shadow: 7px 7px 0 rgba(0,0,0,0.25);
+      position: relative;
+      transition: all 0.3s ease;
+    }
+
+    .var7-frame::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 10px;
+      background: var(--primary-mint);
+    }
+
+    .var7-frame:hover {
+      transform: translate(-2px, -2px);
+      box-shadow: 9px 9px 0 rgba(0,0,0,0.25);
+    }
+
+    /* VARIATION 8: Ultra Minimal with Colored Border */
+    .var8-frame {
+      padding: 0;
+      border: 6px solid var(--primary-red);
+      box-shadow: 8px 8px 0 rgba(211, 47, 47, 0.2);
+      transition: all 0.3s ease;
+    }
+
+    .var8-frame:hover {
+      transform: translate(-2px, -2px);
+      box-shadow: 10px 10px 0 rgba(211, 47, 47, 0.25);
+    }
+
+    @media (max-width: 768px) {
+      .variations-grid {
+        grid-template-columns: 1fr;
+        gap: 50px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Screenshot Frame Variations</h1>
+    <p class="subtitle">Combining inset padding, bold borders, text treatments, and CTA button styling</p>
+
+    <div class="variations-grid">
+
+      <!-- VARIATION 1 -->
+      <div class="variation">
+        <div class="variation-label">V1: Classic Inset</div>
+        <div class="var1-frame">
+          <div class="screenshot">
+            <div class="step-title">Add Addresses</div>
+            Screenshot Here
+          </div>
+        </div>
+        <p class="description">White padding + CTA button border</p>
+      </div>
+
+      <!-- VARIATION 2 -->
+      <div class="variation">
+        <div class="variation-label">V2: Double Frame</div>
+        <div class="var2-frame">
+          <div class="screenshot">
+            <div class="step-title">Build List</div>
+            Screenshot Here
+          </div>
+        </div>
+        <p class="description">Thick padding + colored inner border</p>
+      </div>
+
+      <!-- VARIATION 3 -->
+      <div class="variation">
+        <div class="variation-label">V3: Top Stripe</div>
+        <div class="var3-frame">
+          <div class="screenshot">
+            <div class="step-title">Calculate Route</div>
+            Screenshot Here
+          </div>
+        </div>
+        <p class="description">Minimal inset + accent stripe</p>
+      </div>
+
+      <!-- VARIATION 4 -->
+      <div class="variation">
+        <div class="variation-label">V4: Polaroid Deep</div>
+        <div class="var4-frame">
+          <div class="screenshot">
+            Screenshot Here
+          </div>
+          <div class="var4-caption">View Results</div>
+        </div>
+        <p class="description">Heavy bottom space + label caption</p>
+      </div>
+
+      <!-- VARIATION 5 -->
+      <div class="variation">
+        <div class="variation-label">V5: Nested Border</div>
+        <div class="var5-frame">
+          <div class="screenshot">
+            <div class="step-title">Optimize</div>
+            Screenshot Here
+          </div>
+        </div>
+        <p class="description">Thin inset + double border effect</p>
+      </div>
+
+      <!-- VARIATION 6 -->
+      <div class="variation">
+        <div class="variation-label">V6: Soft Float</div>
+        <div class="var6-frame">
+          <div class="screenshot">
+            <div class="step-title">Export</div>
+            Screenshot Here
+          </div>
+        </div>
+        <p class="description">Medium inset + soft shadow</p>
+      </div>
+
+      <!-- VARIATION 7 -->
+      <div class="variation">
+        <div class="variation-label">V7: Side Accent</div>
+        <div class="var7-frame">
+          <div class="screenshot">
+            <div class="step-title">Share Route</div>
+            Screenshot Here
+          </div>
+        </div>
+        <p class="description">Asymmetric padding + side stripe</p>
+      </div>
+
+      <!-- VARIATION 8 -->
+      <div class="variation">
+        <div class="variation-label">V8: Bold Edge</div>
+        <div class="var8-frame">
+          <div class="screenshot">
+            <div class="step-title">Done!</div>
+            Screenshot Here
+          </div>
+        </div>
+        <p class="description">No padding + thick colored border</p>
+      </div>
+
+    </div>
+  </div>
+</body>
+</html>
