@@ -105,7 +105,7 @@ export async function finishPasskeyRegistration(
     const user = await db.user.create({
       data: {
         email,
-        username: email.split('@')[0], // Optional: use email prefix as username
+        username: email, // Use full email as username
       },
     });
 
@@ -121,8 +121,8 @@ export async function finishPasskeyRegistration(
     // Auto-create personal tenant for new user
     const tenant = await db.tenant.create({
       data: {
-        name: `${email.split('@')[0]}'s Workspace`,
-        slug: `${email.split('@')[0]}-${Date.now()}`, // Ensure unique slug
+        name: `${email}'s Workspace`,
+        slug: `${email.split('@')[0]}-${Date.now()}`, // Use email prefix for slug
         status: "ACTIVE",
       },
     });
