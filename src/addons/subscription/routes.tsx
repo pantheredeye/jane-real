@@ -1,6 +1,7 @@
 import { route } from 'rwsdk/router'
 import SubscribePage from './pages/SubscribePage'
 import SuccessPage from './pages/SuccessPage'
+import ManagePage from './pages/ManagePage'
 import { requireAuth } from '@/app/interruptors'
 import { getStripe } from './utils/stripe'
 import { handleStripeWebhook, verifyWebhookSignature } from './server-functions/webhookHandler'
@@ -11,6 +12,9 @@ export const subscriptionRoutes = [
 
   // Success page after checkout - requires auth
   route('/success', [requireAuth, SuccessPage]),
+
+  // Manage subscription page - requires auth
+  route('/manage', [requireAuth, ManagePage]),
 
   // Webhook endpoint - public, but signature verified
   route('/webhook', [

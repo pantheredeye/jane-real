@@ -245,6 +245,124 @@
   box-shadow: 0 8px 24px rgba(102, 126, 234, 0.3);
 }
 
+.subscription-details {
+  background: white;
+  border-radius: 16px;
+  padding: 2rem;
+  margin-bottom: 1.5rem;
+  border: 2px solid #e2e8f0;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 0;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.detail-row:last-child {
+  border-bottom: none;
+}
+
+.detail-label {
+  font-weight: 600;
+  color: #4a5568;
+}
+
+.detail-value {
+  color: #1a202c;
+  font-weight: 500;
+}
+
+.status-badge {
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.status-active {
+  background: #c6f6d5;
+  color: #22543d;
+}
+
+.status-trial {
+  background: #bee3f8;
+  color: #2c5282;
+}
+
+.status-grandfathered {
+  background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+  color: #744210;
+}
+
+.status-warning {
+  background: #fed7d7;
+  color: #c53030;
+}
+
+.status-canceled {
+  background: #e2e8f0;
+  color: #4a5568;
+}
+
+.status-none {
+  background: #f7fafc;
+  color: #718096;
+}
+
+.info-box {
+  background: #edf2f7;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-top: 1rem;
+  text-align: center;
+}
+
+.info-box p {
+  margin: 0.5rem 0;
+  color: #4a5568;
+}
+
+.grandfathered-box {
+  background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+  border: 2px solid #fbbf24;
+}
+
+.grandfathered-box p {
+  color: #78350f;
+}
+
+.portal-info {
+  text-align: center;
+  margin-top: 1rem;
+}
+
+.portal-info .small {
+  font-size: 0.875rem;
+  color: #718096;
+  margin: 0;
+}
+
+.back-link {
+  text-align: center;
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid #e2e8f0;
+}
+
+.back-link a {
+  color: #667eea;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.back-link a:hover {
+  color: #764ba2;
+}
+
 @media (max-width: 640px) {
   .pricing-cards {
     grid-template-columns: 1fr;
@@ -256,5 +374,11 @@
 
   .subscribe-header h1 {
     font-size: 1.5rem;
+  }
+
+  .detail-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
   }
 }
