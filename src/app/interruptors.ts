@@ -84,3 +84,39 @@ export const requireMember = requireRole(["OWNER", "MEMBER"]);
  * Allow any authenticated tenant member (including GUEST)
  */
 export const requireAnyRole = requireRole(["OWNER", "MEMBER", "GUEST"]);
+
+/**
+ * Require user to have an active subscription
+ * Allows TRIALING, ACTIVE, and GRANDFATHERED users
+ * Redirects to subscription page if no valid subscription
+ */
+export async function requireSubscription({ ctx }: { ctx: any }) {
+  if (!ctx.user) {
+    return new Response(null, {
+      status: 302,
+      headers: { Location: "/user/login" },
+    });
+  }
+
+  const { subscriptionStatus, grandfathered } = ctx.user;
+
+  // Allow grandfathered users (early adopters)
+  if (grandfathered) {
+    return;
+  }
+
+  // Allow users with active or trialing subscriptions
+  if (
+    subscriptionStatus === "TRIALING" ||
+    subscriptionStatus === "ACTIVE" ||
+    subscriptionStatus === "GRANDFATHERED"
+  ) {
+    return;
+  }
+
+  // Redirect to subscription page for users without valid subscription
+  return new Response(null, {
+    status: 302,
+    headers: { Location: "/subscription/subscribe" },
+  });
+}
