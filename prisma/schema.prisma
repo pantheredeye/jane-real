@@ -34,6 +34,16 @@ model User {
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
 
+  // Stripe subscription fields
+  stripeCustomerId       String?           @unique // Stripe customer ID
+  stripeSubscriptionId   String?           @unique // Current subscription ID
+  subscriptionStatus     SubscriptionStatus @default(NONE) // Current status
+  subscriptionPlan       String?           // "monthly" or "annual"
+  trialEndsAt            DateTime?         // When trial expires
+  currentPeriodEnd       DateTime?         // When current billing period ends
+  cancelAtPeriodEnd      Boolean           @default(false) // Cancel scheduled
+  grandfathered          Boolean           @default(false) // Free forever flag
+
   credentials     Credential[]       // WebAuthn credentials
   memberships     TenantMembership[] // Many-to-many with tenants
   createdRoutes   Route[]            // Routes created by this user
@@ -42,6 +52,8 @@ model User {
 
   @@index([email])
   @@index([username])
+  @@index([stripeCustomerId])
+  @@index([subscriptionStatus])
 }
 
 model Credential {
@@ -55,6 +67,16 @@ model Credential {
 
   @@index([credentialId])
   @@index([userId])
+}
+
+enum SubscriptionStatus {
+  NONE        // No subscription yet
+  TRIALING    // In trial period
+  ACTIVE      // Paid and active
+  PAST_DUE    // Payment failed, retrying
+  CANCELED    // User canceled
+  UNPAID      // Payment failed, grace period ended
+  GRANDFATHERED // Free forever (early users)
 }
 
 // ============================================================================
