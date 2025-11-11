@@ -34,6 +34,7 @@
     "@simplewebauthn/server": "^13.1.1",
     "date-fns": "^4.1.0",
     "rwsdk": "0.1.36",
+    "stripe": "^19.3.0",
     "zod": "^4.1.0"
   },
   "devDependencies": {
@@ -42,6 +43,7 @@
     "@types/node": "^22.14.0",
     "@types/react": "^19.1.2",
     "@types/react-dom": "^19.1.2",
+    "@types/stripe": "^8.0.417",
     "prisma": "~6.8.2",
     "typescript": "^5.8.3",
     "vibe-rules": "^0.2.31",
