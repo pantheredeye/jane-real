@@ -24,6 +24,11 @@ function getWebAuthnConfig(request: Request) {
   };
 }
 
+export async function checkEmailAvailable(email: string) {
+  const existing = await db.user.findUnique({ where: { email } });
+  return !existing; // true if available, false if taken
+}
+
 export async function startPasskeyRegistration(email: string) {
   const { rpName, rpID } = getWebAuthnConfig(requestInfo.request);
   const { response } = requestInfo;
