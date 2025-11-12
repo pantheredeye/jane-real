@@ -1,8 +1,9 @@
 'use server'
 
 import { getStripe, STRIPE_CONFIG } from '../utils/stripe'
-import { getSessionUserId } from '@/session/sessionManager'
 import { db } from '@/db'
+import { requestInfo } from 'rwsdk/worker'
+import { sessions } from '@/session/store'
 
 type CheckoutSessionParams = {
   plan: 'monthly' | 'annual'
@@ -11,12 +12,12 @@ type CheckoutSessionParams = {
 }
 
 export async function createCheckoutSession(
-  params: CheckoutSessionParams,
-  request: Request
+  params: CheckoutSessionParams
 ): Promise<{ url: string | null; error?: string }> {
   try {
-    // Get current user
-    const userId = await getSessionUserId(request)
+    // Get current user from session
+    const session = await sessions.load(requestInfo.request)
+    const userId = session?.userId
     if (!userId) {
       return { url: null, error: 'Not authenticated' }
     }

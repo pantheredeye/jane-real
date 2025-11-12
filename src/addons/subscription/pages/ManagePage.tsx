@@ -1,9 +1,11 @@
-import { getSessionUserId } from '@/session/sessionManager'
 import { db } from '@/db'
+import { requestInfo } from 'rwsdk/worker'
+import { sessions } from '@/session/store'
 import ManagePageClient from './ManagePageClient'
 
-export default async function ManagePage({ request }: { request: Request }) {
-  const userId = await getSessionUserId(request)
+export default async function ManagePage() {
+  const session = await sessions.load(requestInfo.request)
+  const userId = session?.userId
 
   if (!userId) {
     return (

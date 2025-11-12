@@ -1,16 +1,17 @@
 'use server'
 
 import { getStripe } from '../utils/stripe'
-import { getSessionUserId } from '@/session/sessionManager'
 import { db } from '@/db'
+import { requestInfo } from 'rwsdk/worker'
+import { sessions } from '@/session/store'
 
 export async function createPortalSession(
-  returnUrl: string,
-  request: Request
+  returnUrl: string
 ): Promise<{ url: string | null; error?: string }> {
   try {
-    // Get current user
-    const userId = await getSessionUserId(request)
+    // Get current user from session
+    const session = await sessions.load(requestInfo.request)
+    const userId = session?.userId
     if (!userId) {
       return { url: null, error: 'Not authenticated' }
     }

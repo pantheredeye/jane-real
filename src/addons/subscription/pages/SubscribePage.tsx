@@ -70,9 +70,9 @@ export default function SubscribePage() {
             className={`pricing-card ${selectedPlan === 'annual' ? 'selected' : ''}`}
             onClick={() => setSelectedPlan('annual')}
           >
+            <span className="savings-badge">Save {monthlySavings}%</span>
             <div className="plan-header">
               <h3>Annual</h3>
-              <span className="savings-badge">Save {monthlySavings}%</span>
               {selectedPlan === 'annual' && <span className="selected-badge">Selected</span>}
             </div>
             <div className="plan-price">
