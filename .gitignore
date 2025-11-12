@@ -66,3 +66,7 @@ coverage
 .wrangler
 
 generated/
+
+# Local SQLite database (not used - we use D1)
+prisma/dev.db
+prisma/dev.db-journal
