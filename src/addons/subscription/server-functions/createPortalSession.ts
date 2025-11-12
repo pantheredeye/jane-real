@@ -10,8 +10,8 @@ export async function createPortalSession(
 ): Promise<{ url: string | null; error?: string }> {
   try {
     // Get current user from session
-    const session = await sessions.load(requestInfo.request)
-    const userId = session?.userId
+    const userSession = await sessions.load(requestInfo.request)
+    const userId = userSession?.userId
     if (!userId) {
       return { url: null, error: 'Not authenticated' }
     }
