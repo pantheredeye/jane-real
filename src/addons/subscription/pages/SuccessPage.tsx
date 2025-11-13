@@ -37,7 +37,7 @@ export default function SuccessPage() {
         </div>
 
         <div className="cta-buttons">
-          <a href="/route-calculator" className="cta-button">
+          <a href="/route" className="cta-button">
             Start Planning Routes
           </a>
           <a href="/subscription/manage" className="secondary-button">
