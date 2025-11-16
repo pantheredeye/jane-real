@@ -24,8 +24,11 @@ export default defineApp([
   setCommonHeaders(),
   async ({ ctx, request, headers }) => {
     await setupDb(env);
+ 
+    // This is to help prevent an issue with prisma and vite and workers landing
+    // see https://github.com/cloudflare/workers-sdk/pull/8283/files
     await db.$queryRaw`SELECT 1`;
-
+    
     setupSessionStore(env);
 
     try {
