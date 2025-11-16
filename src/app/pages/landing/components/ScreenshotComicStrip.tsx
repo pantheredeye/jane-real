@@ -29,11 +29,8 @@ export default function ScreenshotComicStrip() {
                 className="screenshot-image"
               />
 
-              {/* Step number badge */}
-              <div className="step-badge">{step.number}</div>
-
-              {/* Step title at bottom */}
-              <div className="step-title">{step.label}</div>
+              {/* Step title at bottom with number */}
+              <div className="step-title">{step.number}. {step.label}</div>
             </div>
 
             {/* Optional description below */}

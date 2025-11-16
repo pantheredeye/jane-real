@@ -25,7 +25,7 @@ export default defineApp([
   async ({ ctx, request, headers }) => {
     await setupDb(env);
  
-    // This is to help prevent an issue with prisma and vite and workers landing
+    // This is to help prevent an issue with prisma and vite and workers loading
     // see https://github.com/cloudflare/workers-sdk/pull/8283/files
     await db.$queryRaw`SELECT 1`;
     

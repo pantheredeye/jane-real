@@ -94,34 +94,6 @@ body.theme-diner .comic-strip-title {
   border: 2px solid #666; /* Inner border for nested effect */
 }
 
-/* Step number badge in top-right corner */
-.step-badge {
-  position: absolute;
-  top: -12px;
-  right: -12px;
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 24px;
-  font-weight: bold;
-  color: white;
-  border: 3px solid var(--border-color);
-  box-shadow: 4px 4px 0 rgba(0,0,0,0.2);
-  z-index: 10;
-}
-
-.panel-action .step-badge {
-  background: #d32f2f;
-}
-
-.panel-result .step-badge {
-  background: #4db6ac;
-}
-
 /* Comic book caption box - positioned BELOW the screenshot */
 .step-title {
   position: absolute;
@@ -138,7 +110,7 @@ body.theme-diner .comic-strip-title {
   font-family: 'Bebas Neue', sans-serif;
   font-size: 24px;
   font-weight: bold;
-  text-align: center;
+  text-align: left;
   color: var(--text-color);
   text-transform: uppercase;
   letter-spacing: 1px;
@@ -187,12 +159,6 @@ body.theme-diner .comic-strip-title {
 
   .step-description {
     margin-top: 35px;
-  }
-
-  .step-badge {
-    width: 45px;
-    height: 45px;
-    font-size: 20px;
   }
 }
 
