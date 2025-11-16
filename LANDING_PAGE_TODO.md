@@ -45,54 +45,6 @@ Convert 50s retro-styled landing page mockup to production RedwoodSDK app with s
 
 ---
 
-## PHASE 2: SIGNUP FLOW WITH PAYMENT
-
-### 2.1 Database Schema Updates
-- [ ] Add `stripeCustomerId` to User model
-- [ ] Add `stripePaymentMethodId` to User model
-- [ ] Create `UsageLog` model (userId, date, unique constraint)
-- [ ] Run Prisma migration
-
-### 2.2 Stripe Setup
-- [ ] Complete Stripe account legal registration (when ready)
-- [ ] Use Stripe Test Mode for development
-- [ ] Install `@stripe/stripe-js` package
-- [ ] Install `stripe` package (server-side)
-- [ ] Add `STRIPE_SECRET_KEY` to environment variables
-- [ ] Add `STRIPE_PUBLISHABLE_KEY` to environment variables
-- [ ] Add `STRIPE_WEBHOOK_SECRET` to environment variables
-
-### 2.3 Signup Page Structure
-- [ ] Create `src/app/pages/signup/` directory
-- [ ] Add `routes.tsx` for public route at `/signup`
-- [ ] Create `SignupPage.tsx` (Server Component)
-- [ ] Create `SignupForm.tsx` ("use client")
-- [ ] Add signup form styling (match landing page theme)
-
-### 2.4 Signup Flow Implementation
-- [ ] Email input field
-- [ ] WebAuthn passkey creation (integrate existing auth)
-- [ ] Stripe Elements integration (CardElement)
-- [ ] Form validation (Zod schema)
-- [ ] Loading states and error handling
-- [ ] Success confirmation UI
-
-### 2.5 Server Functions
-- [ ] `createAccount.ts` - create user + Stripe customer
-- [ ] Attach payment method to Stripe customer
-- [ ] Store Stripe customer ID on user record
-- [ ] Handle Stripe API errors gracefully
-- [ ] Redirect to `/route-calculator` on success
-
-### 2.6 Testing
-- [ ] Test signup with valid card (Stripe test cards)
-- [ ] Test signup with invalid card
-- [ ] Test duplicate email handling
-- [ ] Test passkey creation flow
-- [ ] Test redirect after signup
-
----
-
 ## PHASE 3: APP ACCESS & USAGE TRACKING
 
 ### 3.1 Usage Tracking

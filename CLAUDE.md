@@ -12,7 +12,7 @@ This is a RedwoodSDK application featuring a real estate route calculator that h
 - **Authentication**: WebAuthn (Passkeys)
 - **Session Management**: Durable Objects
 - **Frontend**: React Server Components + Client Components
-- **Styling**: CSS with Glassmorphism design system
+- **Styling**: CSS with 50s Retro design system
 - **Maps Integration**: Google Maps API
 
 ### Project Structure
