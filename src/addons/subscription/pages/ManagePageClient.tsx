@@ -44,7 +44,7 @@ export default function ManagePageClient({ user }: { user: User }) {
 
   const getStatusBadge = () => {
     if (user.grandfathered) {
-      return <span className="status-badge status-grandfathered">Grandfathered 🎉</span>
+      return <span className="status-badge status-grandfathered">Grandfathered</span>
     }
 
     switch (user.subscriptionStatus) {

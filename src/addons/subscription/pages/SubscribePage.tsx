@@ -10,6 +10,8 @@ export default function SubscribePage() {
   const [selectedPlan, setSelectedPlan] = useState<Plan>('annual')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [promoCode, setPromoCode] = useState('')
+  const [promoApplied, setPromoApplied] = useState(false)
 
   const handleStartTrial = async () => {
     setLoading(true)
@@ -38,14 +40,26 @@ export default function SubscribePage() {
     }
   }
 
+  const handlePromoApply = () => {
+    if (promoCode.trim()) {
+      setPromoApplied(true)
+      // Note: Promo validation will happen in Stripe Checkout
+      // This is just client-side feedback
+    }
+  }
+
   const monthlySavings = ((9.99 * 12 - 49.99) / (9.99 * 12) * 100).toFixed(0)
 
   return (
     <div className="subscribe-page">
       <div className="subscribe-container">
         <div className="subscribe-header">
-          <h1>Start Your 30-Day Free Trial</h1>
-          <p>No credit card required. Cancel anytime.</p>
+          <div className="trial-badge">
+            <span className="big-text">30</span>
+            <span className="small-text">DAY<br/>FREE<br/>TRIAL</span>
+          </div>
+          <h1>Choose Your Plan</h1>
+          <p>Start your free trial today</p>
         </div>
 
         <div className="pricing-cards">
@@ -85,15 +99,41 @@ export default function SubscribePage() {
           </div>
         </div>
 
+        <div className="promo-section">
+          <h3>Have a promo code?</h3>
+          <div className="promo-input-group">
+            <input
+              type="text"
+              className="promo-input"
+              placeholder="Enter code here"
+              value={promoCode}
+              onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
+              onKeyPress={(e) => e.key === 'Enter' && handlePromoApply()}
+            />
+            <button
+              className="promo-apply-btn"
+              onClick={handlePromoApply}
+              type="button"
+            >
+              Apply
+            </button>
+          </div>
+          {promoApplied && (
+            <div className="promo-success">
+              Code "{promoCode}" will be applied at checkout
+            </div>
+          )}
+        </div>
+
         <div className="features-list">
           <h3>What's included:</h3>
           <ul>
-            <li>✓ Unlimited route calculations</li>
-            <li>✓ Smart property input (Zillow, Realtor.com URLs)</li>
-            <li>✓ Real-time optimization</li>
-            <li>✓ Google Maps integration</li>
-            <li>✓ Export to calendar</li>
-            <li>✓ Client-friendly itineraries</li>
+            <li>Unlimited route calculations</li>
+            <li>Smart property input (Zillow, Realtor.com URLs)</li>
+            <li>Real-time optimization</li>
+            <li>Google Maps integration</li>
+            <li>Export to calendar</li>
+            <li>Client-friendly itineraries</li>
           </ul>
         </div>
 
@@ -108,8 +148,7 @@ export default function SubscribePage() {
         </button>
 
         <div className="trial-info">
-          <p>Your 30-day free trial starts today. We'll remind you before charging.</p>
-          <p className="small">Cancel anytime in your account settings.</p>
+          <p>Trial starts today • No charge for 30 days • Cancel anytime</p>
         </div>
       </div>
     </div>

@@ -7,32 +7,23 @@ export default function SuccessPage() {
     <div className="subscribe-page">
       <div className="subscribe-container">
         <div className="success-icon">
-          <svg width="64" height="64" viewBox="0 0 64 64" fill="none">
-            <circle cx="32" cy="32" r="32" fill="#48BB78" />
-            <path
-              d="M20 32L28 40L44 24"
-              stroke="white"
-              strokeWidth="4"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
+          <div className="icon-circle">
+            ✓
+          </div>
         </div>
 
         <div className="subscribe-header">
-          <h1>Welcome to RouteFast Pro!</h1>
-          <p>Your 30-day free trial has started</p>
+          <h1>You're All Set!</h1>
+          <p>30-day free trial activated</p>
         </div>
 
         <div className="features-list">
-          <h3>What happens next:</h3>
+          <h3>What's Next:</h3>
           <ul>
-            <li>✓ Full access to all features for 30 days</li>
-            <li>✓ We'll send you a reminder before your trial ends</li>
-            <li>✓ You'll be charged {' '}
-              <strong>only if you don't cancel</strong>
-            </li>
-            <li>✓ Manage your subscription anytime in settings</li>
+            <li>Full access to all features for 30 days</li>
+            <li>Reminder before trial ends</li>
+            <li>Only charged if you don't cancel</li>
+            <li>Manage subscription anytime</li>
           </ul>
         </div>
 
