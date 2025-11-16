@@ -24,6 +24,8 @@ export default defineApp([
   setCommonHeaders(),
   async ({ ctx, request, headers }) => {
     await setupDb(env);
+    await db.$queryRaw`SELECT 1`;
+
     setupSessionStore(env);
 
     try {
