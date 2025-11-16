@@ -2,8 +2,30 @@
 
 .screenshot-comic-strip {
   width: 100%;
-  padding: 60px 20px;
-  background: var(--bg-color);
+  padding: calc(60px * var(--padding-multiplier)) calc(20px * var(--padding-multiplier));
+  background: white;
+  border: var(--border-width) var(--border-style) var(--border-color);
+  box-shadow: var(--shadow-offset) var(--shadow-offset) var(--shadow-blur) rgba(0,0,0,0.15);
+  border-radius: var(--border-radius);
+  margin-bottom: 40px;
+  position: relative;
+  transition: all 0.4s ease;
+}
+
+/* Halftone pattern for shadows */
+.screenshot-comic-strip::before {
+  content: '';
+  position: absolute;
+  top: var(--shadow-offset);
+  left: var(--shadow-offset);
+  width: 100%;
+  height: 100%;
+  background-image: radial-gradient(circle, rgba(0,0,0,0.5) 1.5px, transparent 1.5px);
+  background-size: var(--halftone-size) var(--halftone-size);
+  opacity: var(--halftone-opacity);
+  pointer-events: none;
+  z-index: -1;
+  border-radius: var(--border-radius);
 }
 
 .comic-strip-title {
@@ -36,51 +58,40 @@ body.theme-diner .comic-strip-title {
   width: 100%;
   max-width: 500px;
   margin: 0 auto;
+  padding-bottom: 40px; /* Make room for caption box extending below */
 }
 
-/* Screenshot container - minimal, clean style */
+/* Screenshot container - comic book style with inset frame */
 .screenshot-container {
   position: relative;
   width: 100%;
   aspect-ratio: 1 / 1; /* SQUARE */
-  background: #e0e0e0;
-  border: 2px solid var(--border-color);
-  border-radius: 4px;
-  box-shadow: 8px 8px 0 rgba(0,0,0,0.1);
-  overflow: hidden;
+  background: white;
+  padding: 12px; /* White border inset */
+  border: 4px solid var(--border-color);
+  border-radius: 0; /* Sharp edges */
+  box-shadow: 10px 10px 0 rgba(0,0,0,0.15);
+  overflow: visible; /* Allow caption box to extend */
   transition: all 0.3s ease;
 }
 
 .screenshot-container:hover {
-  transform: translateY(-4px);
-  box-shadow: 12px 12px 0 rgba(0,0,0,0.15);
+  transform: translate(-2px, -2px);
+  box-shadow: 12px 12px 0 rgba(0,0,0,0.2);
 }
 
-/* Small colored accent bar on left */
+/* Remove left accent bar - replaced by caption box color */
 .screenshot-container::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: 6px;
-  z-index: 5;
+  display: none;
 }
 
-.panel-action .screenshot-container::before {
-  background: #d32f2f;
-}
-
-.panel-result .screenshot-container::before {
-  background: #4db6ac;
-}
-
-/* Screenshot image */
+/* Screenshot image - nested within white border */
 .screenshot-image {
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
+  border: 2px solid #666; /* Inner border for nested effect */
 }
 
 /* Step number badge in top-right corner */
@@ -111,33 +122,53 @@ body.theme-diner .comic-strip-title {
   background: #4db6ac;
 }
 
-/* Step title at bottom of screenshot */
+/* Comic book caption box - positioned BELOW the screenshot */
 .step-title {
   position: absolute;
-  bottom: 20px;
+  bottom: -30px; /* Extend below the frame */
   left: 20px;
   right: 20px;
+
+  /* Caption box styling */
+  background: white;
+  border: 4px solid var(--border-color);
+  padding: 8px 16px;
+
+  /* Typography */
   font-family: 'Bebas Neue', sans-serif;
   font-size: 24px;
   font-weight: bold;
-  text-align: left;
+  text-align: center;
   color: var(--text-color);
   text-transform: uppercase;
-  text-shadow:
-    -1px -1px 0 #fff,
-    1px -1px 0 #fff,
-    -1px 1px 0 #fff,
-    1px 1px 0 #fff;
-  letter-spacing: 0.5px;
+  letter-spacing: 1px;
+
+  /* Hard shadow for comic effect */
+  box-shadow: 6px 6px 0 rgba(0,0,0,0.2);
+
   z-index: 10;
+
+  /* No text shadow needed - solid background */
+  text-shadow: none;
 }
 
-/* Description below the screenshot */
+/* Color-coded caption boxes (replaces left accent bar) */
+.panel-action .step-title {
+  background: #d32f2f; /* Red background for action steps */
+  color: white;
+}
+
+.panel-result .step-title {
+  background: #4db6ac; /* Mint background for result steps */
+  color: white;
+}
+
+/* Description below the caption box */
 .step-description {
   font-family: 'Bebas Neue', sans-serif;
   font-size: 18px;
   text-align: center;
-  margin-top: 12px;
+  margin-top: 40px; /* Move down to clear caption box */
   color: var(--text-color);
   letter-spacing: 0.5px;
 }
@@ -150,6 +181,12 @@ body.theme-diner .comic-strip-title {
 
   .step-title {
     font-size: 20px;
+    bottom: -25px;
+    padding: 6px 12px;
+  }
+
+  .step-description {
+    margin-top: 35px;
   }
 
   .step-badge {
