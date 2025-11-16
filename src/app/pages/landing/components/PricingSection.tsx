@@ -4,15 +4,15 @@ export default function PricingSection() {
   return (
     <section className="pricing">
       <div className="halftone-shadow"></div>
-      <h2>Just $1 Per Day</h2>
-      <div className="price-big">(Only When You Use It)</div>
-      <p className="price-sub">Billed monthly for days used.</p>
+      <h2>Start Free for 30 Days</h2>
+      <div className="price-big">$9.99/mo</div>
+      <p className="price-sub">or $49.99/year (save $70)</p>
       <p className="details">
-        Use it 5 times this month? Pay $5.
+        Full access during your trial.
         <br />
-        Use it daily? ~$30/month.
+        Cancel anytime, no questions asked.
       </p>
-      <p className="no-commitment">No subscriptions. No surprises.</p>
+      <p className="no-commitment">No charge until trial ends. Cancel anytime.</p>
       <CTAButton showNote={true} />
     </section>
   );

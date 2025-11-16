@@ -12,7 +12,7 @@ export default function CTAButton({ showNote = false }: CTAButtonProps) {
   return (
     <button onClick={handleClick} className="cta-button">
       Start Routing Faster
-      {showNote && <span className="cta-note">No credit card required</span>}
+      {showNote && <span className="cta-note">No charge until trial ends</span>}
     </button>
   );
 }
