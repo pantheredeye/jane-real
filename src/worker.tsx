@@ -22,25 +22,30 @@ export type AppContext = {
 
 export default defineApp([
   setCommonHeaders(),
-  async ({ ctx, request, headers }) => {
+  async ({ ctx, request, response, isAction }) => {
     await setupDb(env);
- 
+
     // This is to help prevent an issue with prisma and vite and workers loading
     // see https://github.com/cloudflare/workers-sdk/pull/8283/files
     await db.$queryRaw`SELECT 1`;
-    
+
     setupSessionStore(env);
 
     try {
       ctx.session = await sessions.load(request);
     } catch (error) {
       if (error instanceof ErrorResponse && error.code === 401) {
-        await sessions.remove(request, headers);
-        headers.set("Location", "/user/login");
+        // Skip redirects for actions - they should throw/return error
+        if (isAction) {
+          throw error;
+        }
+
+        await sessions.remove(request, response.headers);
+        response.headers.set("Location", "/user/login");
 
         return new Response(null, {
           status: 302,
-          headers,
+          headers: response.headers,
         });
       }
 

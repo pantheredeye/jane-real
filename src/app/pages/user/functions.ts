@@ -52,7 +52,7 @@ export async function startPasskeyRegistration(email: string) {
 
 export async function startPasskeyLogin() {
   const { rpID } = getWebAuthnConfig(requestInfo.request);
-  const { headers } = requestInfo;
+  const { response } = requestInfo;
 
   const options = await generateAuthenticationOptions({
     rpID,
@@ -60,7 +60,7 @@ export async function startPasskeyLogin() {
     allowCredentials: [],
   });
 
-  await sessions.save(headers, { challenge: options.challenge });
+  await sessions.save(response.headers, { challenge: options.challenge });
 
   return options;
 }
@@ -70,7 +70,7 @@ export async function finishPasskeyRegistration(
   registration: RegistrationResponseJSON,
 ) {
   try {
-    const { request, headers } = requestInfo;
+    const { request, response } = requestInfo;
     const { origin } = new URL(request.url);
 
     const session = await sessions.load(request);
@@ -100,7 +100,7 @@ export async function finishPasskeyRegistration(
       return false;
     }
 
-    await sessions.save(headers, { challenge: null });
+    await sessions.save(response.headers, { challenge: null });
 
     const user = await db.user.create({
       data: {
@@ -136,7 +136,7 @@ export async function finishPasskeyRegistration(
     });
 
     // Save session with tenant context
-    await sessions.save(headers, {
+    await sessions.save(response.headers, {
       userId: user.id,
       challenge: null,
       tenantId: tenant.id,
@@ -152,7 +152,7 @@ export async function finishPasskeyRegistration(
 }
 
 export async function finishPasskeyLogin(login: AuthenticationResponseJSON) {
-  const { request, headers } = requestInfo;
+  const { request, response } = requestInfo;
   const { origin } = new URL(request.url);
 
   const session = await sessions.load(request);
@@ -230,7 +230,7 @@ export async function finishPasskeyLogin(login: AuthenticationResponseJSON) {
     orderBy: { createdAt: "asc" }, // Use oldest membership (primary tenant)
   });
 
-  await sessions.save(headers, {
+  await sessions.save(response.headers, {
     userId: user.id,
     challenge: null,
     tenantId: membership?.tenantId ?? null,
