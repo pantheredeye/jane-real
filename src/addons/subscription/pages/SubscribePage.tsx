@@ -53,11 +53,12 @@ export default function SubscribePage() {
   return (
     <div className="subscribe-page">
       <div className="subscribe-container">
+        <div className="trial-banner">
+          <span className="big-text">30-DAY</span>
+          <span className="small-text">FREE TRIAL</span>
+        </div>
+
         <div className="subscribe-header">
-          <div className="trial-badge">
-            <span className="big-text">30</span>
-            <span className="small-text">DAY<br/>FREE<br/>TRIAL</span>
-          </div>
           <h1>Choose Your Plan</h1>
           <p>Start your free trial today</p>
         </div>

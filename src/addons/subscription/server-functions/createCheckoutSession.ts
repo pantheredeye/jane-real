@@ -70,17 +70,7 @@ export async function createCheckoutSession(
       payment_method_types: ['card'],
       line_items: [
         {
-          price_data: {
-            currency: priceConfig.currency,
-            product_data: {
-              name: STRIPE_CONFIG.products.routefast.name,
-              description: STRIPE_CONFIG.products.routefast.description,
-            },
-            recurring: {
-              interval: priceConfig.interval,
-            },
-            unit_amount: priceConfig.amount,
-          },
+          price: priceConfig.priceId,
           quantity: 1,
         },
       ],

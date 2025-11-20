@@ -33,22 +33,14 @@ export function getStripe(env: { STRIPE_SECRET_KEY?: string }): Stripe {
  * These will be created in your Stripe dashboard
  */
 export const STRIPE_CONFIG = {
-  products: {
-    routefast: {
-      name: 'RouteFast Pro',
-      description: 'Unlimited route calculations and optimizations',
-    },
-  },
   prices: {
     monthly: {
+      priceId: 'price_1SUCzWInEoW8uwsCExSrV21F',
       amount: 999, // $9.99 in cents
-      currency: 'usd',
-      interval: 'month' as const,
     },
     annual: {
+      priceId: 'price_1SVLFPInEoW8uwsCLkBAY3Gj',
       amount: 4999, // $49.99 in cents
-      currency: 'usd',
-      interval: 'year' as const,
     },
   },
   trial: {
