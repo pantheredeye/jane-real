@@ -87,7 +87,7 @@ export function StateManager({
 
   // Save state whenever any route-related data changes
   useEffect(() => {
-    if (calculatedRoute) {
+    if (propertyList.length > 0) {
       const stateToSave = {
         propertyList,
         startingPropertyIndex,
@@ -98,8 +98,11 @@ export function StateManager({
         timestamp: Date.now()
       }
       localStorage.setItem('routeCalculatorState', JSON.stringify(stateToSave))
+    } else {
+      // Clear storage when no properties
+      localStorage.removeItem('routeCalculatorState')
     }
-  }, [calculatedRoute, propertyList, startingPropertyIndex, startTime, selectedDuration]) // Save on any changes
+  }, [propertyList, startingPropertyIndex, startTime, selectedDuration, calculatedRoute]) // Save on any changes
 
   // Clear route when property list changes significantly (but only if we have a current route)
   useEffect(() => {
