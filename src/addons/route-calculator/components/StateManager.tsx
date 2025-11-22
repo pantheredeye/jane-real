@@ -98,9 +98,6 @@ export function StateManager({
         timestamp: Date.now()
       }
       localStorage.setItem('routeCalculatorState', JSON.stringify(stateToSave))
-    } else {
-      // Clear storage when no properties
-      localStorage.removeItem('routeCalculatorState')
     }
   }, [propertyList, startingPropertyIndex, startTime, selectedDuration, calculatedRoute]) // Save on any changes
 
