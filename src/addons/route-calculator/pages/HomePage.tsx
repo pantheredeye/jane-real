@@ -1,15 +1,14 @@
 'use client'
 
 import { useState, useMemo, useEffect } from 'react'
-import { PropertyInputBox } from '../components/PropertyInputBox'
-import { PropertyList } from '../components/PropertyList'
-import { DurationSelector } from '../components/DurationSelector'
+import { AppShell } from '../components/AppShell'
 import { PropertyCard } from '../components/PropertyCard'
 import { DriveTimeConnector } from '../components/DriveTimeConnector'
 import { RouteSummary } from '../components/RouteSummary'
 import { CopyButtons } from '../components/CopyButtons'
 import { StateManager } from '../components/StateManager'
 import { Toast, ToastType } from '../components/Toast'
+import '../mobile-layout.css'
 import { isDuplicateAddress } from '../utils/addressNormalizer'
 import { calculateRoute } from '../server-functions/calculateRoute'
 import { saveRoute, getRoutes, deleteRoute } from '../server-functions/routePersistence'
@@ -375,7 +374,31 @@ export default function HomePage() {
   }
 
   return (
-    <div className="app-container">
+    <AppShell
+      properties={propertyList}
+      onAddProperty={handleAddProperty}
+      onEditProperty={handleEditProperty}
+      onDeleteProperty={handleDeleteProperty}
+      onClearAll={handleClearAll}
+      startingPropertyIndex={startingPropertyIndex}
+      onStartingPropertyIndexChange={(index) => {
+        setStartingPropertyIndex(index)
+        resetSuccessState()
+      }}
+      startTime={startTime}
+      onStartTimeChange={(time) => {
+        setStartTime(time)
+        resetSuccessState()
+      }}
+      selectedDuration={selectedDuration}
+      onDurationChange={(duration) => {
+        setSelectedDuration(duration)
+        resetSuccessState()
+      }}
+      onCalculate={handleCalculateRoute}
+      isCalculating={isCalculating}
+      showSuccess={showCalculateSuccess}
+    >
       <StateManager
         propertyList={propertyList}
         startingPropertyIndex={startingPropertyIndex}
@@ -386,11 +409,6 @@ export default function HomePage() {
         onClearRoute={handleClearRoute}
       />
 
-      <header className="app-header">
-        <h1 className="app-title">ROUTE CALCULATOR</h1>
-        <p className="app-subtitle">Real Estate Showing Planner</p>
-      </header>
-
       {/* Demo Import Banner */}
       {showDemoImportBanner && demoProperties && (
         <div
@@ -398,33 +416,31 @@ export default function HomePage() {
             backgroundColor: 'rgba(59, 130, 246, 0.1)',
             border: '2px solid rgba(59, 130, 246, 0.3)',
             borderRadius: '12px',
-            padding: '1.5rem',
-            margin: '1rem auto',
-            maxWidth: '900px',
+            padding: '1rem',
+            marginBottom: '1rem',
             display: 'flex',
             flexDirection: 'column',
-            gap: '1rem',
-            backdropFilter: 'blur(10px)'
+            gap: '0.75rem'
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-            <span style={{ fontSize: '1.5rem' }}>🎉</span>
+            <span style={{ fontSize: '1.25rem' }}>🎉</span>
             <div style={{ flex: 1 }}>
-              <h3 style={{ margin: 0, fontSize: '1.1rem', color: '#60a5fa' }}>
+              <h3 style={{ margin: 0, fontSize: '1rem', color: '#60a5fa' }}>
                 Continue from Demo?
               </h3>
-              <p style={{ margin: '0.25rem 0 0 0', fontSize: '0.95rem', opacity: 0.9 }}>
-                You have {demoProperties.length} {demoProperties.length === 1 ? 'property' : 'properties'} from the demo. Import them to get started!
+              <p style={{ margin: '0.25rem 0 0 0', fontSize: '0.875rem', opacity: 0.9 }}>
+                {demoProperties.length} {demoProperties.length === 1 ? 'property' : 'properties'} ready to import.
               </p>
             </div>
           </div>
-          <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'flex-end', flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end' }}>
             <button
               className="calculate-btn"
               style={{
                 backgroundColor: 'rgba(107, 114, 128, 0.3)',
-                padding: '0.5rem 1rem',
-                fontSize: '0.9rem',
+                padding: '0.5rem 0.75rem',
+                fontSize: '0.8rem',
                 minWidth: 'auto'
               }}
               onClick={handleDismissDemoImport}
@@ -435,87 +451,36 @@ export default function HomePage() {
               className="calculate-btn"
               style={{
                 backgroundColor: '#3b82f6',
-                padding: '0.5rem 1.5rem',
-                fontSize: '0.9rem',
+                padding: '0.5rem 1rem',
+                fontSize: '0.8rem',
                 minWidth: 'auto'
               }}
               onClick={handleImportDemoProperties}
             >
-              ✓ Import Properties
+              ✓ Import
             </button>
           </div>
         </div>
       )}
 
-      <main className="main-content">
-        <section className="input-section glass-card">
-          <h2 className="section-title">PROPERTY ADDRESSES</h2>
-
-          <PropertyInputBox onAdd={handleAddProperty} />
-
-          <PropertyList
-            properties={propertyList}
-            onEdit={handleEditProperty}
-            onDelete={handleDeleteProperty}
-            onClearAll={handleClearAll}
-          />
-
-          <div className="starting-point-container">
-            <label htmlFor="starting-point" className="input-label">STARTING POINT (First Address Auto-Selected)</label>
-            <select
-              id="starting-point"
-              className="starting-point-dropdown"
-              value={startingPropertyIndex}
-              onChange={(e) => {
-                setStartingPropertyIndex(Number(e.target.value))
-                resetSuccessState()
-              }}
-            >
-              {propertyList.length === 0 ? (
-                <option value={0}>First property (auto-selected)</option>
-              ) : (
-                propertyList.map((property, index) => (
-                  <option key={property.id} value={index}>
-                    {index + 1}. {property.parsedAddress.length > 40 ? property.parsedAddress.substring(0, 40) + '...' : property.parsedAddress}
-                  </option>
-                ))
-              )}
-            </select>
-          </div>
-
-          <div className="start-time-container">
-            <label htmlFor="start-time" className="input-label">START TIME *</label>
-            <input
-              type="time"
-              id="start-time"
-              className="time-input"
-              value={startTime}
-              required
-              onChange={(e) => {
-                setStartTime(e.target.value)
-                resetSuccessState()
-              }}
-            />
-          </div>
-
-          <DurationSelector 
-            selectedDuration={selectedDuration} 
-            onChange={(newDuration) => {
-              setSelectedDuration(newDuration)
-              resetSuccessState()
-            }} 
-          />
-
-          <button 
-            className={`calculate-btn ${showCalculateSuccess ? 'btn-success' : ''}`}
-            onClick={handleCalculateRoute}
-            disabled={isCalculating}
-          >
-            <span className={`btn-text ${isCalculating || showCalculateSuccess ? 'hidden' : ''}`}>CALCULATE ROUTE</span>
-            <span className={`btn-loader ${isCalculating ? '' : 'hidden'}`}>CALCULATING...</span>
-            <span className={`btn-success ${showCalculateSuccess ? '' : 'hidden'}`}>✓ RESULTS BELOW</span>
-          </button>
-        </section>
+      {/* Read-only property list display */}
+      {propertyList.length === 0 ? (
+        <div className="viewport-empty">
+          <p className="viewport-empty-text">No properties added yet</p>
+          <p className="viewport-empty-cta">Tap + ADD to get started</p>
+        </div>
+      ) : (
+        <div className="viewport-property-list">
+          {propertyList.map((property, index) => (
+            <div key={property.id} className="viewport-property-item">
+              <span className="viewport-property-number">{index + 1}</span>
+              <span className="viewport-property-address">
+                {property.parsedAddress}
+              </span>
+            </div>
+          ))}
+        </div>
+      )}
 
         {calculatedRoute && (
         <section className="results-section">
@@ -635,12 +600,6 @@ export default function HomePage() {
             )}
           </section>
         )}
-      </main>
-
-      <div className="status-container">
-        <div className="status-message hidden" id="status-message"></div>
-      </div>
-
       {/* Sticky Jump to Results Button */}
       {showJumpButton && (
         <button
@@ -740,6 +699,6 @@ export default function HomePage() {
           </div>
         </div>
       )}
-    </div>
+    </AppShell>
   )
 }

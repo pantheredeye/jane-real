@@ -1,0 +1,343 @@
+/* Mobile-First Layout - Bottom Bar + Vaul Sheets */
+
+/* ==================== Bottom Bar ==================== */
+
+.bottom-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: white;
+  border-top: 4px solid var(--text-primary);
+  padding: 12px 16px;
+  display: flex;
+  justify-content: space-around;
+  gap: 12px;
+  z-index: 100;
+  /* Safe area for notched phones */
+  padding-bottom: calc(12px + env(safe-area-inset-bottom));
+}
+
+.bottom-bar-btn {
+  flex: 1;
+  padding: 14px 8px;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 16px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  border: 4px solid var(--text-primary);
+  border-radius: var(--radius-md);
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 48px;
+  font-weight: 700;
+  position: relative;
+}
+
+/* Secondary buttons (Add, Settings) */
+.bottom-bar-btn-secondary {
+  background: white;
+  color: var(--text-primary);
+}
+
+.bottom-bar-btn-secondary:hover {
+  background: var(--bg-glass);
+  transform: translateY(-2px);
+}
+
+/* Primary button (Calculate) */
+.bottom-bar-btn-primary {
+  background: var(--accent-electric);
+  color: white;
+  border-color: var(--accent-electric);
+}
+
+.bottom-bar-btn-primary:hover:not(:disabled) {
+  background: #2563eb;
+  transform: translateY(-2px);
+}
+
+.bottom-bar-btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.bottom-bar-btn-primary.btn-success {
+  background: var(--accent-success);
+  border-color: var(--accent-success);
+}
+
+.bottom-bar-btn:active:not(:disabled) {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.3);
+}
+
+/* Badge for property count */
+.bottom-bar-badge {
+  background: var(--accent-electric);
+  color: white;
+  font-size: 12px;
+  padding: 2px 6px;
+  border-radius: 10px;
+  min-width: 20px;
+  text-align: center;
+}
+
+.bottom-bar-btn-secondary .bottom-bar-badge {
+  background: var(--accent-electric);
+}
+
+/* ==================== Header Bar ==================== */
+
+.header-bar {
+  position: sticky;
+  top: 0;
+  background: white;
+  border-bottom: 4px solid var(--text-primary);
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 50;
+}
+
+.hamburger-btn {
+  width: 44px;
+  height: 44px;
+  background: white;
+  border: 3px solid var(--text-primary);
+  border-radius: var(--radius-md);
+  box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 10px;
+}
+
+.hamburger-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.3);
+}
+
+.hamburger-btn:active {
+  transform: translate(1px, 1px);
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.2);
+}
+
+.hamburger-line {
+  width: 20px;
+  height: 3px;
+  background: var(--text-primary);
+  border-radius: 0;
+}
+
+.route-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 20px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--text-primary);
+  background: none;
+  border: none;
+  padding: 4px 8px;
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+}
+
+.route-title:hover {
+  background: var(--bg-glass);
+}
+
+.route-title:focus {
+  outline: 2px solid var(--accent-electric);
+  outline-offset: 2px;
+}
+
+.help-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--accent-electric);
+  color: white;
+  border: 3px solid var(--text-primary);
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 18px;
+  cursor: pointer;
+  box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.help-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.3);
+}
+
+/* ==================== Vaul Sheet Overrides ==================== */
+
+/* Overlay */
+[data-vaul-drawer-overlay] {
+  background: rgba(26, 26, 26, 0.5) !important;
+}
+
+/* Sheet container */
+[data-vaul-drawer] {
+  background: white !important;
+  border: 4px solid var(--text-primary) !important;
+  border-bottom: none !important;
+  border-radius: 0 !important;
+  box-shadow: 0 -8px 0 rgba(0, 0, 0, 0.2) !important;
+}
+
+/* Handle bar - chunky */
+[data-vaul-handle] {
+  width: 80px !important;
+  height: 6px !important;
+  background: var(--text-primary) !important;
+  border-radius: 0 !important;
+  margin: 16px auto !important;
+}
+
+/* Sheet content */
+.sheet-content {
+  padding: 20px 24px 40px;
+  max-height: calc(90vh - 60px);
+  overflow-y: auto;
+}
+
+.sheet-title {
+  font-family: 'Archivo Black', sans-serif;
+  font-size: 24px;
+  color: var(--text-primary);
+  text-transform: uppercase;
+  margin: 0 0 20px;
+  letter-spacing: 1px;
+}
+
+/* ==================== Main Viewport ==================== */
+
+.app-shell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.main-viewport {
+  flex: 1;
+  padding: 20px 16px;
+  /* Account for bottom bar */
+  padding-bottom: calc(80px + env(safe-area-inset-bottom));
+  max-width: 500px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* Read-only property list in viewport */
+.viewport-property-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.viewport-property-item {
+  background: white;
+  border: 3px solid var(--text-primary);
+  padding: 16px;
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.15);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.viewport-property-number {
+  font-family: 'Archivo Black', sans-serif;
+  font-size: 24px;
+  color: var(--accent-electric);
+  min-width: 32px;
+}
+
+.viewport-property-address {
+  font-size: 16px;
+  color: var(--text-primary);
+  font-weight: 500;
+  flex: 1;
+}
+
+/* Empty state */
+.viewport-empty {
+  text-align: center;
+  padding: 48px 24px;
+  background: var(--bg-glass);
+  border: 3px dashed var(--text-secondary);
+  border-radius: var(--radius-md);
+}
+
+.viewport-empty-text {
+  font-size: 16px;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.viewport-empty-cta {
+  margin-top: 16px;
+  font-size: 14px;
+  color: var(--accent-electric);
+  font-weight: 600;
+}
+
+/* ==================== Mobile Responsive ==================== */
+
+@media (max-width: 480px) {
+  .bottom-bar {
+    padding: 8px 12px;
+    gap: 8px;
+  }
+
+  .bottom-bar-btn {
+    padding: 12px 6px;
+    font-size: 14px;
+  }
+
+  .header-bar {
+    padding: 8px 12px;
+  }
+
+  .route-title {
+    font-size: 18px;
+  }
+
+  .sheet-content {
+    padding: 16px 16px 32px;
+  }
+
+  .sheet-title {
+    font-size: 20px;
+  }
+}
+
+/* ==================== Keyboard Focus States ==================== */
+
+.bottom-bar-btn:focus-visible,
+.hamburger-btn:focus-visible,
+.help-btn:focus-visible {
+  outline: 3px solid var(--accent-electric);
+  outline-offset: 2px;
+}
+
+/* ==================== Hover States for Desktop ==================== */
+
+@media (hover: hover) {
+  .viewport-property-item:hover {
+    transform: translateX(4px);
+    box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.2);
+  }
+}
