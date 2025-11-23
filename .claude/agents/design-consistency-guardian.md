@@ -127,6 +127,48 @@ Start every task by reading these files to refresh your understanding of the cur
 - ❌ Missing `.halftone-shadow` in container components
 - ❌ Font families other than Archivo Black, Bebas Neue, Inter
 - ❌ Lowercase button text (should be uppercase)
+- ❌ Toast notifications for user feedback (accessibility/usability issues)
+
+**User Feedback Patterns** (No Toasts):
+
+Toasts are an anti-pattern due to accessibility and usability issues (auto-dismiss timing, not announced by screen readers, easily missed). Use these alternatives instead:
+
+1. **Self-evident success** - No extra feedback needed when result is obvious
+   - Adding item → item appears in list with highlight animation
+   - Calculate → view switches to results automatically
+   - Delete → item disappears from list
+
+2. **Inline feedback** - Message appears where action occurred
+   ```tsx
+   // Button state change
+   <button className={success ? 'btn-success' : ''}>
+     {success ? '✓ SAVED' : 'SAVE ROUTE'}
+   </button>
+
+   // Input field feedback
+   <div className="input-wrapper">
+     <input ... />
+     {error && <span className="inline-error">{error}</span>}
+   </div>
+   ```
+
+3. **Banners** - Persistent messages for important info (errors, warnings)
+   ```css
+   .error-banner {
+     background: #ffebee;
+     border: 3px solid #f44336;
+     color: #c62828;
+     padding: 16px;
+     font-family: 'Bebas Neue', sans-serif;
+     /* Persistent until dismissed */
+   }
+   ```
+
+4. **Progressive disclosure** - Show content as it's created
+   - Multi-step forms show progress
+   - List items animate in as added
+
+**When reviewing components**: Flag any Toast usage and suggest inline alternatives specific to the action being performed.
 
 **Conversion Patterns** (when migrating existing styles):
 
