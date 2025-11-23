@@ -35,10 +35,10 @@ export function AddSheet({
     >
       <Drawer.Portal>
         <Drawer.Overlay />
-        <Drawer.Content>
+        <Drawer.Content aria-describedby={undefined}>
           <Drawer.Handle />
           <div className="sheet-content">
-            <h2 className="sheet-title">PROPERTIES</h2>
+            <Drawer.Title className="sheet-title">PROPERTIES</Drawer.Title>
 
             {/* Input for adding new properties */}
             <PropertyInputBox onAdd={onAdd} />

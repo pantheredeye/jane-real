@@ -28,13 +28,16 @@ export function SettingsSheet({
   onDurationChange
 }: SettingsSheetProps) {
   return (
-    <Drawer.Root open={open} onOpenChange={onOpenChange}>
+    <Drawer.Root
+      open={open}
+      onOpenChange={onOpenChange}
+    >
       <Drawer.Portal>
         <Drawer.Overlay />
-        <Drawer.Content>
+        <Drawer.Content aria-describedby={undefined}>
           <Drawer.Handle />
           <div className="sheet-content">
-            <h2 className="sheet-title">SETTINGS</h2>
+            <Drawer.Title className="sheet-title">SETTINGS</Drawer.Title>
 
             {/* Starting Point */}
             <div className="starting-point-container">

@@ -197,19 +197,19 @@ body {
   padding: 0 var(--space-md);
   font-size: 18px;
   font-weight: 600;
-  background: var(--bg-glass-strong);
-  backdrop-filter: var(--blur-light);
-  border: 3px solid rgba(59, 130, 246, 0.3);
-  border-radius: var(--radius-md);
+  background: white;
+  border: 3px solid var(--text-primary);
+  border-radius: 0;
   color: var(--text-primary);
   cursor: pointer;
   font-family: inherit;
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.15);
 }
 
 .starting-point-dropdown:focus {
   outline: none;
   border-color: var(--accent-electric);
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+  box-shadow: 4px 4px 0 rgba(59, 130, 246, 0.3);
 }
 
 /* Duration Presets */
@@ -227,27 +227,28 @@ body {
   height: var(--touch-optimal);
   font-size: 20px;
   font-weight: 700;
-  background: var(--bg-glass);
-  backdrop-filter: var(--blur-medium);
-  border: 3px solid rgba(255, 255, 255, 0.3);
-  border-radius: var(--radius-md);
+  background: white;
+  border: 3px solid var(--text-primary);
+  border-radius: 0;
   color: var(--text-primary);
   cursor: pointer;
   transition: all 0.2s ease;
   font-family: inherit;
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.15);
 }
 
 .duration-btn:hover {
-  background: var(--bg-glass-elevated);
-  border-color: rgba(59, 130, 246, 0.5);
+  background: var(--bg-glass);
+  border-color: var(--accent-electric);
   transform: translateY(-2px);
+  box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.2);
 }
 
 .duration-btn.active {
-  background: linear-gradient(135deg, var(--accent-electric), #2563eb);
-  border-color: var(--accent-electric);
+  background: var(--accent-electric);
+  border-color: var(--text-primary);
   color: var(--text-white);
-  box-shadow: 0 4px 16px rgba(59, 130, 246, 0.3);
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.3);
 }
 
 /* Primary Buttons */
@@ -458,15 +459,14 @@ body {
   padding: 0 var(--space-md);
   font-size: 18px;
   font-weight: 700;
-  background: linear-gradient(135deg, var(--bg-glass-strong), rgba(255, 255, 255, 0.8));
-  backdrop-filter: var(--blur-medium);
-  border: 3px solid rgba(59, 130, 246, 0.3);
-  border-radius: var(--radius-md);
+  background: white;
+  border: 3px solid var(--text-primary);
+  border-radius: 0;
   color: var(--text-primary);
   font-family: inherit;
   flex: 1;
   text-align: center;
-  box-shadow: var(--shadow-glass);
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.15);
   transition: all 0.2s ease;
 }
 
@@ -474,15 +474,12 @@ body {
 .duration-input:focus {
   outline: none;
   border-color: var(--accent-electric);
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), var(--bg-glass-strong));
-  transform: translateY(-1px);
+  box-shadow: 4px 4px 0 rgba(59, 130, 246, 0.3);
 }
 
 .time-input:hover,
 .duration-input:hover {
-  border-color: rgba(59, 130, 246, 0.5);
-  transform: translateY(-1px);
+  border-color: var(--accent-electric);
 }
 
 .freeze-btn {
@@ -903,20 +900,19 @@ body {
   flex: 1;
   padding: var(--space-sm);
   font-size: 16px;
-  border: 3px solid rgba(59, 130, 246, 0.3);
-  border-radius: var(--radius-md);
-  background: var(--bg-glass);
-  backdrop-filter: var(--blur-medium);
+  border: 3px solid var(--text-primary);
+  border-radius: 0;
+  background: white;
   color: var(--text-primary);
   font-weight: 500;
   transition: all 0.2s;
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.15);
 }
 
 .property-input-field:focus {
   outline: none;
   border-color: var(--accent-electric);
-  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
-  background: var(--bg-glass-elevated);
+  box-shadow: 4px 4px 0 rgba(59, 130, 246, 0.3);
 }
 
 .property-input-field::placeholder {
@@ -931,19 +927,19 @@ body {
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 1px;
-  border: 3px solid var(--accent-electric);
-  border-radius: var(--radius-md);
+  border: 3px solid var(--text-primary);
+  border-radius: 0;
   background: var(--accent-electric);
   color: var(--text-white);
   cursor: pointer;
   transition: all 0.2s;
-  box-shadow: var(--shadow-glass);
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.3);
 }
 
 .property-add-btn:hover:not(:disabled) {
   background: #2563eb;
   transform: translateY(-2px);
-  box-shadow: var(--shadow-elevated);
+  box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.3);
 }
 
 .property-add-btn:active:not(:disabled) {
@@ -1018,11 +1014,10 @@ body {
   align-items: center;
   gap: var(--space-sm);
   padding: var(--space-sm);
-  background: var(--bg-glass-elevated);
-  backdrop-filter: var(--blur-medium);
-  border-radius: var(--radius-md);
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  box-shadow: var(--shadow-glass);
+  background: white;
+  border-radius: 0;
+  border: 3px solid var(--text-primary);
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.15);
   transition: all 0.2s;
   animation: slideInItem 0.3s ease-out;
 }
@@ -1040,7 +1035,7 @@ body {
 
 .property-list-item:hover {
   transform: translateX(4px);
-  box-shadow: var(--shadow-elevated);
+  box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.2);
 }
 
 .property-list-item.menu-open {
@@ -1113,12 +1108,13 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 2px solid;
-  border-radius: var(--radius-sm);
+  border: 3px solid;
+  border-radius: 0;
   font-size: 16px;
   cursor: pointer;
   transition: all 0.2s;
   background: white;
+  box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.15);
 }
 
 .property-list-item-btn-edit {
@@ -1176,8 +1172,8 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 2px solid rgba(51, 65, 85, 0.3);
-  border-radius: var(--radius-sm);
+  border: 3px solid var(--text-primary);
+  border-radius: 0;
   background: white;
   color: var(--text-secondary);
   cursor: pointer;
@@ -1185,6 +1181,7 @@ body {
   font-size: 20px;
   line-height: 1;
   padding: 0;
+  box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.15);
 }
 
 .property-list-item-btn-menu:hover {
@@ -1207,9 +1204,9 @@ body {
   right: 0;
   min-width: 160px;
   background: white;
-  border-radius: var(--radius-md);
-  border: 1px solid rgba(15, 23, 42, 0.1);
-  box-shadow: 0 10px 40px rgba(15, 23, 42, 0.2), 0 4px 12px rgba(15, 23, 42, 0.15);
+  border-radius: 0;
+  border: 3px solid var(--text-primary);
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.3);
   padding: 6px;
   z-index: 1000;
   animation: dropdownSlideIn 0.2s ease-out;
@@ -1316,19 +1313,20 @@ body {
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  border: 2px solid var(--accent-danger);
-  border-radius: var(--radius-md);
+  border: 3px solid var(--accent-danger);
+  border-radius: 0;
   background: white;
   color: var(--accent-danger);
   cursor: pointer;
   transition: all 0.2s;
+  box-shadow: 4px 4px 0 rgba(239, 68, 68, 0.3);
 }
 
 .clear-all-btn:hover {
   background: var(--accent-danger);
   color: white;
   transform: translateY(-2px);
-  box-shadow: var(--shadow-glass);
+  box-shadow: 6px 6px 0 rgba(239, 68, 68, 0.4);
 }
 
 .clear-all-btn:active {
