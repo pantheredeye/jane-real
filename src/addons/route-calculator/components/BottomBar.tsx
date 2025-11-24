@@ -1,8 +1,7 @@
 'use client'
 
 interface BottomBarProps {
-  onAddPress: () => void
-  onSettingsPress: () => void
+  onWorkspacePress: () => void
   onCalculatePress: () => void
   isCalculating: boolean
   showSuccess: boolean
@@ -10,8 +9,7 @@ interface BottomBarProps {
 }
 
 export function BottomBar({
-  onAddPress,
-  onSettingsPress,
+  onWorkspacePress,
   onCalculatePress,
   isCalculating,
   showSuccess,
@@ -21,19 +19,12 @@ export function BottomBar({
     <div className="bottom-bar">
       <button
         className="bottom-bar-btn bottom-bar-btn-secondary"
-        onClick={onAddPress}
+        onClick={onWorkspacePress}
       >
-        + ADD
+        WORKSPACE
         {propertyCount > 0 && (
           <span className="bottom-bar-badge">{propertyCount}</span>
         )}
-      </button>
-
-      <button
-        className="bottom-bar-btn bottom-bar-btn-secondary"
-        onClick={onSettingsPress}
-      >
-        SETTINGS
       </button>
 
       <button

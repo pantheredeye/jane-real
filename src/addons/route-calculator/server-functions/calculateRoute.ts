@@ -92,14 +92,39 @@ async function optimizeRoute(request: CalculateRouteRequest): Promise<RouteStruc
     }
   }
 
-  // Step 4: Optimize route using traveling salesman approach
+  // Step 4: Determine starting point based on startLocation
+  let startIndex = 0 // Default to first property
+
+  // TODO: Handle 'current' location - needs to:
+  // 1. Add origin coords to distance matrix
+  // 2. Run TSP from origin index
+  // 3. Remove origin from final route (it's not a property)
+
+  // TODO: Handle 'custom' address - needs to:
+  // 1. Geocode the custom address
+  // 2. Add to distance matrix as origin
+  // 3. Run TSP from origin index
+  // 4. Remove origin from final route
+
+  if (request.startLocation.type === 'current' && request.startLocation.coords) {
+    // For now, just use first property until origin handling is implemented
+    console.log('TODO: Implement current location routing with coords:', request.startLocation.coords)
+    startIndex = 0
+  } else if (request.startLocation.type === 'custom' && request.startLocation.address) {
+    // For now, just use first property until custom address handling is implemented
+    console.log('TODO: Implement custom address routing:', request.startLocation.address)
+    startIndex = 0
+  }
+  // 'first' type uses startIndex = 0 (default)
+
+  // Step 5: Optimize route using traveling salesman approach
   const optimizedIndices = optimizeTravelingSalesman(
     distanceMatrix.durations,
-    request.startingPropertyIndex,
+    startIndex,
     properties
   )
 
-  // Step 5: Build route structure with durations only (no appointment times)
+  // Step 6: Build route structure with durations only (no appointment times)
   const routeItems = optimizedIndices.map((propertyIndex, routeIndex) => {
     const property = properties[propertyIndex]
     let travelTime = 0
@@ -126,7 +151,7 @@ async function optimizeRoute(request: CalculateRouteRequest): Promise<RouteStruc
     }
   })
 
-  // Step 6: Calculate total driving time
+  // Step 7: Calculate total driving time
   const totalDrivingTime = routeItems.reduce((sum, item) => sum + item.travelTime, 0)
 
   return {

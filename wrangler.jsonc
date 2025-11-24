@@ -43,5 +43,41 @@
       "database_name": "routefast",
       "database_id": "f6a07af7-f292-435e-b323-5b4a9963b2ce"
     }
-  ]
+  ],
+  "env": {
+    "staging": {
+      "routes": [
+        {
+          "pattern": "staging.routefast.app",
+          "custom_domain": true
+        }
+      ],
+      "vars": {
+        "WEBAUTHN_APP_NAME": "routefast-staging"
+      },
+      "d1_databases": [
+        {
+          "binding": "DB",
+          "database_name": "routefast-staging",
+          "database_id": "a0929c77-1807-49d5-874a-b83e2f0fbdab"
+        }
+      ],
+      "durable_objects": {
+        "bindings": [
+          {
+            "name": "SESSION_DURABLE_OBJECT",
+            "class_name": "SessionDurableObject"
+          }
+        ]
+      },
+      "migrations": [
+        {
+          "tag": "v1",
+          "new_sqlite_classes": [
+            "SessionDurableObject"
+          ]
+        }
+      ]
+    }
+  }
 }

@@ -7,7 +7,8 @@ import { DriveTimeConnector } from '../components/DriveTimeConnector'
 import { RouteSummary } from '../components/RouteSummary'
 import { CopyButtons } from '../components/CopyButtons'
 import { StateManager } from '../components/StateManager'
-import { Toast, ToastType } from '../components/Toast'
+import { PropertyInputBox } from '../components/PropertyInputBox'
+import { PropertyList } from '../components/PropertyList'
 import '../mobile-layout.css'
 import { isDuplicateAddress } from '../utils/addressNormalizer'
 import { calculateRoute } from '../server-functions/calculateRoute'
@@ -28,17 +29,25 @@ export default function HomePage() {
   // TODO: Add loading states during calculation
   
   const [propertyList, setPropertyList] = useState<PropertyInput[]>([])
-  const [startingPropertyIndex, setStartingPropertyIndex] = useState(0)
   const [startTime, setStartTime] = useState('09:00')
   const [selectedDuration, setSelectedDuration] = useState(30)
+
+  // Start location state
+  const [startFromType, setStartFromType] = useState<'current' | 'first' | 'custom'>('first')
+  const [customStartAddress, setCustomStartAddress] = useState('')
+  const [currentLocation, setCurrentLocation] = useState<{ lat: number; lng: number } | null>(null)
+  const [locationError, setLocationError] = useState<string | null>(null)
   const [isCalculating, setIsCalculating] = useState(false)
   const [showJumpButton, setShowJumpButton] = useState(false)
   const [showCalculateSuccess, setShowCalculateSuccess] = useState(false)
-  const [toast, setToast] = useState<{ message: string; type: ToastType } | null>(null)
+
+  // Route identity
+  const [routeName, setRouteName] = useState('')
+  const [isDirty, setIsDirty] = useState(false)
+  const [lastCalculatedFingerprint, setLastCalculatedFingerprint] = useState('')
 
   // Route persistence state
   const [showSaveDialog, setShowSaveDialog] = useState(false)
-  const [routeName, setRouteName] = useState('')
   const [routeDate, setRouteDate] = useState(new Date().toISOString().split('T')[0])
   const [isSaving, setIsSaving] = useState(false)
   const [savedRoutes, setSavedRoutes] = useState<any[]>([])
@@ -114,23 +123,8 @@ export default function HomePage() {
       p => isDuplicateAddress(p.parsedAddress, property.parsedAddress)
     )
 
-    if (isDuplicate) {
-      setToast({
-        message: 'This address is already in your list (different format detected)',
-        type: 'warning'
-      })
-      // Still add it anyway (warn, don't block)
-    }
-
     setPropertyList(prev => [...prev, property])
-
-    if (!isDuplicate) {
-      setToast({
-        message: 'Property added!',
-        type: 'success'
-      })
-    }
-
+    setIsDirty(true)
     resetSuccessState()
   }
 
@@ -140,15 +134,13 @@ export default function HomePage() {
         prop.id === id ? { ...prop, parsedAddress: newAddress } : prop
       )
     )
+    setIsDirty(true)
     resetSuccessState()
   }
 
   const handleDeleteProperty = (id: string) => {
     setPropertyList(prev => prev.filter(prop => prop.id !== id))
-    setToast({
-      message: 'Property removed',
-      type: 'info'
-    })
+    setIsDirty(true)
     resetSuccessState()
   }
 
@@ -164,10 +156,7 @@ export default function HomePage() {
     }
 
     setPropertyList([])
-    setToast({
-      message: `Cleared ${propertyList.length} ${propertyList.length === 1 ? 'property' : 'properties'}`,
-      type: 'info'
-    })
+    setIsDirty(true)
     resetSuccessState()
   }
 
@@ -179,18 +168,20 @@ export default function HomePage() {
   // Handle state restoration from localStorage
   const handleStateRestore = (restoredState: {
     propertyList: PropertyInput[]
-    startingPropertyIndex: number
     startTime: string
     selectedDuration: number
     calculatedRoute: OptimizedRoute | null
+    routeName: string
   }) => {
     setPropertyList(restoredState.propertyList)
-    setStartingPropertyIndex(restoredState.startingPropertyIndex)
     setStartTime(restoredState.startTime)
     setSelectedDuration(restoredState.selectedDuration)
+    setRouteName(restoredState.routeName)
     if (restoredState.calculatedRoute) {
       setInitialRoute(restoredState.calculatedRoute)
     }
+    // Don't mark as dirty on restore - this is saved state
+    setIsDirty(false)
   }
 
   // Handle clearing route when inputs change significantly
@@ -221,12 +212,29 @@ export default function HomePage() {
       return
     }
 
+    // Build start location data
+    let startLocation: { type: 'current' | 'first' | 'custom'; coords?: { lat: number; lng: number }; address?: string } = {
+      type: startFromType
+    }
+
+    if (startFromType === 'current') {
+      if (!currentLocation) {
+        return
+      }
+      startLocation.coords = currentLocation
+    } else if (startFromType === 'custom') {
+      if (!customStartAddress.trim()) {
+        return
+      }
+      startLocation.address = customStartAddress
+    }
+
     const requestData = {
       addresses: addressList,
       sourceUrls: sourceUrlList,
       thumbnailUrls: thumbnailUrlList,
       showingDuration: selectedDuration,
-      startingPropertyIndex,
+      startLocation,
     }
 
     console.log('Calculating route with:', requestData)
@@ -242,7 +250,7 @@ export default function HomePage() {
       console.log('Route with times:', routeWithTimes)
 
       setInitialRoute(routeWithTimes)
-
+      setLastCalculatedFingerprint(currentFingerprint)
 
       // Show success state on button
       setShowCalculateSuccess(true)
@@ -261,10 +269,6 @@ export default function HomePage() {
 
     } catch (error) {
       console.error('Route calculation failed:', error)
-      setToast({
-        message: 'Failed to calculate route. Please try again.',
-        type: 'error'
-      })
     } finally {
       setIsCalculating(false)
     }
@@ -312,7 +316,6 @@ export default function HomePage() {
 
   const handleSaveRoute = async () => {
     if (!calculatedRoute || !routeName.trim()) {
-      setToast({ message: 'Please enter a route name', type: 'warning' })
       return
     }
 
@@ -331,13 +334,11 @@ export default function HomePage() {
         )
       })
 
-      setToast({ message: 'Route saved successfully!', type: 'success' })
       setShowSaveDialog(false)
       setRouteName('')
       await loadSavedRoutes() // Reload list
     } catch (error) {
       console.error('Failed to save route:', error)
-      setToast({ message: 'Failed to save route', type: 'error' })
     } finally {
       setIsSaving(false)
     }
@@ -348,21 +349,15 @@ export default function HomePage() {
 
     try {
       await deleteRoute(routeId)
-      setToast({ message: 'Route deleted', type: 'success' })
       await loadSavedRoutes()
     } catch (error) {
       console.error('Failed to delete route:', error)
-      setToast({ message: 'Failed to delete route', type: 'error' })
     }
   }
 
   const handleImportDemoProperties = () => {
     if (demoProperties) {
       setPropertyList(demoProperties)
-      setToast({
-        message: `Imported ${demoProperties.length} ${demoProperties.length === 1 ? 'property' : 'properties'} from demo!`,
-        type: 'success'
-      })
       setShowDemoImportBanner(false)
       localStorage.removeItem(DEMO_PROPERTIES_KEY)
     }
@@ -373,38 +368,128 @@ export default function HomePage() {
     localStorage.removeItem(DEMO_PROPERTIES_KEY)
   }
 
+  // Geolocation handler
+  const requestCurrentLocation = () => {
+    if (!navigator.geolocation) {
+      setLocationError('Geolocation not supported')
+      return
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        setCurrentLocation({
+          lat: position.coords.latitude,
+          lng: position.coords.longitude
+        })
+        setLocationError(null)
+      },
+      (error) => {
+        let message = 'Failed to get location'
+        if (error.code === error.PERMISSION_DENIED) {
+          message = 'Location permission denied'
+        } else if (error.code === error.POSITION_UNAVAILABLE) {
+          message = 'Location unavailable'
+        } else if (error.code === error.TIMEOUT) {
+          message = 'Location request timed out'
+        }
+        setLocationError(message)
+        // Fall back to first property
+        setStartFromType('first')
+      },
+      { enableHighAccuracy: true, timeout: 10000 }
+    )
+  }
+
+  // Route management handlers
+  const handleNewRoute = () => {
+    // TODO: Prompt to save if dirty
+    if (isDirty && propertyList.length > 0) {
+      const confirmed = window.confirm('You have unsaved changes. Discard and create new route?')
+      if (!confirmed) return
+    }
+
+    setPropertyList([])
+    setRouteName('')
+    setStartTime('09:00')
+    setSelectedDuration(30)
+    setInitialRoute(null)
+    setIsDirty(false)
+    localStorage.removeItem('routeCalculatorState')
+  }
+
+  const handleOpenRoute = () => {
+    // TODO: Implement route loading from DB
+    // TODO: Schema needs: Route model with properties, settings, user relationship
+  }
+
+  const handleSaveRouteFromMenu = () => {
+    if (!calculatedRoute) {
+      return
+    }
+    setShowSaveDialog(true)
+  }
+
+  // Calculate state fingerprint for dirty tracking
+  const calculateStateFingerprint = () => {
+    const propertyFingerprint = propertyList
+      .map(p => `${p.id}:${p.parsedAddress}`)
+      .sort()
+      .join('|')
+    return `${propertyFingerprint}|${startTime}|${selectedDuration}|${startFromType}|${customStartAddress}`
+  }
+
+  const currentFingerprint = calculateStateFingerprint()
+  const isCalculationDirty = !!(calculatedRoute && currentFingerprint !== lastCalculatedFingerprint)
+
   return (
     <AppShell
       properties={propertyList}
-      onAddProperty={handleAddProperty}
-      onEditProperty={handleEditProperty}
-      onDeleteProperty={handleDeleteProperty}
       onClearAll={handleClearAll}
-      startingPropertyIndex={startingPropertyIndex}
-      onStartingPropertyIndexChange={(index) => {
-        setStartingPropertyIndex(index)
-        resetSuccessState()
-      }}
       startTime={startTime}
       onStartTimeChange={(time) => {
         setStartTime(time)
+        setIsDirty(true)
         resetSuccessState()
       }}
       selectedDuration={selectedDuration}
       onDurationChange={(duration) => {
         setSelectedDuration(duration)
+        setIsDirty(true)
         resetSuccessState()
       }}
       onCalculate={handleCalculateRoute}
       isCalculating={isCalculating}
       showSuccess={showCalculateSuccess}
+      isCalculationDirty={isCalculationDirty}
+      startFromType={startFromType}
+      onStartFromTypeChange={(type) => {
+        setStartFromType(type)
+        setIsDirty(true)
+      }}
+      customStartAddress={customStartAddress}
+      onCustomStartAddressChange={(address) => {
+        setCustomStartAddress(address)
+        setIsDirty(true)
+      }}
+      onRequestLocation={requestCurrentLocation}
+      hasCurrentLocation={!!currentLocation}
+      routeName={routeName}
+      onRouteNameChange={(name) => {
+        setRouteName(name)
+        setIsDirty(true)
+      }}
+      isDirty={isDirty}
+      onNewRoute={handleNewRoute}
+      onOpenRoute={handleOpenRoute}
+      onSaveRoute={handleSaveRouteFromMenu}
+      hasCalculatedRoute={!!calculatedRoute}
     >
       <StateManager
         propertyList={propertyList}
-        startingPropertyIndex={startingPropertyIndex}
         startTime={startTime}
         selectedDuration={selectedDuration}
         calculatedRoute={calculatedRoute}
+        routeName={routeName}
         onStateRestore={handleStateRestore}
         onClearRoute={handleClearRoute}
       />
@@ -463,26 +548,30 @@ export default function HomePage() {
         </div>
       )}
 
-      {/* Read-only property list display */}
-      {propertyList.length === 0 ? (
-        <div className="viewport-empty">
-          <p className="viewport-empty-text">No properties added yet</p>
-          <p className="viewport-empty-cta">Tap + ADD to get started</p>
-        </div>
-      ) : (
-        <div className="viewport-property-list">
-          {propertyList.map((property, index) => (
-            <div key={property.id} className="viewport-property-item">
-              <span className="viewport-property-number">{index + 1}</span>
-              <span className="viewport-property-address">
-                {property.parsedAddress}
-              </span>
-            </div>
-          ))}
+      {/* Inline Property Input - always visible at top */}
+      <div className="inline-input-section">
+        <PropertyInputBox onAdd={handleAddProperty} />
+      </div>
+
+      {/* Property List - show when properties exist */}
+      {propertyList.length > 0 && (
+        <div className="inline-list-section">
+          <PropertyList
+            properties={propertyList}
+            onEdit={handleEditProperty}
+            onDelete={handleDeleteProperty}
+          />
         </div>
       )}
 
-        {calculatedRoute && (
+      {/* Empty state hint - only when no properties and no route */}
+      {propertyList.length === 0 && !calculatedRoute && (
+        <div className="viewport-empty">
+          <p className="viewport-empty-text">Add properties above to build your route</p>
+        </div>
+      )}
+
+      {calculatedRoute && (
         <section className="results-section">
           <h2 className="section-title">OPTIMIZED ITINERARY</h2>
           <p className="section-description">
@@ -576,7 +665,7 @@ export default function HomePage() {
                           minWidth: 'auto'
                         }}
                         onClick={async () => {
-                          setToast({ message: 'Load route feature coming soon!', type: 'info' })
+                          // TODO: Implement load route
                         }}
                       >
                         📂 LOAD
@@ -609,15 +698,6 @@ export default function HomePage() {
         >
           ↓ VIEW RESULTS
         </button>
-      )}
-
-      {/* Toast Notifications */}
-      {toast && (
-        <Toast
-          message={toast.message}
-          type={toast.type}
-          onClose={() => setToast(null)}
-        />
       )}
 
       {/* Save Route Dialog */}

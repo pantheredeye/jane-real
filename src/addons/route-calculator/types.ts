@@ -53,13 +53,20 @@ export interface RouteStructure {
   totalDrivingTime: number
 }
 
+// Start location types
+export interface StartLocation {
+  type: 'current' | 'first' | 'custom'
+  coords?: { lat: number; lng: number }
+  address?: string
+}
+
 // Request/Response types
 export interface CalculateRouteRequest {
   addresses: string[]
   sourceUrls?: (string | undefined)[] // Optional URLs corresponding to each address
   thumbnailUrls?: (string | undefined)[] // Optional thumbnail URLs corresponding to each address
   showingDuration: number
-  startingPropertyIndex: number
+  startLocation: StartLocation
 }
 
 export interface CalculateRouteResponse {
@@ -88,12 +95,21 @@ export interface DistanceMatrixResult {
 }
 
 // Zod validation schemas
+export const StartLocationSchema = z.object({
+  type: z.enum(['current', 'first', 'custom']),
+  coords: z.object({
+    lat: z.number(),
+    lng: z.number()
+  }).optional(),
+  address: z.string().optional()
+})
+
 export const CalculateRouteRequestSchema = z.object({
   addresses: z.array(z.string().min(1)),
   sourceUrls: z.array(z.string().optional()).optional(),
   thumbnailUrls: z.array(z.string().optional()).optional(),
   showingDuration: z.number().min(5).max(120),
-  startingPropertyIndex: z.number().min(0),
+  startLocation: StartLocationSchema,
 })
 
 

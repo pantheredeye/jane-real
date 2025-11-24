@@ -1333,89 +1333,6 @@ body {
   transform: translateY(0);
 }
 
-/* Toast Notifications */
-.toast {
-  position: fixed;
-  top: var(--space-lg);
-  right: var(--space-lg);
-  min-width: 300px;
-  max-width: 400px;
-  padding: var(--space-sm) var(--space-md);
-  display: flex;
-  align-items: center;
-  gap: var(--space-sm);
-  background: var(--bg-glass-strong);
-  backdrop-filter: var(--blur-heavy);
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-elevated);
-  border: 2px solid;
-  z-index: 10000;
-  animation: toastSlideIn 0.3s ease-out;
-}
-
-@keyframes toastSlideIn {
-  from {
-    opacity: 0;
-    transform: translateX(100%);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-.toast-success {
-  border-color: var(--accent-success);
-  color: var(--accent-success);
-}
-
-.toast-warning {
-  border-color: var(--accent-warning);
-  color: #b45309; /* Darker warning for readability */
-}
-
-.toast-error {
-  border-color: var(--accent-danger);
-  color: var(--accent-danger);
-}
-
-.toast-info {
-  border-color: var(--accent-electric);
-  color: var(--accent-electric);
-}
-
-.toast-icon {
-  font-size: 20px;
-  font-weight: 700;
-  flex-shrink: 0;
-}
-
-.toast-message {
-  flex: 1;
-  font-size: 14px;
-  font-weight: 600;
-}
-
-.toast-close {
-  min-width: 28px;
-  min-height: 28px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(0, 0, 0, 0.1);
-  border: none;
-  border-radius: 50%;
-  cursor: pointer;
-  font-size: 14px;
-  transition: all 0.2s;
-  flex-shrink: 0;
-}
-
-.toast-close:hover {
-  background: rgba(0, 0, 0, 0.2);
-  transform: scale(1.1);
-}
-
 /* Mobile responsive adjustments for new components */
 @media (max-width: 768px) {
   .property-input-field {
@@ -1438,14 +1355,6 @@ body {
   .listing-btn,
   .maps-btn {
     width: 100%;
-  }
-
-  .toast {
-    top: var(--space-sm);
-    right: var(--space-sm);
-    left: var(--space-sm);
-    min-width: auto;
-    max-width: none;
   }
 }
 /* ==================== Compact Visual Timeline - New Card Design ==================== */

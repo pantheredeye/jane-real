@@ -7,6 +7,9 @@ import { userRoutes } from "@/app/pages/user/routes";
 import { routeCalculatorRoutes } from "@/addons/route-calculator/routes";
 import { subscriptionRoutes } from "@/addons/subscription/routes";
 import landingRoutes from "@/app/pages/landing/routes";
+import { accountRoutes } from "@/app/pages/account/routes";
+import { legalRoutes } from "@/app/pages/legal/routes";
+import { shareRoutes } from "@/app/pages/share/routes";
 import { sessions, setupSessionStore } from "./session/store";
 import { Session } from "./session/durableObject";
 import { type User, type Tenant, type TenantMembership, db, setupDb } from "@/db";
@@ -97,5 +100,8 @@ export default defineApp([
     prefix("/user", userRoutes),
     prefix("/subscription", subscriptionRoutes),
     prefix("/route", routeCalculatorRoutes),
+    prefix("/account", accountRoutes),
+    prefix("/legal", legalRoutes),
+    prefix("/share", shareRoutes),
   ]),
 ]);

@@ -6,26 +6,26 @@ import type { OptimizedRoute, PropertyInput } from '../types'
 
 interface StateManagerProps {
   propertyList: PropertyInput[]
-  startingPropertyIndex: number
   startTime: string
   selectedDuration: number
   calculatedRoute: OptimizedRoute | null
+  routeName: string
   onStateRestore: (state: {
     propertyList: PropertyInput[]
-    startingPropertyIndex: number
     startTime: string
     selectedDuration: number
     calculatedRoute: OptimizedRoute | null
+    routeName: string
   }) => void
   onClearRoute?: () => void
 }
 
 export function StateManager({
   propertyList,
-  startingPropertyIndex,
   startTime,
   selectedDuration,
   calculatedRoute,
+  routeName,
   onStateRestore,
   onClearRoute
 }: StateManagerProps) {
@@ -69,10 +69,10 @@ export function StateManager({
 
           onStateRestore({
             propertyList: state.propertyList || [],
-            startingPropertyIndex: state.startingPropertyIndex || 0,
             startTime: state.startTime || '09:00',
             selectedDuration: state.selectedDuration || 30,
-            calculatedRoute: restoredRoute
+            calculatedRoute: restoredRoute,
+            routeName: state.routeName || ''
           })
         } else {
           // Clear stale data
@@ -87,19 +87,19 @@ export function StateManager({
 
   // Save state whenever any route-related data changes
   useEffect(() => {
-    if (propertyList.length > 0) {
+    if (propertyList.length > 0 || routeName) {
       const stateToSave = {
         propertyList,
-        startingPropertyIndex,
         startTime,
         selectedDuration,
         calculatedRoute,
+        routeName,
         timezoneOffset: new Date().getTimezoneOffset(), // Save current timezone offset
         timestamp: Date.now()
       }
       localStorage.setItem('routeCalculatorState', JSON.stringify(stateToSave))
     }
-  }, [propertyList, startingPropertyIndex, startTime, selectedDuration, calculatedRoute]) // Save on any changes
+  }, [propertyList, startTime, selectedDuration, calculatedRoute, routeName]) // Save on any changes
 
   // Clear route when property list changes significantly (but only if we have a current route)
   useEffect(() => {

@@ -69,6 +69,9 @@ pnpm run build
 # Deploy to Cloudflare
 pnpm run deploy
 
+# Deploy to Staging
+CLOUDFLARE_ENV=staging pnpm release
+
 # Database operations
 pnpm run db:generate    # Generate Prisma client
 pnpm run db:push       # Push schema to database
@@ -77,7 +80,8 @@ pnpm run db:studio     # Open Prisma Studio
 
 ### TypeScript & Linting
 ```bash
-pnpm run typecheck     # Check TypeScript types
+pnpm run generate  # Generate prior to type check
+pnpm run types     # Check TypeScript types
 pnpm run lint          # Run ESLint
 pnpm run format        # Format code with Prettier
 ```

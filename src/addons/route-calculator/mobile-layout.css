@@ -212,6 +212,254 @@
   box-shadow: 0 -8px 0 rgba(0, 0, 0, 0.2) !important;
 }
 
+/* Route Workspace Sheet - partial overlay, stops above bottom bar */
+[data-vaul-drawer].workspace-sheet {
+  /* 70% of viewport, but offset from bottom to show bottom bar */
+  max-height: 70vh !important;
+  bottom: calc(80px + env(safe-area-inset-bottom)) !important;
+  border-bottom: 4px solid var(--text-primary) !important;
+  box-shadow: 0 8px 0 rgba(0, 0, 0, 0.2) !important;
+}
+
+/* Hide Vaul's ::after pseudo-element that covers background */
+[data-vaul-drawer].workspace-sheet::after {
+  display: none !important;
+}
+
+/* Workspace sheet content - flex layout with scrollable middle */
+.workspace-sheet .sheet-content {
+  display: flex;
+  flex-direction: column;
+  max-height: calc(70vh - 60px);
+  padding: 20px 24px 16px;
+}
+
+/* Fixed top region - route name */
+.workspace-top {
+  flex-shrink: 0;
+  margin-bottom: 12px;
+}
+
+.workspace-route-name {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 20px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--text-primary);
+  background: none;
+  border: none;
+  border-bottom: 2px dashed transparent;
+  padding: 4px 0;
+  width: 100%;
+  cursor: pointer;
+}
+
+.workspace-route-name:hover {
+  border-bottom-color: var(--text-secondary);
+}
+
+.workspace-route-name:focus {
+  outline: none;
+  border-bottom: 2px solid var(--accent-electric);
+}
+
+.workspace-route-name::placeholder {
+  color: var(--text-secondary);
+}
+
+.dirty-indicator {
+  color: var(--accent-warning, #f59e0b);
+  margin-left: 4px;
+}
+
+/* Scrollable middle region - property list */
+.workspace-middle {
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
+  margin-bottom: 12px;
+}
+
+/* Property list without clear button in workspace */
+.workspace-middle .property-list-container {
+  height: 100%;
+}
+
+/* Fixed bottom region - input + settings */
+.workspace-bottom {
+  flex-shrink: 0;
+  border-top: 2px solid var(--bg-glass);
+  padding-top: 12px;
+}
+
+/* Collapsible settings section */
+.workspace-settings {
+  margin-top: 12px;
+}
+
+.workspace-settings-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 8px 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 14px;
+  letter-spacing: 1px;
+  color: var(--text-secondary);
+}
+
+.workspace-settings-toggle:hover {
+  color: var(--text-primary);
+}
+
+.workspace-settings-chevron {
+  transition: transform 0.2s ease;
+}
+
+.workspace-settings-chevron.expanded {
+  transform: rotate(180deg);
+}
+
+.workspace-settings-content {
+  padding: 12px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Clear button in bottom region */
+.workspace-clear-btn {
+  margin-top: 12px;
+  padding: 8px 12px;
+  background: none;
+  border: 2px solid var(--text-secondary);
+  color: var(--text-secondary);
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 12px;
+  letter-spacing: 1px;
+  cursor: pointer;
+  width: 100%;
+}
+
+.workspace-clear-btn:hover {
+  border-color: var(--accent-danger, #ef4444);
+  color: var(--accent-danger, #ef4444);
+}
+
+/* ==================== Menu Sheet ==================== */
+
+.menu-section {
+  margin-bottom: 24px;
+}
+
+.menu-section-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 12px;
+  letter-spacing: 2px;
+  color: var(--text-secondary);
+  margin: 0 0 8px 0;
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--bg-glass);
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 12px 8px;
+  background: none;
+  border: none;
+  font-family: inherit;
+  font-size: 16px;
+  color: var(--text-primary);
+  text-decoration: none;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background 0.15s ease;
+}
+
+.menu-item:hover {
+  background: var(--bg-glass);
+}
+
+.menu-item:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.menu-item:disabled:hover {
+  background: none;
+}
+
+.menu-item-icon {
+  width: 24px;
+  text-align: center;
+  font-size: 18px;
+}
+
+.menu-item-badge {
+  margin-left: auto;
+  color: var(--accent-warning, #f59e0b);
+  font-weight: bold;
+}
+
+/* ==================== Start From Selector ==================== */
+
+.start-from-container {
+  margin-top: 8px;
+}
+
+.start-from-options {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.start-from-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.start-from-option input[type="radio"] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--accent-electric);
+}
+
+.location-status {
+  color: var(--accent-success, #22c55e);
+  font-size: 12px;
+  margin-left: 4px;
+}
+
+.custom-start-input {
+  width: 100%;
+  margin-top: 8px;
+  padding: 8px 12px;
+  border: 2px solid var(--text-secondary);
+  font-family: inherit;
+  font-size: 14px;
+}
+
+.custom-start-input:focus {
+  outline: none;
+  border-color: var(--accent-electric);
+}
+
+/* Workspace sheet overlay - don't cover bottom bar */
+.workspace-sheet-overlay[data-vaul-drawer-overlay] {
+  bottom: calc(80px + env(safe-area-inset-bottom)) !important;
+}
+
 /* Handle bar - chunky */
 [data-vaul-handle] {
   width: 80px !important;
