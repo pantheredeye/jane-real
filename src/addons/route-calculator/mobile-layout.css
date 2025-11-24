@@ -79,6 +79,12 @@
   box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.3);
 }
 
+/* Full-width Calculate button */
+.bottom-bar-btn-full {
+  flex: 1;
+  width: 100%;
+}
+
 /* Badge for property count */
 .bottom-bar-badge {
   background: var(--accent-electric);
@@ -166,14 +172,13 @@
   outline-offset: 2px;
 }
 
-.help-btn {
+.settings-btn {
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  background: var(--accent-electric);
-  color: white;
+  background: white;
+  color: var(--text-primary);
   border: 3px solid var(--text-primary);
-  font-family: 'Bebas Neue', sans-serif;
   font-size: 18px;
   cursor: pointer;
   box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.2);
@@ -182,9 +187,10 @@
   justify-content: center;
 }
 
-.help-btn:hover {
+.settings-btn:hover {
   transform: translateY(-2px);
   box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.3);
+  background: var(--bg-glass);
 }
 
 /* ==================== Vaul Sheet Overrides ==================== */
@@ -212,142 +218,9 @@
   box-shadow: 0 -8px 0 rgba(0, 0, 0, 0.2) !important;
 }
 
-/* Route Workspace Sheet - partial overlay, stops above bottom bar */
-[data-vaul-drawer].workspace-sheet {
-  /* 70% of viewport, but offset from bottom to show bottom bar */
-  max-height: 70vh !important;
-  bottom: calc(80px + env(safe-area-inset-bottom)) !important;
-  border-bottom: 4px solid var(--text-primary) !important;
-  box-shadow: 0 8px 0 rgba(0, 0, 0, 0.2) !important;
-}
-
-/* Hide Vaul's ::after pseudo-element that covers background */
-[data-vaul-drawer].workspace-sheet::after {
-  display: none !important;
-}
-
-/* Workspace sheet content - flex layout with scrollable middle */
-.workspace-sheet .sheet-content {
-  display: flex;
-  flex-direction: column;
-  max-height: calc(70vh - 60px);
-  padding: 20px 24px 16px;
-}
-
-/* Fixed top region - route name */
-.workspace-top {
-  flex-shrink: 0;
-  margin-bottom: 12px;
-}
-
-.workspace-route-name {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 20px;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  color: var(--text-primary);
-  background: none;
-  border: none;
-  border-bottom: 2px dashed transparent;
-  padding: 4px 0;
-  width: 100%;
-  cursor: pointer;
-}
-
-.workspace-route-name:hover {
-  border-bottom-color: var(--text-secondary);
-}
-
-.workspace-route-name:focus {
-  outline: none;
-  border-bottom: 2px solid var(--accent-electric);
-}
-
-.workspace-route-name::placeholder {
-  color: var(--text-secondary);
-}
-
 .dirty-indicator {
   color: var(--accent-warning, #f59e0b);
   margin-left: 4px;
-}
-
-/* Scrollable middle region - property list */
-.workspace-middle {
-  flex: 1;
-  overflow-y: auto;
-  min-height: 0;
-  margin-bottom: 12px;
-}
-
-/* Property list without clear button in workspace */
-.workspace-middle .property-list-container {
-  height: 100%;
-}
-
-/* Fixed bottom region - input + settings */
-.workspace-bottom {
-  flex-shrink: 0;
-  border-top: 2px solid var(--bg-glass);
-  padding-top: 12px;
-}
-
-/* Collapsible settings section */
-.workspace-settings {
-  margin-top: 12px;
-}
-
-.workspace-settings-toggle {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-  padding: 8px 0;
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 14px;
-  letter-spacing: 1px;
-  color: var(--text-secondary);
-}
-
-.workspace-settings-toggle:hover {
-  color: var(--text-primary);
-}
-
-.workspace-settings-chevron {
-  transition: transform 0.2s ease;
-}
-
-.workspace-settings-chevron.expanded {
-  transform: rotate(180deg);
-}
-
-.workspace-settings-content {
-  padding: 12px 0;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-/* Clear button in bottom region */
-.workspace-clear-btn {
-  margin-top: 12px;
-  padding: 8px 12px;
-  background: none;
-  border: 2px solid var(--text-secondary);
-  color: var(--text-secondary);
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 12px;
-  letter-spacing: 1px;
-  cursor: pointer;
-  width: 100%;
-}
-
-.workspace-clear-btn:hover {
-  border-color: var(--accent-danger, #ef4444);
-  color: var(--accent-danger, #ef4444);
 }
 
 /* ==================== Menu Sheet ==================== */
@@ -453,11 +326,6 @@
 .custom-start-input:focus {
   outline: none;
   border-color: var(--accent-electric);
-}
-
-/* Workspace sheet overlay - don't cover bottom bar */
-.workspace-sheet-overlay[data-vaul-drawer-overlay] {
-  bottom: calc(80px + env(safe-area-inset-bottom)) !important;
 }
 
 /* Handle bar - chunky */
@@ -602,4 +470,61 @@
     transform: translateX(4px);
     box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.2);
   }
+}
+
+/* ==================== Inline Input Section ==================== */
+
+.inline-input-section {
+  margin-bottom: 16px;
+}
+
+.inline-list-section {
+  margin-bottom: 24px;
+}
+
+/* ==================== Settings Sheet ==================== */
+
+/* Settings sheet - full height on mobile */
+[data-vaul-drawer].settings-sheet {
+  max-height: 85vh !important;
+}
+
+.settings-sheet-overlay[data-vaul-drawer-overlay] {
+  /* Full overlay for settings */
+}
+
+.settings-field {
+  margin-bottom: 20px;
+}
+
+.settings-field:last-child {
+  margin-bottom: 0;
+}
+
+.settings-danger-zone {
+  margin-top: 32px;
+  padding-top: 20px;
+  border-top: 2px dashed var(--text-secondary);
+}
+
+.settings-clear-btn {
+  width: 100%;
+  padding: 12px 16px;
+  background: none;
+  border: 3px solid var(--accent-danger, #ef4444);
+  color: var(--accent-danger, #ef4444);
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 14px;
+  letter-spacing: 1px;
+  cursor: pointer;
+  box-shadow: 3px 3px 0 rgba(239, 68, 68, 0.2);
+}
+
+.settings-clear-btn:hover {
+  background: rgba(239, 68, 68, 0.1);
+}
+
+.settings-clear-btn:active {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0 rgba(239, 68, 68, 0.2);
 }

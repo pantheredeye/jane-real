@@ -1,3 +1,5 @@
+"use client"
+
 interface RouteSummaryProps {
   totalProperties?: number
   totalTime?: string
@@ -5,12 +7,16 @@ interface RouteSummaryProps {
   addresses?: string[]
 }
 
-export function RouteSummary({ 
-  totalProperties = 0, 
-  totalTime = '0h 0m', 
+export function RouteSummary({
+  totalProperties = 0,
+  totalTime = '0h 0m',
   drivingTime = '0h 0m',
   addresses = []
 }: RouteSummaryProps) {
+  const mapsUrl = addresses.length > 0
+    ? `https://www.google.com/maps/dir/${addresses.join('/')}`
+    : ''
+
   return (
     <div className="route-summary glass-card-elevated">
       <div className="summary-item">
@@ -25,18 +31,17 @@ export function RouteSummary({
         <span className="summary-label">DRIVING TIME:</span>
         <span className="summary-value">{drivingTime}</span>
       </div>
-      
+
       {addresses.length > 0 && (
         <div style={{ textAlign: 'center', marginTop: '16px' }}>
-          <button 
+          <a
+            href={mapsUrl}
+            target="_blank"
+            rel="noopener noreferrer"
             className="maps-btn"
-            onClick={() => {
-              const mapsUrl = `https://www.google.com/maps/dir/${addresses.join('/')}`
-              window.open(mapsUrl, '_blank')
-            }}
           >
             📍 OPEN ROUTE IN MAPS
-          </button>
+          </a>
         </div>
       )}
     </div>

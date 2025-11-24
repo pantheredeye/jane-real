@@ -2,7 +2,7 @@
 
 import { useState, ReactNode } from 'react'
 import { BottomBar } from './BottomBar'
-import { RouteWorkspace } from './RouteWorkspace'
+import { SettingsSheet } from './SettingsSheet'
 import { MenuSheet } from './MenuSheet'
 import type { PropertyInput } from '../types'
 
@@ -12,9 +12,6 @@ interface AppShellProps {
 
   // Property management
   properties: PropertyInput[]
-  onAddProperty: (property: PropertyInput) => void
-  onEditProperty: (id: string, newAddress: string) => void
-  onDeleteProperty: (id: string) => void
   onClearAll: () => void
 
   // Settings
@@ -35,6 +32,7 @@ interface AppShellProps {
   onCalculate: () => void
   isCalculating: boolean
   showSuccess: boolean
+  isCalculationDirty: boolean
 
   // Route identity
   routeName: string
@@ -51,9 +49,6 @@ interface AppShellProps {
 export function AppShell({
   children,
   properties,
-  onAddProperty,
-  onEditProperty,
-  onDeleteProperty,
   onClearAll,
   startTime,
   onStartTimeChange,
@@ -62,6 +57,7 @@ export function AppShell({
   onCalculate,
   isCalculating,
   showSuccess,
+  isCalculationDirty,
   routeName,
   onRouteNameChange,
   isDirty,
@@ -76,13 +72,8 @@ export function AppShell({
   onRequestLocation,
   hasCurrentLocation
 }: AppShellProps) {
-  const [workspaceOpen, setWorkspaceOpen] = useState(false)
+  const [settingsOpen, setSettingsOpen] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
-
-  const handleHelpPress = () => {
-    // Placeholder - will open help sheet or external link
-    console.log('Help - coming soon')
-  }
 
   return (
     <div className="app-shell">
@@ -104,11 +95,11 @@ export function AppShell({
         </span>
 
         <button
-          className="help-btn"
-          onClick={handleHelpPress}
-          aria-label="Help"
+          className="settings-btn"
+          onClick={() => setSettingsOpen(true)}
+          aria-label="Settings"
         >
-          ?
+          ⚙
         </button>
       </header>
 
@@ -119,25 +110,17 @@ export function AppShell({
 
       {/* Bottom Bar */}
       <BottomBar
-        onWorkspacePress={() => setWorkspaceOpen(true)}
         onCalculatePress={onCalculate}
         isCalculating={isCalculating}
         showSuccess={showSuccess}
+        isCalculationDirty={isCalculationDirty}
         propertyCount={properties.length}
       />
 
-      {/* Route Workspace Sheet */}
-      <RouteWorkspace
-        open={workspaceOpen}
-        onOpenChange={setWorkspaceOpen}
-        routeName={routeName}
-        onRouteNameChange={onRouteNameChange}
-        isDirty={isDirty}
-        properties={properties}
-        onAdd={onAddProperty}
-        onEdit={onEditProperty}
-        onDelete={onDeleteProperty}
-        onClearAll={onClearAll}
+      {/* Settings Sheet */}
+      <SettingsSheet
+        open={settingsOpen}
+        onOpenChange={setSettingsOpen}
         selectedDuration={selectedDuration}
         onDurationChange={onDurationChange}
         startTime={startTime}
@@ -148,6 +131,8 @@ export function AppShell({
         onCustomStartAddressChange={onCustomStartAddressChange}
         onRequestLocation={onRequestLocation}
         hasCurrentLocation={hasCurrentLocation}
+        propertyCount={properties.length}
+        onClearAll={onClearAll}
       />
 
       {/* Menu Sheet */}
