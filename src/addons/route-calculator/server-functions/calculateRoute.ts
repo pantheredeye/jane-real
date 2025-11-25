@@ -92,37 +92,66 @@ async function optimizeRoute(request: CalculateRouteRequest): Promise<RouteStruc
     }
   }
 
-  // Step 4: Determine starting point based on startLocation
-  let startIndex = 0 // Default to first property
-
-  // TODO: Handle 'current' location - needs to:
-  // 1. Add origin coords to distance matrix
-  // 2. Run TSP from origin index
-  // 3. Remove origin from final route (it's not a property)
-
-  // TODO: Handle 'custom' address - needs to:
-  // 1. Geocode the custom address
-  // 2. Add to distance matrix as origin
-  // 3. Run TSP from origin index
-  // 4. Remove origin from final route
+  // Step 4: Determine starting point and handle origin if needed
+  let originCoords: Coordinates | null = null
+  let startIndex = 0
 
   if (request.startLocation.type === 'current' && request.startLocation.coords) {
-    // For now, just use first property until origin handling is implemented
-    console.log('TODO: Implement current location routing with coords:', request.startLocation.coords)
-    startIndex = 0
+    originCoords = request.startLocation.coords
   } else if (request.startLocation.type === 'custom' && request.startLocation.address) {
-    // For now, just use first property until custom address handling is implemented
-    console.log('TODO: Implement custom address routing:', request.startLocation.address)
-    startIndex = 0
+    // Geocode custom address
+    const [customResult] = await geocodeAddresses([request.startLocation.address])
+    if (!customResult.coordinates) {
+      throw new Error(`Failed to geocode starting address: ${request.startLocation.address}`)
+    }
+    originCoords = customResult.coordinates
+  } else if (request.startLocation.type === 'property' && request.startLocation.propertyIndex !== undefined) {
+    startIndex = request.startLocation.propertyIndex
+    // Validate index
+    if (startIndex < 0 || startIndex >= properties.length) {
+      throw new Error(`Invalid property index: ${startIndex}. Must be between 0 and ${properties.length - 1}`)
+    }
   }
-  // 'first' type uses startIndex = 0 (default)
 
   // Step 5: Optimize route using traveling salesman approach
-  const optimizedIndices = optimizeTravelingSalesman(
-    distanceMatrix.durations,
-    startIndex,
-    properties
-  )
+  let optimizedIndices: number[]
+  let augmentedMatrix: Awaited<ReturnType<typeof calculateDistanceMatrix>> | null = null
+
+  if (originCoords) {
+    // Origin is external point - augment distance matrix
+    const allCoords = [originCoords, ...coordinates]
+    augmentedMatrix = await calculateDistanceMatrix(allCoords, allCoords)
+
+    // Run TSP with origin at index 0
+    // Create temporary "origin property" for TSP algorithm
+    const originProperty: Property = {
+      id: 'origin',
+      address: 'Origin',
+      showingDuration: 0,
+      appointmentTime: null,
+      isFrozen: false,
+      coordinates: originCoords,
+    }
+    const allProperties = [originProperty, ...properties]
+
+    const rawIndices = optimizeTravelingSalesman(
+      augmentedMatrix.durations,
+      0, // Start from origin
+      allProperties
+    )
+
+    // Remove origin (index 0) and shift property indices back
+    optimizedIndices = rawIndices
+      .filter(idx => idx !== 0)
+      .map(idx => idx - 1)
+  } else {
+    // Origin is a property - use normal matrix
+    optimizedIndices = optimizeTravelingSalesman(
+      distanceMatrix.durations,
+      startIndex,
+      properties
+    )
+  }
 
   // Step 6: Build route structure with durations only (no appointment times)
   const routeItems = optimizedIndices.map((propertyIndex, routeIndex) => {
@@ -138,6 +167,16 @@ async function optimizeRoute(request: CalculateRouteRequest): Promise<RouteStruc
         travelTime = distanceMatrix.durations[prevPropertyIndex][propertyIndex]
       } else {
         throw new Error(`Missing distance matrix data between properties ${prevPropertyIndex} and ${propertyIndex}`)
+      }
+    } else if (routeIndex === 0 && augmentedMatrix) {
+      // First property when starting from external origin
+      // Travel time from origin (index 0) to first property (propertyIndex + 1 in augmented matrix)
+      const augmentedPropertyIndex = propertyIndex + 1
+      if (augmentedMatrix.durations[0] &&
+          augmentedMatrix.durations[0][augmentedPropertyIndex] !== undefined) {
+        travelTime = augmentedMatrix.durations[0][augmentedPropertyIndex]
+      } else {
+        throw new Error(`Missing distance matrix data from origin to property ${propertyIndex}`)
       }
     }
 

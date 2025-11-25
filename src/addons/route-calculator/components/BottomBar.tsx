@@ -18,13 +18,13 @@ export function BottomBar({
   return (
     <div className="bottom-bar">
       <button
-        className={`bottom-bar-btn bottom-bar-btn-primary bottom-bar-btn-full ${showSuccess ? 'btn-success' : ''}`}
+        className={`bottom-bar-btn bottom-bar-btn-primary bottom-bar-btn-full ${showSuccess && !isCalculationDirty ? 'btn-success' : ''}`}
         onClick={onCalculatePress}
-        disabled={isCalculating || propertyCount === 0}
+        disabled={isCalculating || propertyCount === 0 || (showSuccess && !isCalculationDirty)}
       >
         {isCalculating
           ? 'CALCULATING...'
-          : showSuccess
+          : showSuccess && !isCalculationDirty
           ? '✓ DONE'
           : isCalculationDirty
           ? `RECALCULATE${propertyCount > 0 ? ` (${propertyCount})` : ''}`

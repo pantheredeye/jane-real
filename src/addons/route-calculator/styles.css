@@ -64,6 +64,11 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Prevent iOS Safari auto-zoom on input focus */
+input, select, textarea {
+  font-size: max(1rem, 16px);
+}
+
 /* App Container */
 .app-container {
   min-height: 100vh;

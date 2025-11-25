@@ -55,9 +55,10 @@ export interface RouteStructure {
 
 // Start location types
 export interface StartLocation {
-  type: 'current' | 'first' | 'custom'
+  type: 'current' | 'property' | 'custom'
   coords?: { lat: number; lng: number }
   address?: string
+  propertyIndex?: number
 }
 
 // Request/Response types
@@ -96,12 +97,13 @@ export interface DistanceMatrixResult {
 
 // Zod validation schemas
 export const StartLocationSchema = z.object({
-  type: z.enum(['current', 'first', 'custom']),
+  type: z.enum(['current', 'property', 'custom']),
   coords: z.object({
     lat: z.number(),
     lng: z.number()
   }).optional(),
-  address: z.string().optional()
+  address: z.string().optional(),
+  propertyIndex: z.number().int().min(0).optional()
 })
 
 export const CalculateRouteRequestSchema = z.object({

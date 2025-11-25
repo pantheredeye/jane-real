@@ -14,12 +14,15 @@ interface SettingsSheetProps {
   onStartTimeChange: (time: string) => void
 
   // Start location
-  startFromType: 'current' | 'first' | 'custom'
-  onStartFromTypeChange: (type: 'current' | 'first' | 'custom') => void
+  startFromType: 'current' | 'property' | 'custom'
+  onStartFromTypeChange: (type: 'current' | 'property' | 'custom') => void
   customStartAddress: string
   onCustomStartAddressChange: (address: string) => void
   onRequestLocation: () => void
   hasCurrentLocation: boolean
+  startingPropertyIndex: number
+  onStartingPropertyIndexChange: (index: number) => void
+  propertyAddresses: string[]
 
   // Clear all
   propertyCount: number
@@ -39,6 +42,9 @@ export function SettingsSheet({
   onCustomStartAddressChange,
   onRequestLocation,
   hasCurrentLocation,
+  startingPropertyIndex,
+  onStartingPropertyIndexChange,
+  propertyAddresses,
   propertyCount,
   onClearAll
 }: SettingsSheetProps) {
@@ -107,11 +113,11 @@ export function SettingsSheet({
                   <input
                     type="radio"
                     name="startFrom"
-                    value="first"
-                    checked={startFromType === 'first'}
-                    onChange={() => onStartFromTypeChange('first')}
+                    value="property"
+                    checked={startFromType === 'property'}
+                    onChange={() => onStartFromTypeChange('property')}
                   />
-                  <span>First property</span>
+                  <span>Specific property</span>
                 </label>
                 <label className="start-from-option">
                   <input
@@ -124,6 +130,20 @@ export function SettingsSheet({
                   <span>Custom address</span>
                 </label>
               </div>
+              {startFromType === 'property' && (
+                <select
+                  className="property-select"
+                  value={startingPropertyIndex}
+                  onChange={(e) => onStartingPropertyIndexChange(Number(e.target.value))}
+                  disabled={propertyAddresses.length === 0}
+                >
+                  {propertyAddresses.map((address, idx) => (
+                    <option key={idx} value={idx}>
+                      {idx + 1}. {address.length > 40 ? address.slice(0, 40) + '...' : address}
+                    </option>
+                  ))}
+                </select>
+              )}
               {startFromType === 'custom' && (
                 <input
                   type="text"

@@ -33,8 +33,9 @@ export default function HomePage() {
   const [selectedDuration, setSelectedDuration] = useState(30)
 
   // Start location state
-  const [startFromType, setStartFromType] = useState<'current' | 'first' | 'custom'>('first')
+  const [startFromType, setStartFromType] = useState<'current' | 'property' | 'custom'>('property')
   const [customStartAddress, setCustomStartAddress] = useState('')
+  const [startingPropertyIndex, setStartingPropertyIndex] = useState(0)
   const [currentLocation, setCurrentLocation] = useState<{ lat: number; lng: number } | null>(null)
   const [locationError, setLocationError] = useState<string | null>(null)
   const [isCalculating, setIsCalculating] = useState(false)
@@ -139,7 +140,18 @@ export default function HomePage() {
   }
 
   const handleDeleteProperty = (id: string) => {
+    const deletedIndex = propertyList.findIndex(prop => prop.id === id)
+
     setPropertyList(prev => prev.filter(prop => prop.id !== id))
+
+    // Reset starting property index to 0 if the selected property was deleted
+    if (deletedIndex === startingPropertyIndex) {
+      setStartingPropertyIndex(0)
+    } else if (deletedIndex < startingPropertyIndex) {
+      // Adjust index if a property before the selected one was deleted
+      setStartingPropertyIndex(prev => prev - 1)
+    }
+
     setIsDirty(true)
     resetSuccessState()
   }
@@ -213,20 +225,24 @@ export default function HomePage() {
     }
 
     // Build start location data
-    let startLocation: { type: 'current' | 'first' | 'custom'; coords?: { lat: number; lng: number }; address?: string } = {
+    let startLocation: { type: 'current' | 'property' | 'custom'; coords?: { lat: number; lng: number }; address?: string; propertyIndex?: number } = {
       type: startFromType
     }
 
     if (startFromType === 'current') {
       if (!currentLocation) {
+        alert('Unable to get current location. Please try again or use a different start option.')
         return
       }
       startLocation.coords = currentLocation
     } else if (startFromType === 'custom') {
       if (!customStartAddress.trim()) {
+        alert('Please enter a custom starting address.')
         return
       }
       startLocation.address = customStartAddress
+    } else if (startFromType === 'property') {
+      startLocation.propertyIndex = startingPropertyIndex
     }
 
     const requestData = {
@@ -239,6 +255,7 @@ export default function HomePage() {
 
     console.log('Calculating route with:', requestData)
     setIsCalculating(true)
+    setShowCalculateSuccess(false) // Clear success state when starting new calculation
 
     try {
       // Get route structure from server (optimized order + durations)
@@ -252,9 +269,8 @@ export default function HomePage() {
       setInitialRoute(routeWithTimes)
       setLastCalculatedFingerprint(currentFingerprint)
 
-      // Show success state on button
+      // Show success state on button (persists until next calculation or edit)
       setShowCalculateSuccess(true)
-      setTimeout(() => setShowCalculateSuccess(false), 3000)
 
       // Auto-scroll to results (subtle feedback)
       setTimeout(() => {
@@ -473,6 +489,12 @@ export default function HomePage() {
       }}
       onRequestLocation={requestCurrentLocation}
       hasCurrentLocation={!!currentLocation}
+      startingPropertyIndex={startingPropertyIndex}
+      onStartingPropertyIndexChange={(index) => {
+        setStartingPropertyIndex(index)
+        setIsDirty(true)
+      }}
+      propertyAddresses={propertyList.map(p => p.parsedAddress)}
       routeName={routeName}
       onRouteNameChange={(name) => {
         setRouteName(name)
