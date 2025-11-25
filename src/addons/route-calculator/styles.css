@@ -1,5 +1,8 @@
 /* MVP Route Calculator - Glassmorphism + Neubrutalism Design System */
 
+/* Font Imports for Results Section */
+@import url('https://fonts.googleapis.com/css2?family=Archivo+Black&family=Bebas+Neue&display=swap');
+
 /* CSS Variables - Design System */
 :root {
   /* Background Layers */
@@ -137,13 +140,13 @@ input, select, textarea {
 
 /* Section Titles */
 .section-title {
-  font-size: 26px;
+  font-family: 'Archivo Black', sans-serif;
+  font-size: 32px;
   font-weight: 900;
   text-transform: uppercase;
   letter-spacing: 2px;
-  color: var(--text-primary);
+  color: #1a1a1a;
   margin-bottom: var(--space-lg);
-  text-shadow: var(--shadow-text);
   text-align: center;
 }
 
@@ -260,20 +263,20 @@ input, select, textarea {
 .calculate-btn {
   width: 100%;
   height: var(--touch-optimal);
-  font-size: 20px;
-  font-weight: 900;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 28px;
+  font-weight: 400;
   text-transform: uppercase;
-  letter-spacing: 1px;
-  background: linear-gradient(135deg, var(--accent-electric), #2563eb);
-  border: 3px solid var(--accent-electric);
+  letter-spacing: 2px;
+  background: #3b82f6;
+  border: 4px solid #1a1a1a;
   border-radius: var(--radius-md);
   color: var(--text-white);
   cursor: pointer;
-  transition: all 0.2s ease;
-  box-shadow: var(--shadow-elevated);
+  transition: all 0.15s ease;
+  box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.3);
   position: relative;
   overflow: hidden;
-  font-family: inherit;
 }
 
 /* Copy Options */
@@ -310,33 +313,34 @@ input, select, textarea {
 .optimize-btn {
   width: 100%;
   height: var(--touch-optimal);
-  font-size: 20px;
-  font-weight: 900;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 28px;
+  font-weight: 400;
   text-transform: uppercase;
-  letter-spacing: 1px;
-  background: linear-gradient(135deg, var(--accent-electric), #2563eb);
-  border: 3px solid var(--accent-electric);
+  letter-spacing: 2px;
+  background: #3b82f6;
+  border: 4px solid #1a1a1a;
   border-radius: var(--radius-md);
   color: var(--text-white);
   cursor: pointer;
-  transition: all 0.2s ease;
-  box-shadow: var(--shadow-elevated);
+  transition: all 0.15s ease;
+  box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.3);
   position: relative;
   overflow: hidden;
-  font-family: inherit;
 }
 
-.calculate-btn:hover,
-.optimize-btn:hover,
-.copy-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 16px 48px rgba(59, 130, 246, 0.4);
+.calculate-btn:hover:not(:disabled),
+.optimize-btn:hover:not(:disabled),
+.copy-btn:hover:not(:disabled) {
+  transform: translate(-2px, -2px);
+  box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.3);
 }
 
-.calculate-btn:active,
-.optimize-btn:active,
-.copy-btn:active {
-  transform: translateY(0);
+.calculate-btn:active:not(:disabled),
+.optimize-btn:active:not(:disabled),
+.copy-btn:active:not(:disabled) {
+  transform: translate(2px, 2px);
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.3);
 }
 
 /* Button States */
@@ -354,29 +358,31 @@ input, select, textarea {
 
 /* Section Descriptions */
 .section-description {
-  font-size: 16px;
-  font-weight: 500;
-  color: var(--text-secondary);
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 20px;
+  font-weight: 400;
+  color: #334155;
   text-align: center;
   margin-bottom: var(--space-lg);
-  line-height: 1.5;
+  line-height: 1.4;
+  letter-spacing: 1px;
 }
 
 /* Unified Property Cards */
 .property-card {
-  background: var(--bg-glass-elevated);
-  backdrop-filter: var(--blur-medium);
+  background: white;
+  border: 4px solid #1a1a1a;
   border-radius: var(--radius-md);
   padding: var(--space-md);
   margin-bottom: var(--space-md);
-  border: 3px solid rgba(255, 255, 255, 0.3);
-  box-shadow: var(--shadow-glass);
+  box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.3);
   transition: all 0.2s ease;
 }
 
 .property-card.locked {
   border-color: var(--accent-danger);
-  background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(220, 38, 38, 0.05));
+  border-width: 5px;
+  background: #ffebee;
 }
 
 .property-main {
@@ -565,6 +571,11 @@ input, select, textarea {
 
 .route-summary {
   margin-bottom: var(--space-lg);
+  background: white;
+  border: 4px solid #1a1a1a;
+  border-radius: var(--radius-md);
+  padding: var(--space-md);
+  box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.3);
 }
 
 .summary-item {
@@ -572,7 +583,7 @@ input, select, textarea {
   justify-content: space-between;
   align-items: center;
   padding: var(--space-sm) 0;
-  border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+  border-bottom: 3px solid #e2e8f0;
 }
 
 .summary-item:last-child {
@@ -580,17 +591,19 @@ input, select, textarea {
 }
 
 .summary-label {
-  font-size: 16px;
-  font-weight: 700;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 20px;
+  font-weight: 400;
   text-transform: uppercase;
-  letter-spacing: 1px;
-  color: var(--text-secondary);
+  letter-spacing: 1.5px;
+  color: #64748b;
 }
 
 .summary-value {
-  font-size: 20px;
-  font-weight: 900;
-  color: var(--text-primary);
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 28px;
+  font-weight: 400;
+  color: #1a1a1a;
 }
 
 /* Status Messages */
