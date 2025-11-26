@@ -4,6 +4,7 @@ import { useState, ReactNode } from 'react'
 import { BottomBar } from './BottomBar'
 import { SettingsSheet } from './SettingsSheet'
 import { MenuSheet } from './MenuSheet'
+import { CreditsDisplay } from './CreditsDisplay'
 import type { PropertyInput } from '../types'
 
 interface AppShellProps {
@@ -36,6 +37,11 @@ interface AppShellProps {
   onOpenRoute: () => void
   onSaveRoute: () => void
   hasCalculatedRoute: boolean
+
+  // Credits system
+  creditsRemaining?: number
+  isGrandfathered?: boolean
+  isSubscribed?: boolean
 }
 
 export function AppShell({
@@ -56,13 +62,25 @@ export function AppShell({
   onNewRoute,
   onOpenRoute,
   onSaveRoute,
-  hasCalculatedRoute
+  hasCalculatedRoute,
+  creditsRemaining = 0,
+  isGrandfathered = false,
+  isSubscribed = false
 }: AppShellProps) {
   const [settingsOpen, setSettingsOpen] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
 
   return (
     <div className="app-shell">
+      {/* Credits Warning Banner */}
+      {creditsRemaining !== undefined && (
+        <CreditsDisplay
+          creditsRemaining={creditsRemaining}
+          isGrandfathered={isGrandfathered}
+          isSubscribed={isSubscribed}
+        />
+      )}
+
       {/* Header */}
       <header className="header-bar">
         <button
@@ -80,13 +98,22 @@ export function AppShell({
           {isDirty && <span className="dirty-indicator">*</span>}
         </span>
 
-        <button
-          className="settings-btn"
-          onClick={() => setSettingsOpen(true)}
-          aria-label="Settings"
-        >
-          ⚙
-        </button>
+        <div className="header-actions">
+          {creditsRemaining !== undefined && (
+            <CreditsDisplay
+              creditsRemaining={creditsRemaining}
+              isGrandfathered={isGrandfathered}
+              isSubscribed={isSubscribed}
+            />
+          )}
+          <button
+            className="settings-btn"
+            onClick={() => setSettingsOpen(true)}
+            aria-label="Settings"
+          >
+            ⚙
+          </button>
+        </div>
       </header>
 
       {/* Main Viewport */}

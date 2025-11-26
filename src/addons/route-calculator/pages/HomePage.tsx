@@ -15,6 +15,7 @@ import '../mobile-layout.css'
 import { isDuplicateAddress } from '../utils/addressNormalizer'
 import { calculateRoute } from '../server-functions/calculateRoute'
 import { saveRoute, getRoutes, deleteRoute } from '../server-functions/routePersistence'
+import { getUserCredits, type UserCreditsData } from '../server-functions/getUserCredits'
 import type { OptimizedRoute, PropertyInput } from '../types'
 import { useRouteManager, calculateAppointmentTimes } from '../hooks/useRouteManager'
 import { DEMO_PROPERTIES_KEY } from '@/app/pages/landing/components/demo/DemoContent'
@@ -47,6 +48,9 @@ export default function HomePage() {
   const [routeName, setRouteName] = useState('')
   const [isDirty, setIsDirty] = useState(false)
   const [lastCalculatedFingerprint, setLastCalculatedFingerprint] = useState('')
+
+  // Credits system
+  const [userCredits, setUserCredits] = useState<UserCreditsData | null>(null)
 
   // Route persistence state
   const [showSaveDialog, setShowSaveDialog] = useState(false)
@@ -222,6 +226,9 @@ export default function HomePage() {
       // Show success state on button (persists until next calculation or edit)
       setShowCalculateSuccess(true)
 
+      // Refetch credits after successful calculation (credit was consumed)
+      fetchUserCredits()
+
       // Auto-scroll to results (subtle feedback)
       setTimeout(() => {
         const resultsSection = document.querySelector('.results-section')
@@ -244,6 +251,16 @@ export default function HomePage() {
   useEffect(() => {
     loadSavedRoutes()
   }, [])
+
+  // Fetch user credits on mount
+  useEffect(() => {
+    fetchUserCredits()
+  }, [])
+
+  const fetchUserCredits = async () => {
+    const credits = await getUserCredits()
+    setUserCredits(credits)
+  }
 
   // Check for demo properties on mount
   useEffect(() => {
@@ -437,6 +454,9 @@ export default function HomePage() {
       onOpenRoute={handleOpenRoute}
       onSaveRoute={handleSaveRouteFromMenu}
       hasCalculatedRoute={!!calculatedRoute}
+      creditsRemaining={userCredits?.creditsRemaining}
+      isGrandfathered={userCredits?.isGrandfathered}
+      isSubscribed={userCredits?.isSubscribed}
     >
       <StateManager
         propertyList={propertyList}
