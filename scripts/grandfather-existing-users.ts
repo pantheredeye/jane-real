@@ -9,7 +9,7 @@
  *   tsx scripts/grandfather-existing-users.ts
  */
 
-import { PrismaClient } from '../generated/prisma/index.ts';
+import { PrismaClient } from '../generated/prisma/index.js';
 
 const prisma = new PrismaClient({
   datasources: {

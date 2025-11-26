@@ -1,4 +1,4 @@
-import type { AppContext } from '~/worker.tsx';
+import type { AppContext } from '@/worker';
 
 /**
  * Require Credits Interruptor
