@@ -41,7 +41,6 @@ export default function HomePage() {
   const [currentLocation, setCurrentLocation] = useState<{ lat: number; lng: number } | null>(null)
   const [locationError, setLocationError] = useState<string | null>(null)
   const [isCalculating, setIsCalculating] = useState(false)
-  const [showJumpButton, setShowJumpButton] = useState(false)
   const [showCalculateSuccess, setShowCalculateSuccess] = useState(false)
 
   // Route identity
@@ -77,47 +76,6 @@ export default function HomePage() {
   const thumbnailUrlList = useMemo(() => {
     return propertyList.map(prop => prop.thumbnailUrl)
   }, [propertyList])
-
-  // Handle jump button visibility based on scroll position and results availability
-  useEffect(() => {
-    if (!calculatedRoute) {
-      setShowJumpButton(false)
-      return
-    }
-
-    let scrollTimeout: NodeJS.Timeout
-
-    const handleScroll = () => {
-      // Debounce scroll events to prevent rapid toggling
-      clearTimeout(scrollTimeout)
-      scrollTimeout = setTimeout(() => {
-        const resultsSection = document.querySelector('.results-section') as HTMLElement
-        if (!resultsSection) return
-
-        const resultsTop = resultsSection.offsetTop
-        const resultsBottom = resultsTop + resultsSection.offsetHeight
-        const scrollPosition = window.scrollY + window.innerHeight / 2
-
-        // Hide button when user is in or past the results section (with buffer)
-        const isInResultsArea = scrollPosition >= (resultsTop - 200)
-        setShowJumpButton(!isInResultsArea)
-      }, 50) // 50ms debounce
-    }
-
-    // Show button initially when results are available
-    setShowJumpButton(true)
-    
-    // Add scroll listener
-    window.addEventListener('scroll', handleScroll)
-    
-    // Initial check
-    setTimeout(handleScroll, 200)
-    
-    return () => {
-      window.removeEventListener('scroll', handleScroll)
-      clearTimeout(scrollTimeout)
-    }
-  }, [calculatedRoute])
 
   // Property list handlers
   const handleAddProperty = (property: PropertyInput) => {
@@ -202,16 +160,6 @@ export default function HomePage() {
   const handleClearRoute = () => {
     setInitialRoute(null)
     setShowCalculateSuccess(false)
-  }
-
-  const handleJumpToResults = () => {
-    const resultsSection = document.querySelector('.results-section')
-    if (resultsSection) {
-      resultsSection.scrollIntoView({ 
-        behavior: 'smooth',
-        block: 'start'
-      })
-    }
   }
 
   const handleCalculateRoute = async () => {
@@ -740,16 +688,6 @@ export default function HomePage() {
             )}
           </section>
         )}
-      {/* Sticky Jump to Results Button */}
-      {showJumpButton && (
-        <button
-          className="jump-to-results-btn"
-          onClick={handleJumpToResults}
-          aria-label="Jump to results"
-        >
-          ↓ VIEW RESULTS
-        </button>
-      )}
 
       {/* Save Route Dialog */}
       {showSaveDialog && (
