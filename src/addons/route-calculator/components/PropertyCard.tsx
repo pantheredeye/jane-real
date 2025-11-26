@@ -96,60 +96,49 @@ export function PropertyCard({ routeItem, routeIndex, onTimeChange, onDurationCh
   // Expanded view (full details)
   return (
     <div className={`property-card-expanded ${property.isFrozen ? 'locked' : ''}`}>
-      {/* Collapse button */}
-      <button
-        className="property-collapse-btn"
-        onClick={() => setIsExpanded(false)}
-        aria-label="Collapse property details"
-      >
-        ▲ COLLAPSE
-      </button>
-
-      <div className="property-main">
-        {/* Larger thumbnail */}
-        {property.thumbnailUrl && (
-          <div className="property-thumbnail-expanded">
-            <img
-              src={property.thumbnailUrl}
-              alt={property.address}
-              className="property-thumbnail-image-large"
-            />
+      {/* Header with chevron collapse */}
+      <div className="property-header" onClick={() => setIsExpanded(false)}>
+        <button
+          className="property-chevron"
+          aria-label="Collapse property details"
+        >
+          ▲
+        </button>
+        <div className="property-header-info">
+          <div className="property-header-top">
+            <span className="property-number-badge">#{routeIndex + 1}</span>
+            <span className="property-address-primary">{property.address}</span>
           </div>
-        )}
-
-        <div className="property-number">{routeIndex + 1}</div>
-        <div className="property-info">
-          <div className="property-time">{formatDisplayTime(routeItem.appointmentTime)}</div>
-          <div className="property-address">
-            {property.address}
-            {property.sourceUrl && (
-              <span className="property-listing-badge">🏠 Listing</span>
+          <div className="property-header-meta">
+            {formatDisplayTime(routeItem.appointmentTime)}
+            {routeItem.travelTime > 0 && (
+              <> • {routeItem.travelTime} min drive</>
             )}
           </div>
-          {routeItem.travelTime > 0 && (
-            <div className="travel-time">Drive time: {routeItem.travelTime} min</div>
-          )}
-        </div>
-        <div className="property-actions">
-          {property.sourceUrl && (
-            <button
-              className="listing-btn"
-              onClick={handleViewListing}
-              aria-label="View listing"
-            >
-              🏠 VIEW LISTING
-            </button>
-          )}
-          <button
-            className="maps-btn"
-            onClick={handleDirections}
-            aria-label="Get directions"
-          >
-            📍 DIRECTIONS
-          </button>
         </div>
       </div>
 
+      {/* Action buttons - hero CTA first */}
+      <div className="property-actions">
+        <button
+          className="maps-btn-hero"
+          onClick={handleDirections}
+          aria-label="Get directions"
+        >
+          📍 GET DIRECTIONS
+        </button>
+        {property.sourceUrl && (
+          <button
+            className="listing-btn-secondary"
+            onClick={handleViewListing}
+            aria-label="View listing"
+          >
+            🏠 View Listing
+          </button>
+        )}
+      </div>
+
+      {/* Property controls */}
       <PropertyControls
         property={property}
         appointmentTime={routeItem.appointmentTime}
