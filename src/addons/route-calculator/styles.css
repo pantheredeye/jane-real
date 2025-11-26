@@ -395,15 +395,17 @@ input, select, textarea {
 .property-number {
   width: 48px;
   height: 48px;
-  background: linear-gradient(135deg, var(--text-primary), #1e293b);
-  color: var(--text-white);
-  border-radius: 50%;
+  background: white;
+  color: var(--text-primary);
+  border: 3px solid var(--text-primary);
+  border-radius: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 900;
   font-size: 20px;
   flex-shrink: 0;
+  box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.2);
 }
 
 .property-info {
@@ -697,11 +699,11 @@ input, select, textarea {
     grid-template-columns: 1fr;
   }
 
-  /* Mobile Property Card Layout - Time next to number */
+  /* Mobile Property Card Layout - Compact priority guides approach */
   .property-main {
     flex-direction: column;
     align-items: stretch;
-    gap: var(--space-sm);
+    gap: var(--space-xs);
   }
 
   /* Number and Time Header Row */
@@ -713,14 +715,17 @@ input, select, textarea {
 
   .property-number {
     position: absolute;
-    top: var(--space-md);
-    left: var(--space-md);
+    top: var(--space-sm);
+    left: var(--space-sm);
+    width: 40px;
+    height: 40px;
+    font-size: 18px;
   }
 
   .property-time {
-    font-size: 24px;
-    margin-bottom: var(--space-sm);
-    margin-left: 64px; /* Space for number circle */
+    font-size: 20px;
+    margin-bottom: var(--space-xs);
+    margin-left: 52px; /* Space for square badge */
     margin-top: var(--space-xs);
   }
 
@@ -730,15 +735,15 @@ input, select, textarea {
   }
 
   .property-address {
-    font-size: 18px;
-    line-height: 1.5;
+    font-size: 15px;
+    line-height: 1.3;
     margin-bottom: var(--space-xs);
   }
 
   .travel-time {
-    font-size: 16px;
-    margin-top: var(--space-xs);
-    margin-bottom: var(--space-sm);
+    font-size: 13px;
+    margin-top: 4px;
+    margin-bottom: var(--space-xs);
   }
 
   .maps-btn {
@@ -751,11 +756,11 @@ input, select, textarea {
   }
 
   /* Adjust card positioning for absolute number */
-  .property-card {
+  .property-card,
+  .property-card-expanded {
     position: relative;
-    padding-top: calc(var(--space-lg) + 16px); /* Extra space for number */
-    padding-left: var(--space-md);
-    padding-right: var(--space-md);
+    padding: var(--space-sm);
+    padding-top: calc(var(--space-md) + 12px); /* Compact space for square badge */
   }
 
   /* Mobile Button Improvements */
@@ -781,9 +786,10 @@ input, select, textarea {
   }
 
   /* Enhanced Mobile Typography */
-  .property-card {
-    padding: var(--space-lg) var(--space-md);
-    margin-bottom: var(--space-lg);
+  .property-card,
+  .property-card-expanded {
+    padding: var(--space-sm);
+    margin-bottom: var(--space-md);
   }
 
   .control-label {
@@ -1284,11 +1290,13 @@ input, select, textarea {
   margin-left: var(--space-xs);
   font-size: 12px;
   color: var(--accent-success);
-  font-weight: 600;
+  font-weight: 700;
   padding: 2px 8px;
-  background: rgba(16, 185, 129, 0.1);
-  border-radius: 12px;
+  background: white;
+  border: 2px solid var(--accent-success);
+  border-radius: 0;
   display: inline-block;
+  box-shadow: 2px 2px 0 rgba(16, 185, 129, 0.2);
 }
 
 .property-actions {
@@ -1304,24 +1312,25 @@ input, select, textarea {
   text-transform: uppercase;
   letter-spacing: 0.5px;
   border: 3px solid var(--accent-success);
-  border-radius: var(--radius-md);
+  border-radius: 0;
   background: white;
   color: var(--accent-success);
   cursor: pointer;
   transition: all 0.2s;
-  box-shadow: var(--shadow-glass);
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.3);
   min-height: var(--touch-minimum);
 }
 
 .listing-btn:hover {
   background: var(--accent-success);
   color: white;
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-elevated);
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.3);
 }
 
 .listing-btn:active {
-  transform: translateY(0);
+  transform: translate(1px, 1px);
+  box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.3);
 }
 
 /* Clear All Button */
@@ -1474,17 +1483,17 @@ input, select, textarea {
   flex-shrink: 0;
 }
 
-/* Expanded Property Card */
+/* Expanded Property Card - Hard Border Neubrutalist */
 .property-card-expanded {
-  background: var(--bg-glass-elevated);
-  backdrop-filter: var(--blur-medium);
-  border-radius: var(--radius-md);
-  padding: var(--space-md);
+  background: white;
+  border: 4px solid #1a1a1a;
+  border-radius: 0;
+  padding: var(--space-sm);
   margin-bottom: var(--space-md);
-  border: 3px solid rgba(255, 255, 255, 0.3);
-  box-shadow: var(--shadow-glass);
+  box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.3);
   transition: all 0.3s ease;
   animation: expandCard 0.3s ease-out;
+  position: relative;
 }
 
 @keyframes expandCard {
@@ -1500,10 +1509,11 @@ input, select, textarea {
 
 .property-card-expanded.locked {
   border-color: var(--accent-danger);
-  background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(220, 38, 38, 0.05));
+  border-width: 5px;
+  background: #ffebee;
 }
 
-/* Collapse Button */
+/* Collapse Button - Match hard border aesthetic */
 .property-collapse-btn {
   width: 100%;
   padding: var(--space-xs) var(--space-sm);
@@ -1512,33 +1522,36 @@ input, select, textarea {
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  background: var(--bg-glass);
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  border-radius: var(--radius-sm);
+  background: white;
+  border: 3px solid var(--text-primary);
+  border-radius: 0;
   color: var(--text-secondary);
   cursor: pointer;
   transition: all 0.2s;
+  box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.15);
 }
 
 .property-collapse-btn:hover {
-  background: var(--bg-glass-elevated);
+  background: #f8fafc;
   border-color: var(--accent-electric);
   color: var(--accent-electric);
-  transform: translateY(-1px);
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.2);
 }
 
 .property-collapse-btn:active {
-  transform: translateY(0);
+  transform: translate(1px, 1px);
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.15);
 }
 
-/* Thumbnail - Expanded */
+/* Thumbnail - Expanded - Hard borders */
 .property-thumbnail-expanded {
   width: 100%;
-  height: 200px;
-  border-radius: var(--radius-md);
+  height: 160px;
+  border-radius: 0;
   overflow: hidden;
   margin-bottom: var(--space-sm);
-  border: 2px solid rgba(255, 255, 255, 0.3);
+  border: 3px solid #1a1a1a;
 }
 
 .property-thumbnail-image-large {
@@ -1603,8 +1616,50 @@ input, select, textarea {
     font-size: 12px;
   }
 
+  .property-card-expanded {
+    padding: var(--space-xs);
+  }
+
   .property-thumbnail-expanded {
-    height: 160px;
+    height: 120px;
+    margin-bottom: var(--space-xs);
+  }
+
+  .property-main {
+    gap: var(--space-xs);
+  }
+
+  .property-number {
+    width: 40px;
+    height: 40px;
+    font-size: 18px;
+  }
+
+  .property-time {
+    font-size: 20px;
+    margin-bottom: var(--space-xs);
+  }
+
+  .property-address {
+    font-size: 15px;
+    line-height: 1.3;
+    margin-bottom: var(--space-xs);
+  }
+
+  .travel-time {
+    font-size: 13px;
+    margin-top: 4px;
+  }
+
+  .property-actions {
+    gap: var(--space-xs);
+    margin-top: var(--space-xs);
+  }
+
+  .listing-btn,
+  .maps-btn {
+    font-size: 12px;
+    padding: 8px 12px;
   }
 
   .drive-time-connector {
