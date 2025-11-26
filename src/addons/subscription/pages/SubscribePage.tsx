@@ -13,7 +13,7 @@ export default function SubscribePage() {
   const [promoCode, setPromoCode] = useState('')
   const [promoApplied, setPromoApplied] = useState(false)
 
-  const handleStartTrial = async () => {
+  const handleSubscribe = async () => {
     setLoading(true)
     setError(null)
 
@@ -54,13 +54,13 @@ export default function SubscribePage() {
     <div className="subscribe-page">
       <div className="subscribe-container">
         <div className="trial-banner">
-          <span className="big-text">30-DAY</span>
-          <span className="small-text">FREE TRIAL</span>
+          <span className="big-text">UNLIMITED</span>
+          <span className="small-text">CALCULATIONS</span>
         </div>
 
         <div className="subscribe-header">
           <h1>Choose Your Plan</h1>
-          <p>Start your free trial today</p>
+          <p>Get unlimited route calculations</p>
         </div>
 
         <div className="pricing-cards">
@@ -77,7 +77,7 @@ export default function SubscribePage() {
               <span className="period">/month</span>
             </div>
             <div className="plan-description">
-              Billed monthly after trial
+              Billed monthly
             </div>
           </div>
 
@@ -95,7 +95,7 @@ export default function SubscribePage() {
               <span className="period">/year</span>
             </div>
             <div className="plan-description">
-              <span className="strikethrough">$119.88</span> Billed annually after trial
+              <span className="strikethrough">$119.88</span> Billed annually
             </div>
           </div>
         </div>
@@ -142,14 +142,14 @@ export default function SubscribePage() {
 
         <button
           className="cta-button"
-          onClick={handleStartTrial}
+          onClick={handleSubscribe}
           disabled={loading}
         >
-          {loading ? 'Loading...' : 'Start Free Trial'}
+          {loading ? 'Loading...' : 'Subscribe Now'}
         </button>
 
         <div className="trial-info">
-          <p>Trial starts today • No charge for 30 days • Cancel anytime</p>
+          <p>Secure payment • Unlimited calculations • Cancel anytime</p>
         </div>
       </div>
     </div>

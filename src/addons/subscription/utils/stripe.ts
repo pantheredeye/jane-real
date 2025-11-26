@@ -43,7 +43,4 @@ export const STRIPE_CONFIG = {
       amount: 4999, // $49.99 in cents
     },
   },
-  trial: {
-    days: 30,
-  },
 } as const

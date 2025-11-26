@@ -75,7 +75,6 @@ export async function createCheckoutSession(
         },
       ],
       subscription_data: {
-        trial_period_days: STRIPE_CONFIG.trial.days,
         metadata: {
           userId: user.id,
         },
