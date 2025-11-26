@@ -102,10 +102,14 @@ export async function finishPasskeyRegistration(
 
     await sessions.save(response.headers, { challenge: null });
 
+    const freeCredits = parseInt(process.env.FREE_CREDITS_AMOUNT || '15', 10);
+
     const user = await db.user.create({
       data: {
         email,
         username: email, // Use full email as username
+        creditsRemaining: freeCredits,
+        totalCreditsGranted: freeCredits,
       },
     });
 

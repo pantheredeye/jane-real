@@ -1,7 +1,8 @@
 import { route } from "rwsdk/router";
 import HomePage from "./pages/HomePage";
 import { exportItinerary } from "./server-functions/export";
-import { requireTenant, requireMember, requireSubscription } from "@/app/interruptors";
+import { requireTenant, requireMember } from "@/app/interruptors";
+import { requireCredits } from "@/app/interruptors/credits";
 
 // TODO: Add rate limiting to API endpoints
 // TODO: Add request/response validation with Zod schemas
@@ -9,8 +10,8 @@ import { requireTenant, requireMember, requireSubscription } from "@/app/interru
 // TODO: Add caching strategies for geocoding results
 
 export const routeCalculatorRoutes = [
-  // Main calculator page - requires active subscription and tenant membership
-  route("/", [requireSubscription, requireTenant, HomePage]),
+  // Main calculator page - requires credits and tenant membership
+  route("/", [requireCredits, requireTenant, HomePage]),
 
   // Server functions are called directly from client components
   // No HTTP routes needed for calculate/re-optimize

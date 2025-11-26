@@ -44,11 +44,16 @@ model User {
   cancelAtPeriodEnd      Boolean           @default(false) // Cancel scheduled
   grandfathered          Boolean           @default(false) // Free forever flag
 
+  // Credits system
+  creditsRemaining       Int               @default(15) // Free credits remaining
+  totalCreditsGranted    Int               @default(15) // Total credits ever granted
+
   credentials     Credential[]       // WebAuthn credentials
   memberships     TenantMembership[] // Many-to-many with tenants
   createdRoutes   Route[]            // Routes created by this user
   routeShares     RouteShare[]       // Routes shared by this user
   auditLogs       AuditLog[]         // Activity logs
+  usageLogs       UsageLog[]         // Credits usage tracking
 
   @@index([email])
   @@index([username])
@@ -201,4 +206,24 @@ model AuditLog {
   @@index([userId])
   @@index([createdAt])
   @@index([entity, entityId])
+}
+
+// Credits usage tracking
+model UsageLog {
+  id            String   @id @default(uuid())
+  userId        String
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  action        String   // "route_calculate"
+  creditsUsed   Int      @default(1)
+
+  // Context for analytics
+  propertyCount Int?     // Number of properties in route
+  metadata      String?  // JSON - addresses, settings, etc
+
+  createdAt     DateTime @default(now())
+
+  @@index([userId])
+  @@index([createdAt])
+  @@index([action])
 }

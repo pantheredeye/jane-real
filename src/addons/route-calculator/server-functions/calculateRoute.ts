@@ -40,17 +40,97 @@ import type {
   Coordinates
 } from '../types'
 import { CalculateRouteRequestSchema } from '../types'
+import { db } from '@/db'
+import { requestInfo } from 'rwsdk/worker'
+import { sessions } from '@/session/store'
 
 export async function calculateRoute(requestData: CalculateRouteRequest): Promise<RouteStructure> {
   try {
     const validatedData = CalculateRouteRequestSchema.parse(requestData)
-    
+
+    // Consume credit before calculation
+    await consumeCredit(validatedData)
+
     const route = await optimizeRoute(validatedData)
     return route
   } catch (error) {
     console.error('Route calculation error:', error)
     throw new Error(error instanceof Error ? error.message : 'Unknown error occurred')
   }
+}
+
+/**
+ * Consume 1 credit for route calculation
+ * Bypasses for grandfathered users and active subscribers
+ */
+async function consumeCredit(requestData: CalculateRouteRequest): Promise<void> {
+  // Get current user from session
+  const userSession = await sessions.load(requestInfo.request)
+  const userId = userSession?.userId
+
+  if (!userId) {
+    throw new Error('Not authenticated')
+  }
+
+  const user = await db.user.findUnique({
+    where: { id: userId },
+    select: {
+      id: true,
+      creditsRemaining: true,
+      grandfathered: true,
+      subscriptionStatus: true,
+    },
+  })
+
+  if (!user) {
+    throw new Error('User not found')
+  }
+
+  // Bypass credit consumption for grandfathered users
+  if (user.grandfathered) {
+    return
+  }
+
+  // Bypass credit consumption for active/trialing subscribers
+  if (
+    user.subscriptionStatus === 'ACTIVE' ||
+    user.subscriptionStatus === 'TRIALING' ||
+    user.subscriptionStatus === 'GRANDFATHERED'
+  ) {
+    return
+  }
+
+  // Check if user has credits
+  if (user.creditsRemaining <= 0) {
+    throw new Error('No credits remaining. Please subscribe to continue.')
+  }
+
+  // Consume 1 credit and log usage atomically
+  await db.$transaction(async (tx) => {
+    // Decrement credits
+    await tx.user.update({
+      where: { id: user.id },
+      data: {
+        creditsRemaining: {
+          decrement: 1,
+        },
+      },
+    })
+
+    // Log usage
+    await tx.usageLog.create({
+      data: {
+        userId: user.id,
+        action: 'route_calculate',
+        creditsUsed: 1,
+        propertyCount: requestData.addresses.length,
+        metadata: JSON.stringify({
+          addressCount: requestData.addresses.length,
+          startLocationType: requestData.startLocation.type,
+        }),
+      },
+    })
+  })
 }
 
 
