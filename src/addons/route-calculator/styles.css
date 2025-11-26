@@ -372,7 +372,7 @@ input, select, textarea {
 .property-card {
   background: white;
   border: 4px solid #1a1a1a;
-  border-radius: var(--radius-md);
+  border-radius: 0;
   padding: var(--space-md);
   margin-bottom: var(--space-md);
   box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.3);
@@ -537,31 +537,33 @@ input, select, textarea {
 
 /* Google Maps Button */
 .maps-btn {
-  height: var(--touch-minimum);
-  padding: 0 var(--space-md);
+  height: 44px;
+  padding: 0 var(--space-lg);
+  font-family: 'Bebas Neue', sans-serif;
   font-size: 14px;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
-  background: linear-gradient(135deg, var(--accent-success), #059669);
-  border: 3px solid var(--accent-success);
-  border-radius: var(--radius-md);
-  color: var(--text-white);
+  letter-spacing: 1px;
+  background: var(--accent-success);
+  border: 3px solid var(--text-primary);
+  border-radius: 0;
+  color: white;
   cursor: pointer;
   transition: all 0.2s ease;
-  font-family: inherit;
   white-space: nowrap;
-  box-shadow: var(--shadow-glass);
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.3);
   flex-shrink: 0;
 }
 
 .maps-btn:hover {
+  background: #059669;
   transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(16, 185, 129, 0.4);
+  box-shadow: 5px 5px 0 rgba(0, 0, 0, 0.3);
 }
 
 .maps-btn:active {
-  transform: translateY(0);
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.3);
 }
 
 /* Results Section */
@@ -573,7 +575,7 @@ input, select, textarea {
   margin-bottom: var(--space-lg);
   background: white;
   border: 4px solid #1a1a1a;
-  border-radius: var(--radius-md);
+  border-radius: 0;
   padding: var(--space-md);
   box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.3);
 }
@@ -1377,30 +1379,29 @@ input, select, textarea {
 }
 /* ==================== Compact Visual Timeline - New Card Design ==================== */
 
-/* Compact Property Card (Collapsed State) */
-.property-card-compact {
+/* Result Card (Collapsed Timeline State) */
+.result-card {
   display: flex;
   align-items: center;
   gap: var(--space-sm);
   padding: var(--space-sm);
-  background: var(--bg-glass-elevated);
-  backdrop-filter: var(--blur-medium);
-  border-radius: var(--radius-md);
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  box-shadow: var(--shadow-glass);
+  background: white;
+  border-radius: 0;
+  border: 3px solid var(--text-primary);
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.15);
   cursor: pointer;
   transition: all 0.2s ease;
   margin-bottom: var(--space-xs);
 }
 
-.property-card-compact:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-elevated);
-  border-color: rgba(59, 130, 246, 0.4);
+.result-card:hover {
+  transform: translateX(4px);
+  box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.2);
 }
 
-.property-card-compact:active {
-  transform: translateY(0);
+.result-card:active {
+  transform: translateX(0);
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.15);
 }
 
 /* Thumbnail - Compact */
@@ -1576,7 +1577,7 @@ input, select, textarea {
 
 /* Mobile responsive adjustments for new components */
 @media (max-width: 768px) {
-  .property-card-compact {
+  .result-card {
     gap: var(--space-xs);
     padding: var(--space-xs);
   }
@@ -1638,5 +1639,293 @@ input, select, textarea {
   .property-list-item-thumbnail {
     width: 40px;
     height: 40px;
+  }
+}
+
+/* ==================== Starting Location Cards - Comic Book Style ==================== */
+
+/* Compact starting location card (collapsed) */
+.starting-location-card-compact {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-sm);
+  background: white;
+  border: 3px solid var(--text-primary);
+  border-radius: 0;
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-bottom: var(--space-sm);
+}
+
+.starting-location-card-compact:hover {
+  transform: translateX(4px);
+  box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.2);
+}
+
+.starting-location-card-compact:active {
+  transform: translateX(0);
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.15);
+}
+
+.starting-location-icon {
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.starting-location-compact-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.starting-location-label {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #f59e0b; /* Amber label */
+}
+
+.starting-location-display {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Expanded starting location card */
+.starting-location-card-expanded {
+  background: #fffbf0; /* Light amber tint */
+  border: 3px solid var(--text-primary);
+  border-radius: 0;
+  padding: var(--space-md);
+  margin-bottom: var(--space-md);
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
+}
+
+.starting-location-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-md);
+}
+
+.starting-location-icon-large {
+  font-size: 42px;
+}
+
+.starting-location-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 24px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #f59e0b; /* Amber title */
+  margin: 0;
+}
+
+/* Radio options for start type */
+.start-from-options {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-md);
+}
+
+.start-from-option {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-sm);
+  background: white;
+  border: 3px solid #1a1a1a;
+  border-radius: 0;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.start-from-option:hover {
+  background: rgba(245, 158, 11, 0.1);
+  border-color: #f59e0b;
+}
+
+.start-from-option input[type="radio"] {
+  width: 20px;
+  height: 20px;
+  accent-color: #f59e0b;
+  cursor: pointer;
+}
+
+.location-status {
+  margin-left: auto;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.location-status.error {
+  color: var(--accent-danger);
+}
+
+/* Property select dropdown */
+.property-select {
+  width: 100%;
+  padding: var(--space-sm);
+  font-size: 16px;
+  font-weight: 600;
+  background: white;
+  border: 3px solid #1a1a1a;
+  border-radius: 0;
+  color: var(--text-primary);
+  cursor: pointer;
+  font-family: inherit;
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.15);
+  transition: all 0.2s;
+}
+
+.property-select:focus {
+  outline: none;
+  border-color: #f59e0b;
+  box-shadow: 4px 4px 0 rgba(245, 158, 11, 0.3);
+}
+
+.property-select:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Custom start input */
+.custom-start-input {
+  width: 100%;
+  padding: var(--space-sm);
+  font-size: 16px;
+  font-weight: 500;
+  background: white;
+  border: 3px solid #1a1a1a;
+  border-radius: 0;
+  color: var(--text-primary);
+  font-family: inherit;
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.15);
+  transition: all 0.2s;
+}
+
+.custom-start-input:focus {
+  outline: none;
+  border-color: #f59e0b;
+  box-shadow: 4px 4px 0 rgba(245, 158, 11, 0.3);
+}
+
+.custom-start-input::placeholder {
+  color: var(--text-secondary);
+  opacity: 0.6;
+}
+
+/* Inline error message */
+.inline-error-message {
+  padding: var(--space-sm);
+  background: rgba(239, 68, 68, 0.1);
+  border: 3px solid var(--accent-danger);
+  border-radius: 0;
+  color: var(--accent-danger);
+  font-size: 14px;
+  font-weight: 600;
+  margin-top: var(--space-sm);
+}
+
+/* Starting location result card (in results) */
+.starting-result-card {
+  border-color: #f59e0b; /* Amber border to distinguish */
+  background: #fffbf0; /* Light amber background */
+}
+
+.starting-result-icon {
+  min-width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f59e0b; /* Amber background */
+  color: white;
+  font-size: 20px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.starting-result-label {
+  font-size: 16px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #f59e0b; /* Amber label */
+}
+
+/* Utility classes for starting location */
+.text-right {
+  text-align: right;
+}
+
+.collapse-link {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  padding: var(--space-xs);
+  transition: all 0.2s;
+}
+
+.collapse-link:hover {
+  color: var(--accent-electric);
+}
+
+.collapse-link:active {
+  color: var(--text-primary);
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .starting-location-card-compact {
+    gap: var(--space-xs);
+    padding: var(--space-xs);
+  }
+
+  .starting-location-icon {
+    font-size: 18px;
+  }
+
+  .starting-location-label {
+    font-size: 11px;
+  }
+
+  .starting-location-display {
+    font-size: 13px;
+  }
+
+  .starting-location-icon-large {
+    font-size: 36px;
+  }
+
+  .starting-location-title {
+    font-size: 20px;
+  }
+
+  .starting-result-icon {
+    min-width: 32px;
+    height: 32px;
+    font-size: 18px;
+  }
+
+  .starting-result-label {
+    font-size: 14px;
   }
 }

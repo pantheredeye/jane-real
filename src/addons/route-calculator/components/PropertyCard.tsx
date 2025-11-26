@@ -60,7 +60,7 @@ export function PropertyCard({ routeItem, routeIndex, onTimeChange, onDurationCh
   // Collapsed view (compact timeline)
   if (!isExpanded) {
     return (
-      <div className="property-card-compact" onClick={() => setIsExpanded(true)}>
+      <div className="result-card" onClick={() => setIsExpanded(true)}>
         {/* Thumbnail or placeholder */}
         <div className="property-thumbnail-compact">
           {property.thumbnailUrl ? (

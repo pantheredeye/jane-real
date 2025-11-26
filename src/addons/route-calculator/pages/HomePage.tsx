@@ -9,6 +9,8 @@ import { CopyButtons } from '../components/CopyButtons'
 import { StateManager } from '../components/StateManager'
 import { PropertyInputBox } from '../components/PropertyInputBox'
 import { PropertyList } from '../components/PropertyList'
+import { StartingLocationCard } from '../components/StartingLocationCard'
+import { StartingLocationResultCard } from '../components/StartingLocationResultCard'
 import '../mobile-layout.css'
 import { isDuplicateAddress } from '../utils/addressNormalizer'
 import { calculateRoute } from '../server-functions/calculateRoute'
@@ -409,8 +411,8 @@ export default function HomePage() {
           message = 'Location request timed out'
         }
         setLocationError(message)
-        // Fall back to first property
-        setStartFromType('first')
+        // Fall back to property selector
+        setStartFromType('property')
       },
       { enableHighAccuracy: true, timeout: 10000 }
     )
@@ -477,24 +479,6 @@ export default function HomePage() {
       isCalculating={isCalculating}
       showSuccess={showCalculateSuccess}
       isCalculationDirty={isCalculationDirty}
-      startFromType={startFromType}
-      onStartFromTypeChange={(type) => {
-        setStartFromType(type)
-        setIsDirty(true)
-      }}
-      customStartAddress={customStartAddress}
-      onCustomStartAddressChange={(address) => {
-        setCustomStartAddress(address)
-        setIsDirty(true)
-      }}
-      onRequestLocation={requestCurrentLocation}
-      hasCurrentLocation={!!currentLocation}
-      startingPropertyIndex={startingPropertyIndex}
-      onStartingPropertyIndexChange={(index) => {
-        setStartingPropertyIndex(index)
-        setIsDirty(true)
-      }}
-      propertyAddresses={propertyList.map(p => p.parsedAddress)}
       routeName={routeName}
       onRouteNameChange={(name) => {
         setRouteName(name)
@@ -586,6 +570,33 @@ export default function HomePage() {
         </div>
       )}
 
+      {/* Starting Location Card - show when properties exist */}
+      {propertyList.length > 0 && (
+        <div className="inline-list-section">
+          <StartingLocationCard
+            startFromType={startFromType}
+            onStartFromTypeChange={(type) => {
+              setStartFromType(type)
+              setIsDirty(true)
+            }}
+            customStartAddress={customStartAddress}
+            onCustomStartAddressChange={(address) => {
+              setCustomStartAddress(address)
+              setIsDirty(true)
+            }}
+            currentLocation={currentLocation}
+            locationError={locationError}
+            onRequestLocation={requestCurrentLocation}
+            startingPropertyIndex={startingPropertyIndex}
+            onStartingPropertyIndexChange={(index) => {
+              setStartingPropertyIndex(index)
+              setIsDirty(true)
+            }}
+            propertyAddresses={propertyList.map(p => p.parsedAddress)}
+          />
+        </div>
+      )}
+
       {/* Empty state hint - only when no properties and no route */}
       {propertyList.length === 0 && !calculatedRoute && (
         <div className="viewport-empty">
@@ -609,6 +620,24 @@ export default function HomePage() {
 
           <div className="itinerary-container">
             <div className="itinerary-list">
+              {/* Starting point card */}
+              <StartingLocationResultCard
+                startLocation={{
+                  type: startFromType,
+                  coords: currentLocation || undefined,
+                  address: customStartAddress || undefined,
+                  propertyIndex: startingPropertyIndex
+                }}
+                propertyAddresses={propertyList.map(p => p.parsedAddress)}
+              />
+
+              {/* Drive time from start to first property */}
+              {calculatedRoute.items.length > 0 && calculatedRoute.items[0].travelTime > 0 && (
+                <DriveTimeConnector
+                  travelTime={calculatedRoute.items[0].travelTime}
+                />
+              )}
+
               {calculatedRoute.items.map((item, index) => (
                 <div key={item.propertyIndex}>
                   <PropertyCard

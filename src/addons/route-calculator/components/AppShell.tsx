@@ -20,17 +20,6 @@ interface AppShellProps {
   selectedDuration: number
   onDurationChange: (duration: number) => void
 
-  // Start location
-  startFromType: 'current' | 'property' | 'custom'
-  onStartFromTypeChange: (type: 'current' | 'property' | 'custom') => void
-  customStartAddress: string
-  onCustomStartAddressChange: (address: string) => void
-  onRequestLocation: () => void
-  hasCurrentLocation: boolean
-  startingPropertyIndex: number
-  onStartingPropertyIndexChange: (index: number) => void
-  propertyAddresses: string[]
-
   // Calculate
   onCalculate: () => void
   isCalculating: boolean
@@ -67,16 +56,7 @@ export function AppShell({
   onNewRoute,
   onOpenRoute,
   onSaveRoute,
-  hasCalculatedRoute,
-  startFromType,
-  onStartFromTypeChange,
-  customStartAddress,
-  onCustomStartAddressChange,
-  onRequestLocation,
-  hasCurrentLocation,
-  startingPropertyIndex,
-  onStartingPropertyIndexChange,
-  propertyAddresses
+  hasCalculatedRoute
 }: AppShellProps) {
   const [settingsOpen, setSettingsOpen] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
@@ -131,15 +111,6 @@ export function AppShell({
         onDurationChange={onDurationChange}
         startTime={startTime}
         onStartTimeChange={onStartTimeChange}
-        startFromType={startFromType}
-        onStartFromTypeChange={onStartFromTypeChange}
-        customStartAddress={customStartAddress}
-        onCustomStartAddressChange={onCustomStartAddressChange}
-        onRequestLocation={onRequestLocation}
-        hasCurrentLocation={hasCurrentLocation}
-        startingPropertyIndex={startingPropertyIndex}
-        onStartingPropertyIndexChange={onStartingPropertyIndexChange}
-        propertyAddresses={propertyAddresses}
         propertyCount={properties.length}
         onClearAll={onClearAll}
       />
