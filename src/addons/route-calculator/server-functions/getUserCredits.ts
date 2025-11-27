@@ -2,7 +2,6 @@
 
 import { db } from '@/db'
 import { requestInfo } from 'rwsdk/worker'
-import { sessions } from '@/session/store'
 
 export interface UserCreditsData {
   creditsRemaining: number
@@ -16,9 +15,9 @@ export interface UserCreditsData {
  */
 export async function getUserCredits(): Promise<UserCreditsData | null> {
   try {
-    // Get current user from session
-    const userSession = await sessions.load(requestInfo.request)
-    const userId = userSession?.userId
+    // Get current user from context
+    const { ctx } = requestInfo
+    const userId = ctx.user?.id
 
     if (!userId) {
       return null

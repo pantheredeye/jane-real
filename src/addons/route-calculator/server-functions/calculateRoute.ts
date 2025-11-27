@@ -110,19 +110,19 @@ async function consumeCredit(requestData: CalculateRouteRequest): Promise<void> 
   }
 
   // Consume 1 credit and log usage atomically
-  await db.$transaction(async (tx) => {
+  await db.$transaction([
     // Decrement credits
-    await tx.user.update({
+    db.user.update({
       where: { id: user.id },
       data: {
         creditsRemaining: {
           decrement: 1,
         },
       },
-    })
+    }),
 
     // Log usage
-    await tx.usageLog.create({
+    db.usageLog.create({
       data: {
         userId: user.id,
         action: 'route_calculate',
@@ -133,8 +133,8 @@ async function consumeCredit(requestData: CalculateRouteRequest): Promise<void> 
           startLocationType: requestData.startLocation.type,
         }),
       },
-    })
-  })
+    }),
+  ])
 }
 
 

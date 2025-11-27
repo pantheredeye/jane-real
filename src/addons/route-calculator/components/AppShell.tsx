@@ -4,7 +4,6 @@ import { useState, ReactNode } from 'react'
 import { BottomBar } from './BottomBar'
 import { SettingsSheet } from './SettingsSheet'
 import { MenuSheet } from './MenuSheet'
-import { CreditsDisplay } from './CreditsDisplay'
 import type { PropertyInput } from '../types'
 
 interface AppShellProps {
@@ -72,15 +71,6 @@ export function AppShell({
 
   return (
     <div className="app-shell">
-      {/* Credits Warning Banner */}
-      {creditsRemaining !== undefined && (
-        <CreditsDisplay
-          creditsRemaining={creditsRemaining}
-          isGrandfathered={isGrandfathered}
-          isSubscribed={isSubscribed}
-        />
-      )}
-
       {/* Header */}
       <header className="header-bar">
         <button
@@ -93,19 +83,27 @@ export function AppShell({
           <span className="hamburger-line" />
         </button>
 
-        <span className="route-title">
-          {routeName || 'Untitled Route'}
-          {isDirty && <span className="dirty-indicator">*</span>}
-        </span>
+        <div className="route-title-section">
+          <span className="route-title">
+            {routeName || 'Untitled Route'}
+            {isDirty && <span className="dirty-indicator">*</span>}
+          </span>
+
+          {/* Credits display under route title */}
+          {creditsRemaining !== undefined && !isGrandfathered && !isSubscribed && (
+            <div className={`credits-subtitle ${creditsRemaining < 5 ? 'credits-low' : ''} ${creditsRemaining < 3 ? 'credits-critical' : ''}`}>
+              <span className="credits-text">
+                {creditsRemaining} {creditsRemaining === 1 ? 'credit' : 'credits'} remaining
+              </span>
+              <span className="credits-divider">•</span>
+              <a href="/subscription/subscribe?reason=header" className="credits-buy-link">
+               Subscribe Now!
+              </a>
+            </div>
+          )}
+        </div>
 
         <div className="header-actions">
-          {creditsRemaining !== undefined && (
-            <CreditsDisplay
-              creditsRemaining={creditsRemaining}
-              isGrandfathered={isGrandfathered}
-              isSubscribed={isSubscribed}
-            />
-          )}
           <button
             className="settings-btn"
             onClick={() => setSettingsOpen(true)}

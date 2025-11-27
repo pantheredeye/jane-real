@@ -1,5 +1,5 @@
 import { route } from "rwsdk/router";
-import HomePage from "./pages/HomePage";
+import HomePageWrapper from "./pages/HomePageWrapper";
 import { exportItinerary } from "./server-functions/export";
 import { requireTenant, requireMember } from "@/app/interruptors";
 import { requireCredits } from "@/app/interruptors/credits";
@@ -11,7 +11,7 @@ import { requireCredits } from "@/app/interruptors/credits";
 
 export const routeCalculatorRoutes = [
   // Main calculator page - requires credits and tenant membership
-  route("/", [requireCredits, requireTenant, HomePage]),
+  route("/", [requireCredits, requireTenant, HomePageWrapper]),
 
   // Server functions are called directly from client components
   // No HTTP routes needed for calculate/re-optimize

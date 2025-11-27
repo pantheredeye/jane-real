@@ -20,7 +20,12 @@ import type { OptimizedRoute, PropertyInput } from '../types'
 import { useRouteManager, calculateAppointmentTimes } from '../hooks/useRouteManager'
 import { DEMO_PROPERTIES_KEY } from '@/app/pages/landing/components/demo/DemoContent'
 
-export default function HomePage() {
+interface HomePageProps {
+  initialCredits: UserCreditsData | null
+  initialSavedRoutes: any[]
+}
+
+export default function HomePage({ initialCredits, initialSavedRoutes }: HomePageProps) {
   // TODO: Lift DurationSelector state up to HomePage (like we did with AddressInput)
   // TODO: DurationSelector needs props: selectedDuration, onChange callback
   // TODO: Add selectedDuration state to HomePage
@@ -50,13 +55,13 @@ export default function HomePage() {
   const [lastCalculatedFingerprint, setLastCalculatedFingerprint] = useState('')
 
   // Credits system
-  const [userCredits, setUserCredits] = useState<UserCreditsData | null>(null)
+  const [userCredits, setUserCredits] = useState<UserCreditsData | null>(initialCredits)
 
   // Route persistence state
   const [showSaveDialog, setShowSaveDialog] = useState(false)
   const [routeDate, setRouteDate] = useState(new Date().toISOString().split('T')[0])
   const [isSaving, setIsSaving] = useState(false)
-  const [savedRoutes, setSavedRoutes] = useState<any[]>([])
+  const [savedRoutes, setSavedRoutes] = useState<any[]>(initialSavedRoutes)
   const [isLoadingRoutes, setIsLoadingRoutes] = useState(false)
   const [showDemoImportBanner, setShowDemoImportBanner] = useState(false)
   const [demoProperties, setDemoProperties] = useState<PropertyInput[] | null>(null)
@@ -246,16 +251,6 @@ export default function HomePage() {
       setIsCalculating(false)
     }
   }
-
-  // Load saved routes on mount
-  useEffect(() => {
-    loadSavedRoutes()
-  }, [])
-
-  // Fetch user credits on mount
-  useEffect(() => {
-    fetchUserCredits()
-  }, [])
 
   const fetchUserCredits = async () => {
     const credits = await getUserCredits()

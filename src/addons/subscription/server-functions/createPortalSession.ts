@@ -3,15 +3,14 @@
 import { getStripe } from '../utils/stripe'
 import { db } from '@/db'
 import { requestInfo } from 'rwsdk/worker'
-import { sessions } from '@/session/store'
 
 export async function createPortalSession(
   returnUrl: string
 ): Promise<{ url: string | null; error?: string }> {
   try {
-    // Get current user from session
-    const userSession = await sessions.load(requestInfo.request)
-    const userId = userSession?.userId
+    // Get current user from context
+    const { ctx } = requestInfo
+    const userId = ctx.user?.id
     if (!userId) {
       return { url: null, error: 'Not authenticated' }
     }
