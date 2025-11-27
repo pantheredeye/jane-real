@@ -13,7 +13,10 @@ import type { AppContext } from '@/worker';
 export async function requireCredits({ ctx }: { ctx: AppContext }) {
   // Must be authenticated
   if (!ctx.user) {
-    return Response.redirect('/user/login', 302);
+    return new Response(null, {
+      status: 302,
+      headers: { Location: '/user/login' }
+    });
   }
 
   // Grandfathered users bypass credits
@@ -32,7 +35,10 @@ export async function requireCredits({ ctx }: { ctx: AppContext }) {
 
   // Check if user has credits remaining
   if (ctx.user.creditsRemaining <= 0) {
-    return Response.redirect('/subscription/subscribe?reason=no-credits', 302);
+    return new Response(null, {
+      status: 302,
+      headers: { Location: '/subscription/subscribe?reason=no-credits' }
+    });
   }
 
   // Has credits, allow access
