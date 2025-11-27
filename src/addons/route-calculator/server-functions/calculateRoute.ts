@@ -62,6 +62,10 @@ export async function calculateRoute(requestData: CalculateRouteRequest): Promis
 /**
  * Consume 1 credit for route calculation
  * Bypasses for grandfathered users and active subscribers
+ *
+ * NOTE: Cloudflare may warn about "cross-request promise resolution" due to
+ * Prisma's internal cleanup. This is safe - the transaction is properly awaited
+ * and completes before the function returns. The warning can be ignored.
  */
 async function consumeCredit(requestData: CalculateRouteRequest): Promise<void> {
   // Get current user from session
