@@ -606,6 +606,61 @@
   text-decoration: underline;
 }
 
+/* ========== PAYMENT FORM ========== */
+.payment-form {
+  background: #f9f9f9;
+  border: 4px solid var(--text-color);
+  padding: 24px;
+  margin-bottom: 32px;
+}
+
+.payment-form h3 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 24px;
+  letter-spacing: 1px;
+  color: var(--text-color);
+  margin: 0 0 16px 0;
+  text-transform: uppercase;
+}
+
+.card-element-container {
+  background: white;
+  border: 3px solid var(--text-color);
+  padding: 16px;
+  margin-bottom: 16px;
+  min-height: 44px;
+}
+
+/* Ensure Stripe iframe is visible */
+.card-element-container .StripeElement {
+  width: 100%;
+  height: 40px;
+}
+
+.payment-error {
+  background: var(--primary-color);
+  color: white;
+  padding: 16px;
+  margin-bottom: 16px;
+  text-align: center;
+  border: 3px solid var(--border-color);
+  box-shadow: 4px 4px 0 rgba(0,0,0,0.2);
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 18px;
+  letter-spacing: 1px;
+}
+
+.secure-notice {
+  text-align: center;
+  margin-top: 12px;
+}
+
+.secure-notice p {
+  color: #666;
+  font-size: 14px;
+  margin: 0;
+}
+
 /* ========== RESPONSIVE ========== */
 @media (max-width: 768px) {
   .subscribe-container {

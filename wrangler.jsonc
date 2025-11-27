@@ -27,7 +27,8 @@
     ]
   },
   "vars": {
-    "WEBAUTHN_APP_NAME": "routefast"
+    "WEBAUTHN_APP_NAME": "routefast",
+    "STRIPE_PUBLISHABLE_KEY": "pk_test_your_stripe_publishable_key_here"
   },
   "migrations": [
     {
@@ -53,7 +54,8 @@
         }
       ],
       "vars": {
-        "WEBAUTHN_APP_NAME": "routefast-staging"
+        "WEBAUTHN_APP_NAME": "routefast-staging",
+        "STRIPE_PUBLISHABLE_KEY": "pk_test_your_stripe_publishable_key_here"
       },
       "d1_databases": [
         {
