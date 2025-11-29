@@ -1,8 +1,8 @@
 import { route } from 'rwsdk/router'
-import { PrivacyPage } from './PrivacyPage'
-import { TermsPage } from './TermsPage'
+import Terms from './Terms'
+import Privacy from './Privacy'
 
 export const legalRoutes = [
-  route('/privacy', PrivacyPage),
-  route('/terms', TermsPage)
+  route('/privacy', Privacy),
+  route('/terms', Terms)
 ]

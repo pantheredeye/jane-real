@@ -1,0 +1,46 @@
+/* Footer Component - 50s Retro Theme */
+
+.app-footer {
+  padding: 20px;
+  text-align: center;
+  border-top: 2px solid var(--border-color, #1a1a1a);
+  background: var(--bg-color, #f5f1e8);
+  margin-top: auto;
+}
+
+.footer-links {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  font-size: 14px;
+}
+
+.footer-link {
+  color: var(--text-color, #1a1a1a);
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.footer-link:hover {
+  color: var(--primary-color, #d32f2f);
+  text-decoration: underline;
+}
+
+.footer-divider {
+  color: #999;
+  user-select: none;
+}
+
+@media (max-width: 600px) {
+  .app-footer {
+    padding: 16px;
+  }
+
+  .footer-links {
+    font-size: 12px;
+    gap: 8px;
+  }
+}

@@ -62,6 +62,7 @@ export async function calculateRoute(requestData: CalculateRouteRequest): Promis
 /**
  * Consume 1 credit for route calculation
  * Bypasses for grandfathered users and active subscribers
+ * Always logs attempts for analytics, even when blocked
  *
  * NOTE: Cloudflare may warn about "cross-request promise resolution" due to
  * Prisma's internal cleanup. This is safe - the transaction is properly awaited
@@ -90,51 +91,49 @@ async function consumeCredit(requestData: CalculateRouteRequest): Promise<void> 
     throw new Error('User not found')
   }
 
-  // Bypass credit consumption for grandfathered users
-  if (user.grandfathered) {
-    return
-  }
-
-  // Bypass credit consumption for active/trialing subscribers
-  if (
+  // Check if user bypasses credit system
+  const bypassesCredits =
+    user.grandfathered ||
     user.subscriptionStatus === 'ACTIVE' ||
     user.subscriptionStatus === 'TRIALING' ||
     user.subscriptionStatus === 'GRANDFATHERED'
-  ) {
-    return
+
+  // Determine if blocked by credits
+  const blockedByCredits = !bypassesCredits && user.creditsRemaining <= 0
+
+  // Always log attempt for analytics
+  await db.usageLog.create({
+    data: {
+      userId: user.id,
+      action: 'route_calculate',
+      creditsUsed: blockedByCredits ? 0 : (bypassesCredits ? 0 : 1),
+      propertyCount: requestData.addresses.length,
+      metadata: JSON.stringify({
+        addressCount: requestData.addresses.length,
+        startLocationType: requestData.startLocation.type,
+        blocked: blockedByCredits,
+        subscriptionStatus: user.subscriptionStatus,
+        grandfathered: user.grandfathered,
+      }),
+    },
+  })
+
+  // Block if no credits
+  if (blockedByCredits) {
+    throw new Error('Trial complete - Subscribe to continue')
   }
 
-  // Check if user has credits
-  if (user.creditsRemaining <= 0) {
-    throw new Error('No credits remaining. Please subscribe to continue.')
-  }
-
-  // Consume 1 credit and log usage atomically
-  await db.$transaction([
-    // Decrement credits
-    db.user.update({
+  // Consume credit if not bypassed
+  if (!bypassesCredits) {
+    await db.user.update({
       where: { id: user.id },
       data: {
         creditsRemaining: {
           decrement: 1,
         },
       },
-    }),
-
-    // Log usage
-    db.usageLog.create({
-      data: {
-        userId: user.id,
-        action: 'route_calculate',
-        creditsUsed: 1,
-        propertyCount: requestData.addresses.length,
-        metadata: JSON.stringify({
-          addressCount: requestData.addresses.length,
-          startLocationType: requestData.startLocation.type,
-        }),
-      },
-    }),
-  ])
+    })
+  }
 }
 
 

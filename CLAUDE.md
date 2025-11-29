@@ -227,6 +227,9 @@ The project uses Prisma with D1. Key models:
 - Check that all environment variables are set
 - Verify Cloudflare Workers limits aren't exceeded
 
+### Cloudflare Workers - Cross-Request Promise Resolution
+**CRITICAL**: All async operations (Prisma, API calls) MUST be awaited before returning from server components/functions. Unawaited promises cause "cross-request promise resolution" errors. Always `await` all DB queries and async operations.
+
 ## Future Enhancements
 - Interactive map display
 - Calendar integration

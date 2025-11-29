@@ -180,6 +180,39 @@ export async function createUser(data) {
 }
 ```
 
+**CRITICAL - Cross-Request Promise Resolution**:
+
+All async operations MUST complete before returning from server components/functions. Cloudflare Workers will error if promises resolve after request context ends.
+
+```tsx
+// WRONG - Promise continues after return
+export async function BadComponent() {
+  db.user.findMany().then(users => console.log(users)) // DON'T
+  return <div>Done</div>
+}
+
+// CORRECT - Await all promises
+export async function GoodComponent() {
+  const users = await db.user.findMany()
+  console.log(users)
+  return <div>Done</div>
+}
+
+// WRONG - Fire-and-forget async
+"use server"
+export async function badUpdate(id) {
+  db.user.update({ where: { id }, data: { ... } }) // Missing await!
+  return { success: true }
+}
+
+// CORRECT - Await before returning
+"use server"
+export async function goodUpdate(id) {
+  await db.user.update({ where: { id }, data: { ... } })
+  return { success: true }
+}
+```
+
 **Red Flags to Identify**:
 
 - Missing "use client" with useState/useEffect/event handlers
@@ -192,6 +225,7 @@ export async function createUser(data) {
 - Routes defined directly in worker.tsx instead of co-located files
 - Missing interruptor chain (handler without auth check when needed)
 - Async server component without Suspense boundary in parent
+- **Cross-request promise resolution**: Unawaited promises or async operations continuing after response sent (Cloudflare Workers will error)
 
 **Your Process**:
 

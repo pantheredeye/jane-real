@@ -93,7 +93,7 @@ export function AppShell({
           {creditsRemaining !== undefined && !isGrandfathered && !isSubscribed && (
             <div className={`credits-subtitle ${creditsRemaining < 5 ? 'credits-low' : ''} ${creditsRemaining < 3 ? 'credits-critical' : ''}`}>
               <span className="credits-text">
-                {creditsRemaining} {creditsRemaining === 1 ? 'credit' : 'credits'} remaining
+                {creditsRemaining} trial {creditsRemaining === 1 ? 'route' : 'routes'} remaining
               </span>
               <span className="credits-divider">•</span>
               <a href="/subscription/subscribe?reason=header" className="credits-buy-link">

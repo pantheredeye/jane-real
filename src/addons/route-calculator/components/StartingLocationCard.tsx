@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 
 interface StartingLocationCardProps {
   startFromType: 'current' | 'property' | 'custom'
@@ -29,12 +29,9 @@ export function StartingLocationCard({
 }: StartingLocationCardProps) {
   const [isExpanded, setIsExpanded] = useState(false)
 
-  // Auto-request geolocation on mount if type is 'current'
-  useEffect(() => {
-    if (startFromType === 'current' && !currentLocation && !locationError) {
-      onRequestLocation()
-    }
-  }, []) // Only run on mount
+  // Note: We don't auto-request geolocation on mount because browsers
+  // require user gestures for permission prompts (especially on mobile).
+  // Location is requested when user explicitly selects "Current location"
 
   // Get display text for collapsed state
   const getDisplayText = () => {

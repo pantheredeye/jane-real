@@ -11,6 +11,7 @@ import "./signup.css";
 
 export function Signup() {
   const [email, setEmail] = useState("");
+  const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [result, setResult] = useState("");
   const [isPending, startTransition] = useTransition();
 
@@ -24,6 +25,11 @@ export function Signup() {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       setResult("Please enter a valid email address");
+      return;
+    }
+
+    if (!agreedToTerms) {
+      setResult("Please agree to the Terms of Service and Privacy Policy");
       return;
     }
 
@@ -94,9 +100,31 @@ export function Signup() {
             We'll create a secure passkey for your account—no password needed.
           </p>
 
+          <div className="terms-checkbox-container">
+            <label className="terms-checkbox-label">
+              <input
+                type="checkbox"
+                checked={agreedToTerms}
+                onChange={(e) => setAgreedToTerms(e.target.checked)}
+                className="terms-checkbox"
+                disabled={isPending}
+              />
+              <span>
+                I agree to the{" "}
+                <a href="/legal/terms" target="_blank" rel="noopener noreferrer" className="terms-link">
+                  Terms of Service
+                </a>{" "}
+                and{" "}
+                <a href="/legal/privacy" target="_blank" rel="noopener noreferrer" className="terms-link">
+                  Privacy Policy
+                </a>
+              </span>
+            </label>
+          </div>
+
           <button
             onClick={handlePerformSignup}
-            disabled={isPending}
+            disabled={isPending || !agreedToTerms}
             className="signup-button"
           >
             {isPending ? "Creating Account..." : "Create Account"}
@@ -126,6 +154,20 @@ export function Signup() {
             </a>
           </p>
         </div>
+      </div>
+
+      <div className="page-footer">
+        <a href="/legal/terms" target="_blank" rel="noopener noreferrer" className="footer-link">
+          Terms of Service
+        </a>
+        <span className="footer-divider">•</span>
+        <a href="/legal/privacy" target="_blank" rel="noopener noreferrer" className="footer-link">
+          Privacy Policy
+        </a>
+        <span className="footer-divider">•</span>
+        <a href="mailto:barrett@digitalglue.dev" className="footer-link">
+          Contact
+        </a>
       </div>
     </div>
   );
