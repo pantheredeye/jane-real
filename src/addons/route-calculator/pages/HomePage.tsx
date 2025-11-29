@@ -11,6 +11,7 @@ import { PropertyInputBox } from '../components/PropertyInputBox'
 import { PropertyList } from '../components/PropertyList'
 import { StartingLocationCard } from '../components/StartingLocationCard'
 import { StartingLocationResultCard } from '../components/StartingLocationResultCard'
+import { RouteOptionsCard } from '../components/RouteOptionsCard'
 import '../mobile-layout.css'
 import { isDuplicateAddress } from '../utils/addressNormalizer'
 import { calculateRoute } from '../server-functions/calculateRoute'
@@ -423,18 +424,6 @@ export default function HomePage({ initialCredits, initialSavedRoutes }: HomePag
     <AppShell
       properties={propertyList}
       onClearAll={handleClearAll}
-      startTime={startTime}
-      onStartTimeChange={(time) => {
-        setStartTime(time)
-        setIsDirty(true)
-        resetSuccessState()
-      }}
-      selectedDuration={selectedDuration}
-      onDurationChange={(duration) => {
-        setSelectedDuration(duration)
-        setIsDirty(true)
-        resetSuccessState()
-      }}
       onCalculate={handleCalculateRoute}
       isCalculating={isCalculating}
       showSuccess={showCalculateSuccess}
@@ -556,6 +545,26 @@ export default function HomePage({ initialCredits, initialSavedRoutes }: HomePag
               setIsDirty(true)
             }}
             propertyAddresses={propertyList.map(p => p.parsedAddress)}
+          />
+        </div>
+      )}
+
+      {/* Route Options Card - show when properties exist */}
+      {propertyList.length > 0 && (
+        <div className="inline-list-section">
+          <RouteOptionsCard
+            startTime={startTime}
+            onStartTimeChange={(time) => {
+              setStartTime(time)
+              setIsDirty(true)
+              resetSuccessState()
+            }}
+            selectedDuration={selectedDuration}
+            onDurationChange={(duration) => {
+              setSelectedDuration(duration)
+              setIsDirty(true)
+              resetSuccessState()
+            }}
           />
         </div>
       )}

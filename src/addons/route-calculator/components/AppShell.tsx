@@ -14,12 +14,6 @@ interface AppShellProps {
   properties: PropertyInput[]
   onClearAll: () => void
 
-  // Settings
-  startTime: string
-  onStartTimeChange: (time: string) => void
-  selectedDuration: number
-  onDurationChange: (duration: number) => void
-
   // Calculate
   onCalculate: () => void
   isCalculating: boolean
@@ -47,10 +41,6 @@ export function AppShell({
   children,
   properties,
   onClearAll,
-  startTime,
-  onStartTimeChange,
-  selectedDuration,
-  onDurationChange,
   onCalculate,
   isCalculating,
   showSuccess,
@@ -132,10 +122,6 @@ export function AppShell({
       <SettingsSheet
         open={settingsOpen}
         onOpenChange={setSettingsOpen}
-        selectedDuration={selectedDuration}
-        onDurationChange={onDurationChange}
-        startTime={startTime}
-        onStartTimeChange={onStartTimeChange}
         propertyCount={properties.length}
         onClearAll={onClearAll}
       />

@@ -536,6 +536,46 @@
   margin-bottom: 24px;
 }
 
+/* ==================== Section Header ==================== */
+
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  padding: 0 4px;
+}
+
+.section-header-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 14px;
+  letter-spacing: 1.5px;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.section-header-action {
+  background: none;
+  border: none;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--accent-electric);
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: all 0.15s ease;
+}
+
+.section-header-action:hover {
+  background: var(--bg-glass);
+  color: #2563eb;
+}
+
+.section-header-action:active {
+  transform: scale(0.98);
+}
+
 /* ==================== Settings Sheet ==================== */
 
 /* Settings sheet - full height on mobile */

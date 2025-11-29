@@ -1,17 +1,10 @@
 'use client'
 
 import { Drawer } from 'vaul'
-import { DurationSelector } from './DurationSelector'
 
 interface SettingsSheetProps {
   open: boolean
   onOpenChange: (open: boolean) => void
-
-  // Settings
-  selectedDuration: number
-  onDurationChange: (duration: number) => void
-  startTime: string
-  onStartTimeChange: (time: string) => void
 
   // Clear all
   propertyCount: number
@@ -21,10 +14,6 @@ interface SettingsSheetProps {
 export function SettingsSheet({
   open,
   onOpenChange,
-  selectedDuration,
-  onDurationChange,
-  startTime,
-  onStartTimeChange,
   propertyCount,
   onClearAll
 }: SettingsSheetProps) {
@@ -43,29 +32,11 @@ export function SettingsSheet({
         >
           <Drawer.Handle />
           <div className="sheet-content">
-            <Drawer.Title className="sheet-title">ROUTE SETTINGS</Drawer.Title>
+            <Drawer.Title className="sheet-title">SETTINGS</Drawer.Title>
 
-            {/* Start Time */}
-            <div className="settings-field">
-              <label htmlFor="settings-start-time" className="input-label">
-                START TIME
-              </label>
-              <input
-                type="time"
-                id="settings-start-time"
-                className="time-input"
-                value={startTime}
-                onChange={(e) => onStartTimeChange(e.target.value)}
-              />
-            </div>
-
-            {/* Duration */}
-            <div className="settings-field">
-              <DurationSelector
-                selectedDuration={selectedDuration}
-                onChange={onDurationChange}
-              />
-            </div>
+            <p style={{ color: 'var(--text-secondary)', fontSize: '14px', marginBottom: '20px' }}>
+              Route options are now inline for easier access. Use this menu for advanced settings.
+            </p>
 
             {/* Clear All */}
             {propertyCount > 0 && (
@@ -80,6 +51,12 @@ export function SettingsSheet({
                   CLEAR ALL PROPERTIES ({propertyCount})
                 </button>
               </div>
+            )}
+
+            {propertyCount === 0 && (
+              <p style={{ color: 'var(--text-secondary)', fontSize: '14px', textAlign: 'center', padding: '20px 0' }}>
+                No settings available. Add properties to get started.
+              </p>
             )}
           </div>
         </Drawer.Content>
