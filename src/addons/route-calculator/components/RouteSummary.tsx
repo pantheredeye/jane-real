@@ -1,5 +1,3 @@
-"use client"
-
 interface RouteSummaryProps {
   totalProperties?: number
   totalTime?: string
