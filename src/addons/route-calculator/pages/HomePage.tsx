@@ -12,6 +12,7 @@ import { PropertyList } from '../components/PropertyList'
 import { StartingLocationCard } from '../components/StartingLocationCard'
 import { StartingLocationResultCard } from '../components/StartingLocationResultCard'
 import { RouteOptionsCard } from '../components/RouteOptionsCard'
+import { ErrorModal } from '../components/ErrorModal'
 import '../mobile-layout.css'
 import { isDuplicateAddress } from '../utils/addressNormalizer'
 import { calculateRoute } from '../server-functions/calculateRoute'
@@ -39,6 +40,8 @@ export default function HomePage({ initialCredits, initialSavedRoutes }: HomePag
   const [locationError, setLocationError] = useState<string | null>(null)
   const [isCalculating, setIsCalculating] = useState(false)
   const [showCalculateSuccess, setShowCalculateSuccess] = useState(false)
+  const [calculationError, setCalculationError] = useState<string | null>(null)
+  const [showErrorModal, setShowErrorModal] = useState(false)
 
   // Route identity
   const [routeName, setRouteName] = useState('')
@@ -238,6 +241,13 @@ export default function HomePage({ initialCredits, initialSavedRoutes }: HomePag
 
     } catch (error) {
       console.error('Route calculation failed:', error)
+
+      const errorMessage = error instanceof Error
+        ? error.message
+        : 'An unexpected error occurred during route calculation'
+
+      setCalculationError(errorMessage)
+      setShowErrorModal(true)
     } finally {
       setIsCalculating(false)
     }
@@ -246,6 +256,17 @@ export default function HomePage({ initialCredits, initialSavedRoutes }: HomePag
   const fetchUserCredits = async () => {
     const credits = await getUserCredits()
     setUserCredits(credits)
+  }
+
+  const handleCloseErrorModal = () => {
+    setShowErrorModal(false)
+    setCalculationError(null)
+  }
+
+  const handleRetryCalculation = () => {
+    setShowErrorModal(false)
+    setCalculationError(null)
+    handleCalculateRoute()
   }
 
   // Check for demo properties on mount
@@ -782,6 +803,14 @@ export default function HomePage({ initialCredits, initialSavedRoutes }: HomePag
           </div>
         </div>
       )}
+
+      {/* Error Modal */}
+      <ErrorModal
+        isOpen={showErrorModal}
+        errorMessage={calculationError || 'Unknown error'}
+        onClose={handleCloseErrorModal}
+        onRetry={handleRetryCalculation}
+      />
     </AppShell>
   )
 }
