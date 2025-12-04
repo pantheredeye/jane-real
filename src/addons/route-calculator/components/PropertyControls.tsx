@@ -1,13 +1,6 @@
 'use client'
 
-
-interface Property {
-  id: string
-  address: string
-  showingDuration: number
-  appointmentTime: Date | null
-  isFrozen: boolean
-}
+import type { Property } from '../types'
 
 interface PropertyControlsProps {
   property: Property
