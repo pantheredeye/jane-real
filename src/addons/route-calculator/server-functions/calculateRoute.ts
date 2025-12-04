@@ -13,10 +13,6 @@
 // TODO: Optimize TSP algorithm for larger property sets
 // TODO: Add support for time constraints and business hours
 // TODO: Implement real-time traffic data integration
-// TODO: CRITICAL - Remove all fallback/made-up distance/time estimates (lines 138, 228, 300, geocoding.ts:105-107)
-// TODO: When addresses fail to geocode or distance matrix fails, we should error or warn user explicitly
-// TODO: Made-up numbers are misleading - user needs to know when data is unreliable
-// TODO: Remove fallback startTime on line 121 - startTime should always come from client, throw error if missing
 
 // TODO: Add server persistence for route customizations (after custom hook implementation)
 // CONTEXT: User wants to persist route modifications (appointment time/duration changes) to server
@@ -321,14 +317,13 @@ function nearestNeighborTSP(
       if (!visited.has(i)) {
         // Handle case where distance matrix might not cover all properties
         let distance = Infinity
-        
+
         if (currentIndex < distanceMatrix.length && i < distanceMatrix[currentIndex].length) {
           distance = distanceMatrix[currentIndex][i]
         } else {
-          // Fallback distance estimation
-          distance = Math.abs(i - currentIndex) * 10 + 5
+          throw new Error(`Missing distance matrix entry for properties ${currentIndex} -> ${i}`)
         }
-        
+
         if (distance < nearestDistance) {
           nearestDistance = distance
           nearestIndex = i
@@ -394,11 +389,11 @@ function calculateRouteDistance(route: number[], distanceMatrix: number[][]): nu
   for (let i = 0; i < route.length - 1; i++) {
     const from = route[i]
     const to = route[i + 1]
-    
+
     if (from < distanceMatrix.length && to < distanceMatrix[from].length) {
       totalDistance += distanceMatrix[from][to]
     } else {
-      totalDistance += 10 // Fallback distance
+      throw new Error(`Missing distance matrix entry for properties ${from} -> ${to}`)
     }
   }
   
