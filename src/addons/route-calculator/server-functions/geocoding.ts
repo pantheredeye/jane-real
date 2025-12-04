@@ -101,10 +101,7 @@ export async function calculateDistanceMatrix(
           durations[originIndex][destIndex] = Math.ceil(element.duration.value / 60)
           distances[originIndex][destIndex] = element.distance.value
         } else {
-          // Fallback estimation if API fails
-          const fallbackTime = estimateDirectDistance(origins[originIndex], destinations[destIndex])
-          durations[originIndex][destIndex] = fallbackTime
-          distances[originIndex][destIndex] = fallbackTime * 1000 // rough estimate
+          throw new Error(`Failed to calculate distance between coordinates ${originIndex} and ${destIndex}: ${element.status}`)
         }
       })
     })
@@ -117,46 +114,6 @@ export async function calculateDistanceMatrix(
     }
   } catch (error) {
     console.error('Error calculating distance matrix:', error)
-    
-    // Fallback to estimated times if API fails
-    const durations = origins.map((origin, i) =>
-      destinations.map((dest, j) => 
-        i === j ? 0 : estimateDirectDistance(origin, dest)
-      )
-    )
-    
-    const distances = durations.map(row => 
-      row.map(time => time * 1000) // rough estimate
-    )
-
-    return {
-      origins,
-      destinations,
-      durations,
-      distances,
-    }
+    throw new Error(`Distance matrix API failed: ${error instanceof Error ? error.message : 'Unknown error'}`)
   }
-}
-
-function estimateDirectDistance(origin: Coordinates, destination: Coordinates): number {
-  // Simple estimation based on straight-line distance
-  // This is a fallback when the API is unavailable
-  const R = 6371 // Earth's radius in km
-  const dLat = toRad(destination.lat - origin.lat)
-  const dLon = toRad(destination.lng - origin.lng)
-  
-  const a = 
-    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-    Math.cos(toRad(origin.lat)) * Math.cos(toRad(destination.lat)) *
-    Math.sin(dLon / 2) * Math.sin(dLon / 2)
-  
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
-  const distance = R * c // Distance in km
-  
-  // Convert to estimated driving time (assuming 40 km/h average in city)
-  return Math.max(5, Math.ceil(distance * 1.5)) // minimum 5 minutes
-}
-
-function toRad(value: number): number {
-  return value * Math.PI / 180
 }
