@@ -2,7 +2,6 @@
 
 import { useState, ReactNode } from 'react'
 import { BottomBar } from './BottomBar'
-import { SettingsSheet } from './SettingsSheet'
 import { MenuSheet } from './MenuSheet'
 import type { PropertyInput } from '../types'
 
@@ -56,7 +55,6 @@ export function AppShell({
   isGrandfathered = false,
   isSubscribed = false
 }: AppShellProps) {
-  const [settingsOpen, setSettingsOpen] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
 
   return (
@@ -94,13 +92,15 @@ export function AppShell({
         </div>
 
         <div className="header-actions">
-          <button
-            className="settings-btn"
-            onClick={() => setSettingsOpen(true)}
-            aria-label="Settings"
-          >
-            ⚙
-          </button>
+          {properties.length > 0 && (
+            <button
+              className="clear-all-header-btn"
+              onClick={onClearAll}
+              aria-label={`Clear all ${properties.length} properties`}
+            >
+              Clear All
+            </button>
+          )}
         </div>
       </header>
 
@@ -116,14 +116,6 @@ export function AppShell({
         showSuccess={showSuccess}
         isCalculationDirty={isCalculationDirty}
         propertyCount={properties.length}
-      />
-
-      {/* Settings Sheet */}
-      <SettingsSheet
-        open={settingsOpen}
-        onOpenChange={setSettingsOpen}
-        propertyCount={properties.length}
-        onClearAll={onClearAll}
       />
 
       {/* Menu Sheet */}

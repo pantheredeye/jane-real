@@ -23,22 +23,6 @@ export function PropertyList({ properties, onEdit, onDelete, onClearAll }: Prope
 
   return (
     <div className="property-list-container">
-      {/* Section Header */}
-      <div className="section-header">
-        <h3 className="section-header-title">
-          PROPERTIES ({properties.length})
-        </h3>
-        {onClearAll && (
-          <button
-            className="section-header-action"
-            onClick={onClearAll}
-            aria-label={`Clear all ${properties.length} properties`}
-          >
-            Clear All
-          </button>
-        )}
-      </div>
-
       <div
         className="property-list"
         role="list"
