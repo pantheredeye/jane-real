@@ -27,16 +27,6 @@ interface HomePageProps {
 }
 
 export default function HomePage({ initialCredits, initialSavedRoutes }: HomePageProps) {
-  // TODO: Lift DurationSelector state up to HomePage (like we did with AddressInput)
-  // TODO: DurationSelector needs props: selectedDuration, onChange callback
-  // TODO: Add selectedDuration state to HomePage
-  // TODO: Connect calculate button to POST /calculate endpoint with: addresses, startTime, startingPropertyIndex, selectedDuration
-  // TODO: For now, use simple form submission - get basic flow working first
-  // TODO: Show/hide results section based on calculation state
-  // TODO: Implement dynamic property card rendering
-  // TODO: Add error handling and status messages
-  // TODO: Add loading states during calculation
-  
   const [propertyList, setPropertyList] = useState<PropertyInput[]>([])
   const [startTime, setStartTime] = useState('09:00')
   const [selectedDuration, setSelectedDuration] = useState(30)
