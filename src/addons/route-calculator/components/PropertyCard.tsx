@@ -2,23 +2,7 @@
 
 import { useState } from 'react'
 import { PropertyControls } from './PropertyControls'
-
-interface Property {
-  id: string
-  address: string
-  showingDuration: number
-  appointmentTime: Date | null
-  isFrozen: boolean
-  sourceUrl?: string
-  thumbnailUrl?: string
-}
-
-interface RouteItem {
-  propertyIndex: number
-  property: Property
-  appointmentTime: Date
-  travelTime: number
-}
+import type { Property, RouteItem } from '../types'
 
 interface PropertyCardProps {
   routeItem: RouteItem
