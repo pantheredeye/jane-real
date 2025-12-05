@@ -49,7 +49,7 @@ export default function Terms() {
   // Paragraphs
   html = html
     .split('\n\n')
-    .map(block => {
+    .map((block: string) => {
       block = block.trim()
       if (!block) return ''
       if (block.startsWith('<h') || block.startsWith('<ul') || block.startsWith('</ul>')) {

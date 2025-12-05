@@ -12,7 +12,7 @@ async function grandfatherExistingUsers() {
   console.log('Starting grandfather migration...')
 
   // Setup database connection
-  await setupDb(process.env)
+  await setupDb(process.env as any)
 
   // Find all users without a subscription status set
   const users = await db.user.findMany({

@@ -28,3 +28,9 @@ declare module '*.svg' {
   const value: string;
   export default value;
 }
+
+// Type declaration for markdown imports with raw content
+declare module '*.md?raw' {
+  const value: string;
+  export default value;
+}

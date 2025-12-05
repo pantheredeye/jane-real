@@ -20,7 +20,7 @@ export function getStripe(env: { STRIPE_SECRET_KEY?: string }): Stripe {
   }
 
   stripeInstance = new Stripe(env.STRIPE_SECRET_KEY, {
-    apiVersion: '2025-01-27.acacia',
+    apiVersion: '2025-10-29.clover',
     // Cloudflare Workers compatible
     httpClient: Stripe.createFetchHttpClient(),
   })
