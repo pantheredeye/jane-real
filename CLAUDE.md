@@ -29,13 +29,12 @@ src/
 │   │   ├── PropertyInputBox.tsx     # "use client" - Smart input with Add button
 │   │   ├── PropertyList.tsx         # "use client" - Property list container
 │   │   ├── PropertyListItem.tsx     # "use client" - List item with edit/delete
-│   │   ├── Toast.tsx                # "use client" - Toast notifications
+│   │   ├── ErrorModal.tsx           # "use client" - Accessible error modal
 │   │   ├── DurationSelector.tsx     # "use client" - State management
 │   │   ├── PropertyCard.tsx         # "use client" - Display with listing link
 │   │   ├── PropertyControls.tsx     # "use client" - Form controls
 │   │   ├── RouteSummary.tsx         # Server Component - Statistics
-│   │   ├── CopyButtons.tsx          # "use client" - Clipboard
-│   │   └── [DEPRECATED] AddressInput.tsx  # Being replaced by PropertyInputBox
+│   │   └── CopyButtons.tsx          # "use client" - Clipboard
 │   ├── utils/
 │   │   ├── parsePropertyInput.ts    # Main URL/address parser
 │   │   ├── addressNormalizer.ts     # Duplicate detection logic
@@ -229,6 +228,45 @@ The project uses Prisma with D1. Key models:
 
 ### Cloudflare Workers - Cross-Request Promise Resolution
 **CRITICAL**: All async operations (Prisma, API calls) MUST be awaited before returning from server components/functions. Unawaited promises cause "cross-request promise resolution" errors. Always `await` all DB queries and async operations.
+
+## Error Handling Patterns
+
+### No Toasts
+Toasts fail accessibility (https://primer.style/accessibility/toasts/):
+- Missed by screen readers
+- Disappear before read
+- No keyboard interaction
+
+### Error UI Hierarchy
+1. **Critical errors (API failures, route calc)**: Modal/dialog
+   - Blocks interaction until acknowledged
+   - Retry button for recoverable errors
+   - Clear, actionable messaging
+   - ESC key and backdrop dismiss
+   - See `ErrorModal.tsx` for reference implementation
+
+2. **Inline validation (form inputs)**: Context error messages
+   - Show near relevant input field
+   - Auto-clear after timeout or dismissible
+   - `role="alert"` for screen readers
+   - `aria-describedby` linking error to input
+   - See `PropertyInputBox.tsx` for pattern
+
+3. **Success feedback**: Button state changes
+   - Text changes ("COPIED!", "✓ DONE")
+   - Disabled state during async processing
+   - No separate notification needed
+   - See `CopyButtons.tsx` for pattern
+
+4. **Confirmations**: Browser `confirm()` or custom modal
+   - For destructive actions (delete, clear all)
+   - Explicit user consent required
+
+### Implementation Requirements
+- **Accessibility**: Focus management (trap + restore), ARIA attributes
+- **No silent failures**: Always show errors to user
+- **No fallback data**: Throw errors vs returning fake/estimated data
+- **User control**: Retry options for transient failures
 
 ## Future Enhancements
 - Interactive map display
