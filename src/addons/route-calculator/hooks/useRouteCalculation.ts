@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { calculateRoute } from '../server-functions/calculateRoute'
 import { calculateAppointmentTimes } from './useRouteManager'
 import type { OptimizedRoute } from '../types'
@@ -38,6 +38,38 @@ export function useRouteCalculation({
   const [showCalculateSuccess, setShowCalculateSuccess] = useState(false)
   const [calculationError, setCalculationError] = useState<string | null>(null)
   const [showErrorModal, setShowErrorModal] = useState(false)
+  const [validationError, setValidationError] = useState<string | null>(null)
+  const [customAddressError, setCustomAddressError] = useState<string | null>(null)
+  const validationTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+  const customAddressTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+
+  // Auto-clear validation error after 5 seconds
+  useEffect(() => {
+    if (validationError) {
+      validationTimeoutRef.current = setTimeout(() => {
+        setValidationError(null)
+      }, 5000)
+    }
+    return () => {
+      if (validationTimeoutRef.current) {
+        clearTimeout(validationTimeoutRef.current)
+      }
+    }
+  }, [validationError])
+
+  // Auto-clear custom address error after 5 seconds
+  useEffect(() => {
+    if (customAddressError) {
+      customAddressTimeoutRef.current = setTimeout(() => {
+        setCustomAddressError(null)
+      }, 5000)
+    }
+    return () => {
+      if (customAddressTimeoutRef.current) {
+        clearTimeout(customAddressTimeoutRef.current)
+      }
+    }
+  }, [customAddressError])
 
   const resetSuccessState = () => {
     setShowCalculateSuccess(false)
@@ -46,12 +78,12 @@ export function useRouteCalculation({
   const handleCalculateRoute = async () => {
     // Validate required fields
     if (!startTime || startTime.trim() === '') {
-      alert('Please set a start time before calculating route.')
+      setValidationError('Please set a start time before calculating route.')
       return
     }
 
     if (addressList.length === 0) {
-      alert('Please enter at least one address.')
+      setValidationError('Please enter at least one address.')
       return
     }
 
@@ -68,7 +100,7 @@ export function useRouteCalculation({
       startLocation.coords = currentLocation
     } else if (startFromType === 'custom') {
       if (!customStartAddress.trim()) {
-        alert('Please enter a custom starting address.')
+        setCustomAddressError('Please enter a custom starting address.')
         return
       }
       startLocation.address = customStartAddress
@@ -144,6 +176,8 @@ export function useRouteCalculation({
     showCalculateSuccess,
     calculationError,
     showErrorModal,
+    validationError,
+    customAddressError,
     handleCalculateRoute,
     handleCloseErrorModal,
     handleRetryCalculation,

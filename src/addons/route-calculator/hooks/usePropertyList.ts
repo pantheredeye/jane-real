@@ -15,6 +15,7 @@ export function usePropertyList({
   onStartingPropertyIndexChange
 }: UsePropertyListOptions) {
   const [propertyList, setPropertyList] = useState<PropertyInput[]>([])
+  const [showClearConfirm, setShowClearConfirm] = useState(false)
 
   // Extract memoized lists
   const addressList = useMemo(() => {
@@ -62,20 +63,29 @@ export function usePropertyList({
     onResetSuccessState()
   }
 
-  const handleClearAll = () => {
+  const handleRequestClearAll = () => {
     if (propertyList.length === 0) return
 
     // Show confirmation for 3+ items
     if (propertyList.length >= 3) {
-      const confirmed = window.confirm(
-        `Are you sure you want to clear all ${propertyList.length} properties?`
-      )
-      if (!confirmed) return
+      setShowClearConfirm(true)
+    } else {
+      // Clear immediately if less than 3 items
+      setPropertyList([])
+      onDirtyChange(true)
+      onResetSuccessState()
     }
+  }
 
+  const handleConfirmClearAll = () => {
     setPropertyList([])
+    setShowClearConfirm(false)
     onDirtyChange(true)
     onResetSuccessState()
+  }
+
+  const handleCancelClearAll = () => {
+    setShowClearConfirm(false)
   }
 
   return {
@@ -84,9 +94,12 @@ export function usePropertyList({
     addressList,
     sourceUrlList,
     thumbnailUrlList,
+    showClearConfirm,
     handleAddProperty,
     handleEditProperty,
     handleDeleteProperty,
-    handleClearAll
+    handleRequestClearAll,
+    handleConfirmClearAll,
+    handleCancelClearAll
   }
 }

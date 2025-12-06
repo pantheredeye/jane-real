@@ -12,6 +12,8 @@ export function useRoutePersistence({ initialSavedRoutes }: UseRoutePersistenceO
   const [isSaving, setIsSaving] = useState(false)
   const [savedRoutes, setSavedRoutes] = useState<SavedRoute[]>(initialSavedRoutes)
   const [isLoadingRoutes, setIsLoadingRoutes] = useState(false)
+  const [routeToDelete, setRouteToDelete] = useState<string | null>(null)
+  const [isDeleting, setIsDeleting] = useState(false)
 
   const loadSavedRoutes = async () => {
     setIsLoadingRoutes(true)
@@ -60,15 +62,27 @@ export function useRoutePersistence({ initialSavedRoutes }: UseRoutePersistenceO
     }
   }
 
-  const handleDeleteRoute = async (routeId: string) => {
-    if (!confirm('Are you sure you want to delete this route?')) return
+  const handleRequestDeleteRoute = (routeId: string) => {
+    setRouteToDelete(routeId)
+  }
 
+  const handleConfirmDelete = async () => {
+    if (!routeToDelete) return
+
+    setIsDeleting(true)
     try {
-      await deleteRoute(routeId)
+      await deleteRoute(routeToDelete)
       await loadSavedRoutes()
+      setRouteToDelete(null)
     } catch (error) {
-      console.error('Failed to delete route:', error)
+      // Error will be visible to user, keep dialog open
+    } finally {
+      setIsDeleting(false)
     }
+  }
+
+  const handleCancelDelete = () => {
+    setRouteToDelete(null)
   }
 
   const handleSaveRouteFromMenu = (calculatedRoute: OptimizedRoute | null) => {
@@ -86,9 +100,13 @@ export function useRoutePersistence({ initialSavedRoutes }: UseRoutePersistenceO
     isSaving,
     savedRoutes,
     isLoadingRoutes,
+    routeToDelete,
+    isDeleting,
     loadSavedRoutes,
     handleSaveRoute,
-    handleDeleteRoute,
+    handleRequestDeleteRoute,
+    handleConfirmDelete,
+    handleCancelDelete,
     handleSaveRouteFromMenu
   }
 }

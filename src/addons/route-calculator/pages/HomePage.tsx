@@ -13,6 +13,7 @@ import { StartingLocationCard } from '../components/StartingLocationCard'
 import { StartingLocationResultCard } from '../components/StartingLocationResultCard'
 import { RouteOptionsCard } from '../components/RouteOptionsCard'
 import { ErrorModal } from '../components/ErrorModal'
+import { ConfirmDialog } from '../components/ConfirmDialog'
 import { SaveRouteDialog } from '../components/SaveRouteDialog'
 import { SavedRoutesSection } from '../components/SavedRoutesSection'
 import '../mobile-layout.css'
@@ -39,6 +40,7 @@ export default function HomePage({ initialCredits, initialSavedRoutes }: HomePag
   const [isDirty, setIsDirty] = useState(false)
   const [lastCalculatedFingerprint, setLastCalculatedFingerprint] = useState('')
   const [userCredits, setUserCredits] = useState<UserCreditsData | null>(initialCredits)
+  const [showDiscardConfirm, setShowDiscardConfirm] = useState(false)
 
   const {
     route: calculatedRoute,
@@ -131,18 +133,22 @@ export default function HomePage({ initialCredits, initialSavedRoutes }: HomePag
   }
 
   // Route management handlers
-  const handleNewRoute = () => {
+  const handleRequestNewRoute = () => {
     if (isDirty && propertyList.propertyList.length > 0) {
-      const confirmed = window.confirm('You have unsaved changes. Discard and create new route?')
-      if (!confirmed) return
+      setShowDiscardConfirm(true)
+    } else {
+      handleConfirmNewRoute()
     }
+  }
 
+  const handleConfirmNewRoute = () => {
     propertyList.setPropertyList([])
     setRouteName('')
     setStartTime('09:00')
     setSelectedDuration(30)
     setInitialRoute(null)
     setIsDirty(false)
+    setShowDiscardConfirm(false)
     localStorage.removeItem('routeCalculatorState')
   }
 
@@ -197,7 +203,7 @@ export default function HomePage({ initialCredits, initialSavedRoutes }: HomePag
   return (
     <AppShell
       properties={propertyList.propertyList}
-      onClearAll={propertyList.handleClearAll}
+      onClearAll={propertyList.handleRequestClearAll}
       onCalculate={routeCalculation.handleCalculateRoute}
       onPaste={handlePaste}
       isCalculating={routeCalculation.isCalculating}
@@ -209,7 +215,7 @@ export default function HomePage({ initialCredits, initialSavedRoutes }: HomePag
         setIsDirty(true)
       }}
       isDirty={isDirty}
-      onNewRoute={handleNewRoute}
+      onNewRoute={handleRequestNewRoute}
       onOpenRoute={handleOpenRoute}
       onSaveRoute={() => routePersistence.handleSaveRouteFromMenu(calculatedRoute)}
       hasCalculatedRoute={!!calculatedRoute}
@@ -311,6 +317,7 @@ export default function HomePage({ initialCredits, initialSavedRoutes }: HomePag
             startingPropertyIndex={startLocation.startingPropertyIndex}
             onStartingPropertyIndexChange={startLocation.handleStartingPropertyIndexChange}
             propertyAddresses={propertyList.propertyList.map(p => p.parsedAddress)}
+            customAddressError={routeCalculation.customAddressError}
           />
         </div>
       )}
@@ -332,6 +339,15 @@ export default function HomePage({ initialCredits, initialSavedRoutes }: HomePag
               routeCalculation.resetSuccessState()
             }}
           />
+        </div>
+      )}
+
+      {/* Validation error - show inline below route options */}
+      {routeCalculation.validationError && (
+        <div className="inline-list-section" style={{ marginTop: '1rem' }}>
+          <div className="input-error-message" role="alert">
+            {routeCalculation.validationError}
+          </div>
         </div>
       )}
 
@@ -418,7 +434,7 @@ export default function HomePage({ initialCredits, initialSavedRoutes }: HomePag
       <SavedRoutesSection
         savedRoutes={routePersistence.savedRoutes}
         isLoadingRoutes={routePersistence.isLoadingRoutes}
-        onDeleteRoute={routePersistence.handleDeleteRoute}
+        onDeleteRoute={routePersistence.handleRequestDeleteRoute}
       />
 
       {/* Save Route Dialog */}
@@ -439,6 +455,43 @@ export default function HomePage({ initialCredits, initialSavedRoutes }: HomePag
         errorMessage={routeCalculation.calculationError || 'Unknown error'}
         onClose={routeCalculation.handleCloseErrorModal}
         onRetry={routeCalculation.handleRetryCalculation}
+      />
+
+      {/* Clear All Confirmation */}
+      <ConfirmDialog
+        isOpen={propertyList.showClearConfirm}
+        title="CLEAR ALL PROPERTIES?"
+        message={`Are you sure you want to clear all ${propertyList.propertyList.length} properties? This cannot be undone.`}
+        confirmText="CLEAR ALL"
+        cancelText="CANCEL"
+        variant="danger"
+        onConfirm={propertyList.handleConfirmClearAll}
+        onCancel={propertyList.handleCancelClearAll}
+      />
+
+      {/* Delete Route Confirmation */}
+      <ConfirmDialog
+        isOpen={!!routePersistence.routeToDelete}
+        title="DELETE ROUTE?"
+        message="Are you sure you want to delete this route? This cannot be undone."
+        confirmText="DELETE"
+        cancelText="CANCEL"
+        variant="danger"
+        isLoading={routePersistence.isDeleting}
+        onConfirm={routePersistence.handleConfirmDelete}
+        onCancel={routePersistence.handleCancelDelete}
+      />
+
+      {/* Discard Changes Confirmation */}
+      <ConfirmDialog
+        isOpen={showDiscardConfirm}
+        title="DISCARD CHANGES?"
+        message="You have unsaved changes. Discard and create new route?"
+        confirmText="DISCARD"
+        cancelText="CANCEL"
+        variant="warning"
+        onConfirm={handleConfirmNewRoute}
+        onCancel={() => setShowDiscardConfirm(false)}
       />
     </AppShell>
   )

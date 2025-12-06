@@ -13,6 +13,7 @@ interface StartingLocationCardProps {
   startingPropertyIndex: number
   onStartingPropertyIndexChange: (index: number) => void
   propertyAddresses: string[]
+  customAddressError?: string | null
 }
 
 export function StartingLocationCard({
@@ -25,7 +26,8 @@ export function StartingLocationCard({
   onRequestLocation,
   startingPropertyIndex,
   onStartingPropertyIndexChange,
-  propertyAddresses
+  propertyAddresses,
+  customAddressError
 }: StartingLocationCardProps) {
   const [isExpanded, setIsExpanded] = useState(false)
 
@@ -158,13 +160,27 @@ export function StartingLocationCard({
 
       {/* Custom address input */}
       {startFromType === 'custom' && (
-        <input
-          type="text"
-          className="custom-start-input"
-          value={customStartAddress}
-          onChange={(e) => onCustomStartAddressChange(e.target.value)}
-          placeholder="Enter starting address..."
-        />
+        <>
+          <input
+            type="text"
+            className="custom-start-input"
+            value={customStartAddress}
+            onChange={(e) => onCustomStartAddressChange(e.target.value)}
+            placeholder="Enter starting address..."
+            aria-invalid={customAddressError ? 'true' : 'false'}
+            aria-describedby={customAddressError ? 'custom-address-error' : undefined}
+          />
+          {customAddressError && (
+            <div
+              id="custom-address-error"
+              className="input-error-message"
+              role="alert"
+              style={{ marginTop: '0.5rem' }}
+            >
+              {customAddressError}
+            </div>
+          )}
+        </>
       )}
     </div>
   )
