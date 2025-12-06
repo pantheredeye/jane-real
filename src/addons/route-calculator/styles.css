@@ -2431,6 +2431,10 @@ input, select, textarea {
   transition: all 0.2s ease;
   box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.2);
   font-family: inherit;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .action-btn-compact:hover {
@@ -2541,6 +2545,10 @@ input, select, textarea {
   transition: all 0.2s ease;
   box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.2);
   font-family: inherit;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .action-btn-expanded:hover {
