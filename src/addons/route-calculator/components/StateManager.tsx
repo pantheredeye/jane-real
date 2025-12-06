@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react'
 import { addMinutes } from 'date-fns'
-import type { OptimizedRoute, PropertyInput } from '../types'
+import type { OptimizedRoute, PropertyInput, RouteItem } from '../types'
 
 interface StateManagerProps {
   propertyList: PropertyInput[]
@@ -80,7 +80,6 @@ export function StateManager({
         }
       }
     } catch (error) {
-      console.error('Failed to restore saved state:', error)
       localStorage.removeItem('routeCalculatorState')
     }
   }, []) // Empty dependency array - only run once on mount
@@ -119,7 +118,7 @@ export function StateManager({
           }
         }
       } catch (error) {
-        console.error('Error checking for property list changes:', error)
+        // Silently handle error - state validation is not critical
       }
     }
   }, [propertyList, calculatedRoute, onClearRoute])

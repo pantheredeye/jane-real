@@ -43,7 +43,6 @@ export function PropertyInputBox({ onAdd }: PropertyInputBoxProps) {
         const ogData = await fetchOgImage(property.sourceUrl)
         property.thumbnailUrl = ogData.thumbnailUrl || undefined
       } catch (err) {
-        console.error('Failed to fetch thumbnail:', err)
         // Continue without thumbnail - not a critical failure
       } finally {
         setIsLoadingThumbnail(false)

@@ -41,7 +41,6 @@ export async function geocodeAddresses(addresses: string[]): Promise<GeocodingRe
           formattedAddress: result.formatted_address,
         })
       } else {
-        console.warn(`Failed to geocode address: ${address}`, 'Status:', data.status, 'Error:', data.error_message)
         results.push({
           address,
           coordinates: null,
@@ -49,7 +48,6 @@ export async function geocodeAddresses(addresses: string[]): Promise<GeocodingRe
         })
       }
     } catch (error) {
-      console.error(`Error geocoding address ${address}:`, error)
       results.push({
         address,
         coordinates: null,
@@ -113,7 +111,6 @@ export async function calculateDistanceMatrix(
       distances,
     }
   } catch (error) {
-    console.error('Error calculating distance matrix:', error)
     throw new Error(`Distance matrix API failed: ${error instanceof Error ? error.message : 'Unknown error'}`)
   }
 }

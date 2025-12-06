@@ -115,6 +115,26 @@ export const CalculateRouteRequestSchema = z.object({
 })
 
 
+// Saved route type (from database)
+export interface SavedRoute {
+  id: string
+  tenantId: string
+  createdById: string
+  name: string
+  date: Date
+  startTime: string | null
+  properties: Property[]
+  optimized: boolean
+  frozen: Record<number, string> | null
+  createdAt: Date
+  updatedAt: Date
+  createdBy: {
+    id: string
+    name: string | null
+    email: string
+  }
+}
+
 // Utility types
 export type ExportFormat = 'client' | 'detailed'
 
