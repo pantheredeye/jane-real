@@ -29,17 +29,7 @@ export function PropertyCard({ routeItem, routeIndex, onTimeChange, onDurationCh
   const { property } = routeItem
   const [isExpanded, setIsExpanded] = useState(false)
 
-  const handleDirections = () => {
-    const encodedAddress = encodeURIComponent(property.address)
-    const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodedAddress}`
-    window.open(mapsUrl, '_blank', 'noopener,noreferrer')
-  }
-
-  const handleViewListing = () => {
-    if (property.sourceUrl) {
-      window.open(property.sourceUrl, '_blank', 'noopener,noreferrer')
-    }
-  }
+  const directionsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(property.address)}`
 
   // Collapsed view (compact timeline)
   if (!isExpanded) {
@@ -85,21 +75,25 @@ export function PropertyCard({ routeItem, routeIndex, onTimeChange, onDurationCh
 
         {/* Action buttons - always visible */}
         <div className="property-actions-compact">
-          <button
+          <a
+            href={directionsUrl}
+            target="_blank"
+            rel="noopener noreferrer"
             className="action-btn-compact action-btn-directions"
-            onClick={handleDirections}
             aria-label="Get directions to this property"
           >
             📍 DIRECTIONS
-          </button>
+          </a>
           {property.sourceUrl && (
-            <button
+            <a
+              href={property.sourceUrl}
+              target="_blank"
+              rel="noopener noreferrer"
               className="action-btn-compact action-btn-listing"
-              onClick={handleViewListing}
               aria-label="View listing details"
             >
               🏠 LISTING
-            </button>
+            </a>
           )}
         </div>
       </div>
@@ -133,21 +127,25 @@ export function PropertyCard({ routeItem, routeIndex, onTimeChange, onDurationCh
 
       {/* Action buttons */}
       <div className="property-actions-expanded">
-        <button
+        <a
+          href={directionsUrl}
+          target="_blank"
+          rel="noopener noreferrer"
           className="action-btn-expanded action-btn-directions-expanded"
-          onClick={handleDirections}
           aria-label="Get directions to this property"
         >
           📍 DIRECTIONS
-        </button>
+        </a>
         {property.sourceUrl && (
-          <button
+          <a
+            href={property.sourceUrl}
+            target="_blank"
+            rel="noopener noreferrer"
             className="action-btn-expanded action-btn-listing-expanded"
-            onClick={handleViewListing}
             aria-label="View listing details"
           >
             🏠 LISTING
-          </button>
+          </a>
         )}
       </div>
 
