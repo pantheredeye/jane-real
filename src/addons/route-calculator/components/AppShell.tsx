@@ -13,8 +13,9 @@ interface AppShellProps {
   properties: PropertyInput[]
   onClearAll: () => void
 
-  // Calculate
+  // Calculate & Paste
   onCalculate: () => void
+  onPaste: () => Promise<{ success: boolean; error?: string }>
   isCalculating: boolean
   showSuccess: boolean
   isCalculationDirty: boolean
@@ -41,6 +42,7 @@ export function AppShell({
   properties,
   onClearAll,
   onCalculate,
+  onPaste,
   isCalculating,
   showSuccess,
   isCalculationDirty,
@@ -112,6 +114,7 @@ export function AppShell({
       {/* Bottom Bar */}
       <BottomBar
         onCalculatePress={onCalculate}
+        onPaste={onPaste}
         isCalculating={isCalculating}
         showSuccess={showSuccess}
         isCalculationDirty={isCalculationDirty}

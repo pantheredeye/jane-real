@@ -354,6 +354,8 @@ export default function HomePage({ initialCredits, initialSavedRoutes }: HomePag
             totalTime={`${Math.floor(calculatedRoute.totalTime / 60)}h ${calculatedRoute.totalTime % 60}m`}
             drivingTime={`${Math.floor(calculatedRoute.totalDrivingTime / 60)}h ${calculatedRoute.totalDrivingTime % 60}m`}
             addresses={calculatedRoute.items.map(item => item.property.address)}
+            startTime={calculatedRoute.startTime}
+            endTime={calculatedRoute.endTime}
           />
 
           <div className="itinerary-container">

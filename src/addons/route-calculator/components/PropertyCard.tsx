@@ -44,35 +44,64 @@ export function PropertyCard({ routeItem, routeIndex, onTimeChange, onDurationCh
   // Collapsed view (compact timeline)
   if (!isExpanded) {
     return (
-      <div className="result-card" onClick={() => setIsExpanded(true)}>
-        {/* Thumbnail or placeholder */}
-        <div className="property-thumbnail-compact">
-          {property.thumbnailUrl ? (
-            <img
-              src={property.thumbnailUrl}
-              alt={property.address}
-              className="property-thumbnail-image"
-            />
-          ) : (
-            <div className="property-thumbnail-placeholder">
-              🏠
+      <div className="result-card-accessible">
+        {/* Card info area - tappable to expand */}
+        <div className="result-card-info" onClick={() => setIsExpanded(true)}>
+          {/* Thumbnail or placeholder */}
+          <div className="property-thumbnail-compact">
+            {property.thumbnailUrl ? (
+              <img
+                src={property.thumbnailUrl}
+                alt={property.address}
+                className="property-thumbnail-image"
+              />
+            ) : (
+              <div className="property-thumbnail-placeholder">
+                🏠
+              </div>
+            )}
+          </div>
+
+          {/* Property info (compact) */}
+          <div className="property-compact-info">
+            <div className="property-compact-header">
+              <span className="property-number-compact">#{routeIndex + 1}</span>
+              <span className="property-time-compact">{formatDisplayTime(routeItem.appointmentTime)}</span>
+              {property.isFrozen && <span className="lock-indicator">🔒</span>}
             </div>
+            <div className="property-address-compact">
+              {shortenAddress(property.address)}
+            </div>
+            {routeItem.travelTime > 0 && (
+              <div className="property-meta-compact">
+                {property.showingDuration} min • {routeItem.travelTime} min drive
+              </div>
+            )}
+          </div>
+
+          {/* Expand indicator */}
+          <div className="property-expand-indicator">▼</div>
+        </div>
+
+        {/* Action buttons - always visible */}
+        <div className="property-actions-compact">
+          <button
+            className="action-btn-compact action-btn-directions"
+            onClick={handleDirections}
+            aria-label="Get directions to this property"
+          >
+            📍 DIRECTIONS
+          </button>
+          {property.sourceUrl && (
+            <button
+              className="action-btn-compact action-btn-listing"
+              onClick={handleViewListing}
+              aria-label="View listing details"
+            >
+              🏠 LISTING
+            </button>
           )}
         </div>
-
-        {/* Property info (compact) */}
-        <div className="property-compact-info">
-          <div className="property-compact-header">
-            <span className="property-number-compact">#{routeIndex + 1}</span>
-            <span className="property-time-compact">{formatDisplayTime(routeItem.appointmentTime)}</span>
-          </div>
-          <div className="property-address-compact">
-            {shortenAddress(property.address)}
-          </div>
-        </div>
-
-        {/* Expand indicator */}
-        <div className="property-expand-indicator">▼</div>
       </div>
     )
   }
@@ -80,44 +109,44 @@ export function PropertyCard({ routeItem, routeIndex, onTimeChange, onDurationCh
   // Expanded view (full details)
   return (
     <div className={`property-card-expanded ${property.isFrozen ? 'locked' : ''}`}>
-      {/* Header with chevron collapse */}
-      <div className="property-header" onClick={() => setIsExpanded(false)}>
-        <button
-          className="property-chevron"
-          aria-label="Collapse property details"
-        >
-          ▲
-        </button>
-        <div className="property-header-info">
-          <div className="property-header-top">
+      {/* Collapse header */}
+      <div className="property-header-expanded" onClick={() => setIsExpanded(false)}>
+        <div className="property-header-info-expanded">
+          <div className="property-header-top-expanded">
             <span className="property-number-badge">#{routeIndex + 1}</span>
             <span className="property-address-primary">{property.address}</span>
           </div>
-          <div className="property-header-meta">
+          <div className="property-header-meta-expanded">
             {formatDisplayTime(routeItem.appointmentTime)}
             {routeItem.travelTime > 0 && (
               <> • {routeItem.travelTime} min drive</>
             )}
           </div>
         </div>
+        <button
+          className="property-chevron-expanded"
+          aria-label="Collapse property details"
+        >
+          ▲
+        </button>
       </div>
 
-      {/* Action buttons - hero CTA first */}
-      <div className="property-actions">
+      {/* Action buttons */}
+      <div className="property-actions-expanded">
         <button
-          className="maps-btn-hero"
+          className="action-btn-expanded action-btn-directions-expanded"
           onClick={handleDirections}
-          aria-label="Get directions"
+          aria-label="Get directions to this property"
         >
-          📍 GET DIRECTIONS
+          📍 DIRECTIONS
         </button>
         {property.sourceUrl && (
           <button
-            className="listing-btn-secondary"
+            className="action-btn-expanded action-btn-listing-expanded"
             onClick={handleViewListing}
-            aria-label="View listing"
+            aria-label="View listing details"
           >
-            🏠 View Listing
+            🏠 LISTING
           </button>
         )}
       </div>

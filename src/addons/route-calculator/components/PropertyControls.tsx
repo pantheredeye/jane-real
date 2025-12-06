@@ -66,44 +66,50 @@ export function PropertyControls({
   }
 
   return (
-    <div className="property-controls">
-      <div className="control-group">
-        <label className="control-label">Appointment</label>
-        <div className="control-row">
-          <input
-            type="time"
-            className="time-input"
-            value={timeValue}
-            onChange={handleTimeChange}
-          />
-          <button
-            className={`lock-btn ${isFrozen ? 'locked' : ''}`}
-            onClick={toggleFreeze}
-          >
-            {isFrozen ? 'Locked' : 'Lock Time'}
-          </button>
-        </div>
+    <div className="property-controls-accessible">
+      <div className="control-group-accessible">
+        <label className="control-label-accessible" htmlFor={`time-${propertyIndex}`}>
+          Appointment Time
+        </label>
+        <input
+          id={`time-${propertyIndex}`}
+          type="time"
+          className="time-input-accessible"
+          value={timeValue}
+          onChange={handleTimeChange}
+        />
       </div>
 
-      <div className="control-group">
-        <label className="control-label">Duration</label>
-        <div className="duration-stepper">
+      <div className="control-group-accessible">
+        <button
+          className={`lock-btn-accessible ${isFrozen ? 'locked' : ''}`}
+          onClick={toggleFreeze}
+          aria-pressed={isFrozen}
+          aria-label={isFrozen ? 'Unlock appointment time' : 'Lock appointment time'}
+        >
+          {isFrozen ? '🔒 TIME LOCKED' : '🔓 LOCK TIME'}
+        </button>
+      </div>
+
+      <div className="control-group-accessible">
+        <label className="control-label-accessible">Showing Duration</label>
+        <div className="duration-stepper-accessible">
           <button
-            className="stepper-btn"
+            className="stepper-btn-accessible"
             onClick={decrementDuration}
             disabled={duration <= 5}
-            aria-label="Decrease duration"
+            aria-label="Decrease duration by 5 minutes"
           >
             −
           </button>
-          <div className="duration-display">
+          <div className="duration-display-accessible">
             {formatDuration(duration)}
           </div>
           <button
-            className="stepper-btn"
+            className="stepper-btn-accessible"
             onClick={incrementDuration}
             disabled={duration >= 180}
-            aria-label="Increase duration"
+            aria-label="Increase duration by 5 minutes"
           >
             +
           </button>
