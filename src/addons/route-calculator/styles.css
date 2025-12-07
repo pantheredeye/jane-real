@@ -74,12 +74,13 @@ Accessibility:  Min font size: 14px (--text-xs), Body text: 16px (--text-base)
   --space-12: 48px;
   --space-16: 64px;
 
-  /* Legacy spacing (keeping for backwards compatibility during refactor) */
-  --space-xs: 8px;
-  --space-sm: 16px;
-  --space-md: 24px;
-  --space-lg: 32px;
-  --space-xl: 48px;
+  /* Legacy spacing - DEPRECATED (use --space-1 through --space-16) */
+  /* Kept as aliases in case external files reference them */
+  --space-xs: var(--space-2);
+  --space-sm: var(--space-4);
+  --space-md: var(--space-6);
+  --space-lg: var(--space-8);
+  --space-xl: var(--space-12);
 
   /* Typography Scale - Mobile-First Accessible */
   --text-xs: 14px;    /* Minimum readable size */
@@ -364,7 +365,7 @@ input, select, textarea {
 /* App Container */
 .app-container {
   min-height: 100vh;
-  padding: var(--space-sm);
+  padding: var(--space-4);
   background: var(--bg-primary);
   backdrop-filter: var(--blur-light);
 }
@@ -372,11 +373,11 @@ input, select, textarea {
 /* Header Styles */
 .app-header {
   text-align: center;
-  padding: var(--space-lg) var(--space-sm);
+  padding: var(--space-8) var(--space-4);
   background: var(--bg-glass);
   backdrop-filter: var(--blur-heavy);
   border-radius: var(--radius-lg);
-  margin-bottom: var(--space-lg);
+  margin-bottom: var(--space-8);
   box-shadow: var(--shadow-glass);
   border: 3px solid rgba(255, 255, 255, 0.2);
 }
@@ -388,7 +389,7 @@ input, select, textarea {
   letter-spacing: 2px;
   color: var(--text-primary);
   text-shadow: var(--shadow-text);
-  margin-bottom: var(--space-xs);
+  margin-bottom: var(--space-2);
 }
 
 .app-subtitle {
@@ -403,7 +404,7 @@ input, select, textarea {
 .main-content {
   max-width: 600px;
   margin: 0 auto;
-  padding: 0 var(--space-sm);
+  padding: 0 var(--space-4);
 }
 
 /* Glass Card Base */
@@ -411,8 +412,8 @@ input, select, textarea {
   background: var(--bg-glass);
   backdrop-filter: var(--blur-medium);
   border-radius: var(--radius-lg);
-  padding: var(--space-lg);
-  margin-bottom: var(--space-lg);
+  padding: var(--space-8);
+  margin-bottom: var(--space-8);
   box-shadow: var(--shadow-glass);
   border: 3px solid rgba(255, 255, 255, 0.2);
 }
@@ -421,8 +422,8 @@ input, select, textarea {
   background: var(--bg-glass-elevated);
   backdrop-filter: var(--blur-medium);
   border-radius: var(--radius-lg);
-  padding: var(--space-md);
-  margin-bottom: var(--space-md);
+  padding: var(--space-6);
+  margin-bottom: var(--space-6);
   box-shadow: var(--shadow-elevated);
   border: 3px solid rgba(255, 255, 255, 0.3);
 }
@@ -435,7 +436,7 @@ input, select, textarea {
   text-transform: uppercase;
   letter-spacing: 2px;
   color: var(--text-primary);
-  margin-bottom: var(--space-lg);
+  margin-bottom: var(--space-8);
   text-align: center;
 }
 
@@ -449,7 +450,7 @@ input, select, textarea {
   text-transform: uppercase;
   letter-spacing: 1px;
   color: var(--text-primary);
-  margin-bottom: var(--space-sm);
+  margin-bottom: var(--space-4);
 }
 
 /* Input base styles */
@@ -480,26 +481,26 @@ input, select, textarea {
 
 /* Address Input */
 .address-input-container {
-  margin-bottom: var(--space-lg);
+  margin-bottom: var(--space-8);
 }
 
 
 /* Starting Point Dropdown */
 .starting-point-container,
 .start-time-container {
-  margin-bottom: var(--space-lg);
+  margin-bottom: var(--space-8);
 }
 
 
 /* Duration Presets */
 .duration-container {
-  margin-bottom: var(--space-xl);
+  margin-bottom: var(--space-12);
 }
 
 .duration-presets {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: var(--space-sm);
+  gap: var(--space-4);
 }
 
 .duration-btn {
@@ -556,7 +557,7 @@ input, select, textarea {
 .action-buttons {
   display: flex;
   flex-direction: column;
-  gap: var(--space-lg);
+  gap: var(--space-8);
 }
 
 
@@ -567,7 +568,7 @@ input, select, textarea {
   font-weight: 400;
   color: var(--text-secondary);
   text-align: center;
-  margin-bottom: var(--space-lg);
+  margin-bottom: var(--space-8);
   line-height: var(--leading-normal);
   letter-spacing: 1px;
 }
@@ -576,8 +577,8 @@ input, select, textarea {
 .property-main {
   display: flex;
   align-items: center;
-  margin-bottom: var(--space-md);
-  gap: var(--space-md);
+  margin-bottom: var(--space-6);
+  gap: var(--space-6);
 }
 
 .property-number {
@@ -604,7 +605,7 @@ input, select, textarea {
   font-size: 22px;
   font-weight: 900;
   color: var(--accent-electric);
-  margin-bottom: var(--space-xs);
+  margin-bottom: var(--space-2);
 }
 
 .property-address {
@@ -620,18 +621,18 @@ input, select, textarea {
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  margin-top: var(--space-xs);
+  margin-top: var(--space-2);
 }
 
 .property-controls {
   background: var(--bg-glass);
   border-radius: var(--radius-sm);
-  padding: var(--space-sm);
+  padding: var(--space-4);
   border: 2px solid rgba(255, 255, 255, 0.2);
 }
 
 .control-group {
-  margin-bottom: var(--space-sm);
+  margin-bottom: var(--space-4);
 }
 
 .control-group:last-child {
@@ -645,18 +646,18 @@ input, select, textarea {
   text-transform: uppercase;
   letter-spacing: 0.5px;
   color: var(--text-secondary);
-  margin-bottom: var(--space-xs);
+  margin-bottom: var(--space-2);
 }
 
 .control-row {
   display: flex;
   align-items: center;
-  gap: var(--space-sm);
+  gap: var(--space-4);
 }
 
 .time-input {
   height: var(--touch-optimal);
-  padding: 0 var(--space-md);
+  padding: 0 var(--space-6);
   font-size: 18px;
   font-weight: 700;
   background: white;
@@ -683,7 +684,7 @@ input, select, textarea {
 /* Lock Time Button */
 .lock-btn {
   height: var(--touch-optimal);
-  padding: 0 var(--space-lg);
+  padding: 0 var(--space-8);
   font-size: 14px;
   font-weight: 700;
   letter-spacing: 0.5px;
@@ -721,7 +722,7 @@ input, select, textarea {
 .duration-stepper {
   display: flex;
   align-items: center;
-  gap: var(--space-sm);
+  gap: var(--space-4);
 }
 
 .stepper-btn {
@@ -771,8 +772,8 @@ input, select, textarea {
 /* Property Card Header (Expanded) */
 .property-header {
   position: relative;
-  padding: var(--space-md);
-  margin-bottom: var(--space-md);
+  padding: var(--space-6);
+  margin-bottom: var(--space-6);
   cursor: pointer;
   border-bottom: 3px solid var(--text-primary);
   background: white;
@@ -784,8 +785,8 @@ input, select, textarea {
 
 .property-chevron {
   position: absolute;
-  top: var(--space-md);
-  right: var(--space-md);
+  top: var(--space-6);
+  right: var(--space-6);
   width: var(--tap-md);
   height: var(--tap-md);
   min-width: var(--tap-md);
@@ -815,8 +816,8 @@ input, select, textarea {
 .property-header-top {
   display: flex;
   align-items: flex-start;
-  gap: var(--space-sm);
-  margin-bottom: var(--space-xs);
+  gap: var(--space-4);
+  margin-bottom: var(--space-2);
 }
 
 .property-number-badge {
@@ -843,7 +844,7 @@ input, select, textarea {
 .maps-btn-hero {
   width: 100%;
   min-height: var(--tap-lg);
-  padding: 0 var(--space-lg);
+  padding: 0 var(--space-8);
   font-size: var(--text-base);
   font-weight: 900;
   text-transform: uppercase;
@@ -855,7 +856,7 @@ input, select, textarea {
   cursor: pointer;
   transition: all 0.2s ease;
   box-shadow: 5px 5px 0 rgba(0, 0, 0, 0.3);
-  margin-bottom: var(--space-sm);
+  margin-bottom: var(--space-4);
 }
 
 .maps-btn-hero:hover {
@@ -872,7 +873,7 @@ input, select, textarea {
 .listing-btn-secondary {
   width: 100%;
   min-height: var(--tap-md);
-  padding: 0 var(--space-lg);
+  padding: 0 var(--space-8);
   font-size: var(--text-sm);
   font-weight: 700;
   letter-spacing: 0.5px;
@@ -883,7 +884,7 @@ input, select, textarea {
   cursor: pointer;
   transition: all 0.2s ease;
   box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.2);
-  margin-bottom: var(--space-md);
+  margin-bottom: var(--space-6);
 }
 
 .listing-btn-secondary:hover {
@@ -901,7 +902,7 @@ input, select, textarea {
 /* Google Maps Button */
 .maps-btn {
   min-height: var(--tap-md);
-  padding: 0 var(--space-lg);
+  padding: 0 var(--space-8);
   font-family: 'Bebas Neue', sans-serif;
   font-size: var(--text-sm);
   font-weight: 700;
@@ -931,15 +932,15 @@ input, select, textarea {
 
 /* Results Section */
 .results-section {
-  margin-top: var(--space-lg);
+  margin-top: var(--space-8);
 }
 
 .route-summary {
-  margin-bottom: var(--space-lg);
+  margin-bottom: var(--space-8);
   background: white;
   border: 4px solid var(--text-primary);
   border-radius: 0;
-  padding: var(--space-md);
+  padding: var(--space-6);
   box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.3);
 }
 
@@ -947,7 +948,7 @@ input, select, textarea {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: var(--space-sm) 0;
+  padding: var(--space-4) 0;
   border-bottom: 3px solid var(--border-light);
 }
 
@@ -974,7 +975,7 @@ input, select, textarea {
 /* Status Messages */
 .status-container {
   position: fixed;
-  top: var(--space-lg);
+  top: var(--space-8);
   left: 50%;
   transform: translateX(-50%);
   z-index: 1000;
@@ -984,7 +985,7 @@ input, select, textarea {
   background: var(--bg-glass-elevated);
   backdrop-filter: var(--blur-medium);
   border-radius: var(--radius-md);
-  padding: var(--space-md) var(--space-lg);
+  padding: var(--space-6) var(--space-8);
   border: 3px solid rgba(255, 255, 255, 0.3);
   font-size: 16px;
   font-weight: 700;
@@ -1014,21 +1015,21 @@ input, select, textarea {
 }
 
 .mb-sm {
-  margin-bottom: var(--space-sm);
+  margin-bottom: var(--space-4);
 }
 
 .mb-md {
-  margin-bottom: var(--space-md);
+  margin-bottom: var(--space-6);
 }
 
 .mb-lg {
-  margin-bottom: var(--space-lg);
+  margin-bottom: var(--space-8);
 }
 
 /* Responsive Design */
 @media (max-width: 480px) {
   .app-container {
-    padding: var(--space-xs);
+    padding: var(--space-2);
   }
   
   .main-content {
@@ -1036,7 +1037,7 @@ input, select, textarea {
   }
   
   .glass-card {
-    padding: var(--space-md);
+    padding: var(--space-6);
   }
   
   .app-title {
@@ -1049,7 +1050,7 @@ input, select, textarea {
   
   .duration-presets {
     grid-template-columns: repeat(2, 1fr);
-    gap: var(--space-xs);
+    gap: var(--space-2);
   }
   
   .property-controls {
@@ -1060,7 +1061,7 @@ input, select, textarea {
   .property-main {
     flex-direction: column;
     align-items: stretch;
-    gap: var(--space-xs);
+    gap: var(--space-2);
   }
 
   /* Number and Time Header Row */
@@ -1072,8 +1073,8 @@ input, select, textarea {
 
   .property-number {
     position: absolute;
-    top: var(--space-sm);
-    left: var(--space-sm);
+    top: var(--space-4);
+    left: var(--space-4);
     width: 40px;
     height: 40px;
     font-size: 18px;
@@ -1081,9 +1082,9 @@ input, select, textarea {
 
   .property-time {
     font-size: 20px;
-    margin-bottom: var(--space-xs);
+    margin-bottom: var(--space-2);
     margin-left: 52px; /* Space for square badge */
-    margin-top: var(--space-xs);
+    margin-top: var(--space-2);
   }
 
   .property-info {
@@ -1094,13 +1095,13 @@ input, select, textarea {
   .property-address {
     font-size: var(--text-base);
     line-height: var(--leading-normal);
-    margin-bottom: var(--space-xs);
+    margin-bottom: var(--space-2);
   }
 
   .travel-time {
     font-size: var(--text-xs);
     margin-top: 4px;
-    margin-bottom: var(--space-xs);
+    margin-bottom: var(--space-2);
   }
 
   .maps-btn {
@@ -1109,28 +1110,28 @@ input, select, textarea {
     width: auto;
     min-width: 140px;
     font-size: 14px;
-    padding: 0 var(--space-md);
+    padding: 0 var(--space-6);
   }
 
   /* Adjust card positioning for absolute number */
   .property-card,
   .property-card-expanded {
     position: relative;
-    padding: var(--space-sm);
-    padding-top: calc(var(--space-md) + 12px); /* Compact space for square badge */
+    padding: var(--space-4);
+    padding-top: calc(var(--space-6) + 12px); /* Compact space for square badge */
   }
 
   /* Mobile Button Improvements */
   .lock-btn {
     min-width: 100px;
-    padding: 0 var(--space-sm);
+    padding: 0 var(--space-4);
     font-size: 12px;
     white-space: nowrap;
   }
 
   .control-row {
     flex-direction: column;
-    gap: var(--space-sm);
+    gap: var(--space-4);
     align-items: stretch;
   }
 
@@ -1138,31 +1139,31 @@ input, select, textarea {
     width: 100%;
     font-size: 18px;
     height: calc(var(--touch-optimal) + 8px); /* Larger touch targets */
-    padding: var(--space-sm) var(--space-md);
+    padding: var(--space-4) var(--space-6);
   }
 
   /* Enhanced Mobile Typography */
   .property-card,
   .property-card-expanded {
-    padding: var(--space-sm);
-    margin-bottom: var(--space-md);
+    padding: var(--space-4);
+    margin-bottom: var(--space-6);
   }
 
   .control-label {
     font-size: var(--text-xs);
-    margin-bottom: var(--space-sm);
+    margin-bottom: var(--space-4);
   }
 
   /* Better spacing for mobile */
   .property-controls {
-    margin-top: var(--space-sm); /* Reduced from lg to sm */
-    padding: var(--space-lg); /* Larger padding for easier interaction */
+    margin-top: var(--space-4); /* Reduced from lg to sm */
+    padding: var(--space-8); /* Larger padding for easier interaction */
     margin-left: 0; /* Align with property-main */
     margin-right: 0;
   }
 
   .control-group {
-    margin-bottom: var(--space-lg);
+    margin-bottom: var(--space-8);
   }
 
   .control-group:last-child {
@@ -1206,18 +1207,18 @@ input, select, textarea {
 
 /* PropertyInputBox - Input field with Add button */
 .property-input-box {
-  margin-bottom: var(--space-md);
+  margin-bottom: var(--space-6);
 }
 
 .property-input-row {
   display: flex;
-  gap: var(--space-xs);
+  gap: var(--space-2);
   align-items: stretch;
 }
 
 .property-input-field {
   flex: 1;
-  padding: var(--space-sm);
+  padding: var(--space-4);
   font-size: 16px;
   border: 3px solid var(--text-primary);
   border-radius: 0;
@@ -1241,7 +1242,7 @@ input, select, textarea {
 
 .property-add-btn {
   min-width: 80px;
-  padding: var(--space-sm) var(--space-md);
+  padding: var(--space-4) var(--space-6);
   font-size: 16px;
   font-weight: 700;
   text-transform: uppercase;
@@ -1282,8 +1283,8 @@ input, select, textarea {
 }
 
 .input-error-message {
-  margin-top: var(--space-xs);
-  padding: var(--space-sm) var(--space-md);
+  margin-top: var(--space-2);
+  padding: var(--space-4) var(--space-6);
   background: rgba(255, 255, 255, 0.5);
   backdrop-filter: var(--blur-light);
   border: 3px solid var(--accent-danger);
@@ -1312,12 +1313,12 @@ input, select, textarea {
 .property-list {
   display: flex;
   flex-direction: column;
-  gap: var(--space-xs);
-  margin-bottom: var(--space-md);
+  gap: var(--space-2);
+  margin-bottom: var(--space-6);
 }
 
 .property-list-empty {
-  padding: var(--space-lg);
+  padding: var(--space-8);
   text-align: center;
   background: var(--bg-glass);
   backdrop-filter: var(--blur-light);
@@ -1335,8 +1336,8 @@ input, select, textarea {
 .property-list-item {
   display: flex;
   align-items: center;
-  gap: var(--space-sm);
-  padding: var(--space-sm);
+  gap: var(--space-4);
+  padding: var(--space-4);
   background: white;
   border-radius: 0;
   border: 3px solid var(--text-primary);
@@ -1421,7 +1422,7 @@ input, select, textarea {
 
 .property-list-item-actions {
   display: flex;
-  gap: var(--space-xs);
+  gap: var(--space-2);
   flex-shrink: 0;
 }
 
@@ -1585,7 +1586,7 @@ input, select, textarea {
 
 /* PropertyCard enhancements */
 .property-listing-badge {
-  margin-left: var(--space-xs);
+  margin-left: var(--space-2);
   font-size: 12px;
   color: var(--accent-success);
   font-weight: 700;
@@ -1599,7 +1600,7 @@ input, select, textarea {
 
 .property-actions {
   display: flex;
-  gap: var(--space-xs);
+  gap: var(--space-2);
   flex-wrap: wrap;
 }
 
@@ -1634,8 +1635,8 @@ input, select, textarea {
 /* Clear All Button */
 .clear-all-btn {
   width: 100%;
-  margin-top: var(--space-sm);
-  padding: var(--space-sm) var(--space-md);
+  margin-top: var(--space-4);
+  padding: var(--space-4) var(--space-6);
   font-size: 14px;
   font-weight: 700;
   text-transform: uppercase;
@@ -1667,7 +1668,7 @@ input, select, textarea {
   }
 
   .property-list-item {
-    padding: var(--space-xs);
+    padding: var(--space-2);
   }
 
   .property-list-item-address {
@@ -1690,15 +1691,15 @@ input, select, textarea {
 .result-card {
   display: flex;
   align-items: center;
-  gap: var(--space-sm);
-  padding: var(--space-sm);
+  gap: var(--space-4);
+  padding: var(--space-4);
   background: white;
   border-radius: 0;
   border: 3px solid var(--text-primary);
   box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.15);
   cursor: pointer;
   transition: all 0.2s ease;
-  margin-bottom: var(--space-xs);
+  margin-bottom: var(--space-2);
 }
 
 .result-card:hover {
@@ -1750,7 +1751,7 @@ input, select, textarea {
 .property-compact-header {
   display: flex;
   align-items: center;
-  gap: var(--space-sm);
+  gap: var(--space-4);
 }
 
 .property-number-compact {
@@ -1786,8 +1787,8 @@ input, select, textarea {
   background: white;
   border: 4px solid var(--text-primary);
   border-radius: 0;
-  padding: var(--space-sm);
-  margin-bottom: var(--space-md);
+  padding: var(--space-4);
+  margin-bottom: var(--space-6);
   box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.3);
   transition: all 0.3s ease;
   animation: expandCard 0.3s ease-out;
@@ -1817,7 +1818,7 @@ input, select, textarea {
   height: 160px;
   border-radius: 0;
   overflow: hidden;
-  margin-bottom: var(--space-sm);
+  margin-bottom: var(--space-4);
   border: 3px solid var(--text-primary);
 }
 
@@ -1831,9 +1832,9 @@ input, select, textarea {
 .drive-time-connector {
   display: flex;
   align-items: center;
-  gap: var(--space-xs);
-  padding: var(--space-xs) 0;
-  margin: 0 var(--space-md);
+  gap: var(--space-2);
+  padding: var(--space-2) 0;
+  margin: 0 var(--space-6);
 }
 
 .drive-time-line {
@@ -1859,8 +1860,8 @@ input, select, textarea {
 /* Mobile responsive adjustments for new components */
 @media (max-width: 768px) {
   .result-card {
-    gap: var(--space-xs);
-    padding: var(--space-xs);
+    gap: var(--space-2);
+    padding: var(--space-2);
   }
 
   .property-thumbnail-compact {
@@ -1885,16 +1886,16 @@ input, select, textarea {
   }
 
   .property-card-expanded {
-    padding: var(--space-xs);
+    padding: var(--space-2);
   }
 
   .property-thumbnail-expanded {
     height: 120px;
-    margin-bottom: var(--space-xs);
+    margin-bottom: var(--space-2);
   }
 
   .property-main {
-    gap: var(--space-xs);
+    gap: var(--space-2);
   }
 
   .property-number {
@@ -1905,13 +1906,13 @@ input, select, textarea {
 
   .property-time {
     font-size: 20px;
-    margin-bottom: var(--space-xs);
+    margin-bottom: var(--space-2);
   }
 
   .property-address {
     font-size: 15px;
     line-height: 1.3;
-    margin-bottom: var(--space-xs);
+    margin-bottom: var(--space-2);
   }
 
   .travel-time {
@@ -1920,8 +1921,8 @@ input, select, textarea {
   }
 
   .property-actions {
-    gap: var(--space-xs);
-    margin-top: var(--space-xs);
+    gap: var(--space-2);
+    margin-top: var(--space-2);
   }
 
   .listing-btn,
@@ -1931,7 +1932,7 @@ input, select, textarea {
   }
 
   .drive-time-connector {
-    margin: 0 var(--space-sm);
+    margin: 0 var(--space-4);
   }
 
   .drive-time-label {
@@ -1971,15 +1972,15 @@ input, select, textarea {
 .starting-location-card-compact {
   display: flex;
   align-items: center;
-  gap: var(--space-sm);
-  padding: var(--space-sm);
+  gap: var(--space-4);
+  padding: var(--space-4);
   background: white;
   border: 3px solid var(--text-primary);
   border-radius: 0;
   box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.15);
   cursor: pointer;
   transition: all 0.2s ease;
-  margin-bottom: var(--space-sm);
+  margin-bottom: var(--space-4);
 }
 
 .starting-location-card-compact:hover {
@@ -2027,8 +2028,8 @@ input, select, textarea {
   background: var(--bg-amber-tint); /* Light amber tint */
   border: 3px solid var(--text-primary);
   border-radius: 0;
-  padding: var(--space-md);
-  margin-bottom: var(--space-md);
+  padding: var(--space-6);
+  margin-bottom: var(--space-6);
   box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.15);
   transition: all 0.3s ease;
 }
@@ -2036,8 +2037,8 @@ input, select, textarea {
 .starting-location-header {
   display: flex;
   align-items: center;
-  gap: var(--space-sm);
-  margin-bottom: var(--space-md);
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
 }
 
 .starting-location-icon-large {
@@ -2057,15 +2058,15 @@ input, select, textarea {
 .start-from-options {
   display: flex;
   flex-direction: column;
-  gap: var(--space-sm);
-  margin-bottom: var(--space-md);
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
 }
 
 .start-from-option {
   display: flex;
   align-items: center;
-  gap: var(--space-sm);
-  padding: var(--space-sm);
+  gap: var(--space-4);
+  padding: var(--space-4);
   background: white;
   border: 3px solid var(--text-primary);
   border-radius: 0;
@@ -2100,7 +2101,7 @@ input, select, textarea {
 /* Property select dropdown */
 .property-select {
   width: 100%;
-  padding: var(--space-sm);
+  padding: var(--space-4);
   font-size: 16px;
   font-weight: 600;
   background: white;
@@ -2127,7 +2128,7 @@ input, select, textarea {
 /* Custom start input */
 .custom-start-input {
   width: 100%;
-  padding: var(--space-sm);
+  padding: var(--space-4);
   font-size: 16px;
   font-weight: 500;
   background: white;
@@ -2152,14 +2153,14 @@ input, select, textarea {
 
 /* Inline error message */
 .inline-error-message {
-  padding: var(--space-sm);
+  padding: var(--space-4);
   background: rgba(239, 68, 68, 0.1);
   border: 3px solid var(--accent-danger);
   border-radius: 0;
   color: var(--accent-danger);
   font-size: 14px;
   font-weight: 600;
-  margin-top: var(--space-sm);
+  margin-top: var(--space-4);
 }
 
 /* Starting location result card (in results) */
@@ -2203,7 +2204,7 @@ input, select, textarea {
   text-transform: uppercase;
   letter-spacing: 0.5px;
   cursor: pointer;
-  padding: var(--space-xs);
+  padding: var(--space-2);
   transition: all 0.2s;
 }
 
@@ -2218,8 +2219,8 @@ input, select, textarea {
 /* Mobile responsive */
 @media (max-width: 768px) {
   .starting-location-card-compact {
-    gap: var(--space-xs);
-    padding: var(--space-xs);
+    gap: var(--space-2);
+    padding: var(--space-2);
   }
 
   .starting-location-icon {
@@ -2261,15 +2262,15 @@ input, select, textarea {
   border: 4px solid var(--text-primary);
   border-radius: 0;
   box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.15);
-  margin-bottom: var(--space-md);
+  margin-bottom: var(--space-6);
   overflow: hidden;
 }
 
 .result-card-info {
   display: flex;
   align-items: center;
-  gap: var(--space-sm);
-  padding: var(--space-sm);
+  gap: var(--space-4);
+  padding: var(--space-4);
   cursor: pointer;
   transition: background 0.2s ease;
 }
@@ -2294,15 +2295,15 @@ input, select, textarea {
 .property-actions-compact {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: var(--space-xs);
-  padding: var(--space-xs) var(--space-sm) var(--space-sm) var(--space-sm);
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4) var(--space-4) var(--space-4);
   background: white;
   border-top: 3px solid var(--border-light);
 }
 
 .action-btn-compact {
   min-height: 56px;
-  padding: 0 var(--space-md);
+  padding: 0 var(--space-6);
   font-size: 16px;
   font-weight: 700;
   text-transform: uppercase;
@@ -2355,7 +2356,7 @@ input, select, textarea {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  padding: var(--space-md);
+  padding: var(--space-6);
   border-bottom: 3px solid var(--border-light);
   cursor: pointer;
   transition: background 0.2s ease;
@@ -2367,14 +2368,14 @@ input, select, textarea {
 
 .property-header-info-expanded {
   flex: 1;
-  padding-right: var(--space-sm);
+  padding-right: var(--space-4);
 }
 
 .property-header-top-expanded {
   display: flex;
   align-items: flex-start;
-  gap: var(--space-sm);
-  margin-bottom: var(--space-xs);
+  gap: var(--space-4);
+  margin-bottom: var(--space-2);
 }
 
 .property-header-meta-expanded {
@@ -2409,14 +2410,14 @@ input, select, textarea {
 .property-actions-expanded {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: var(--space-sm);
-  padding: var(--space-md);
+  gap: var(--space-4);
+  padding: var(--space-6);
   background: white;
 }
 
 .action-btn-expanded {
   min-height: 56px;
-  padding: 0 var(--space-lg);
+  padding: 0 var(--space-8);
   font-size: 16px;
   font-weight: 700;
   text-transform: uppercase;
@@ -2467,16 +2468,16 @@ input, select, textarea {
 /* Property Controls - Accessible Version */
 .property-controls-accessible {
   background: white;
-  padding: var(--space-md);
+  padding: var(--space-6);
   display: flex;
   flex-direction: column;
-  gap: var(--space-md);
+  gap: var(--space-6);
 }
 
 .control-group-accessible {
   display: flex;
   flex-direction: column;
-  gap: var(--space-xs);
+  gap: var(--space-2);
 }
 
 .control-label-accessible {
@@ -2490,7 +2491,7 @@ input, select, textarea {
 .time-input-accessible {
   width: 100%;
   min-height: 56px;
-  padding: 0 var(--space-md);
+  padding: 0 var(--space-6);
   font-size: 18px;
   font-weight: 700;
   background: white;
@@ -2517,7 +2518,7 @@ input, select, textarea {
 .lock-btn-accessible {
   width: 100%;
   min-height: 56px;
-  padding: 0 var(--space-lg);
+  padding: 0 var(--space-8);
   font-size: 18px;
   font-weight: 700;
   text-transform: uppercase;
@@ -2559,7 +2560,7 @@ input, select, textarea {
 .duration-stepper-accessible {
   display: flex;
   align-items: center;
-  gap: var(--space-sm);
+  gap: var(--space-4);
 }
 
 .stepper-btn-accessible {
@@ -2645,17 +2646,17 @@ input, select, textarea {
   border: 4px solid var(--text-primary);
   border-radius: 0;
   box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.2);
-  padding: var(--space-sm);
-  margin-bottom: var(--space-lg);
+  padding: var(--space-4);
+  margin-bottom: var(--space-8);
   display: flex;
   flex-direction: column;
-  gap: var(--space-sm);
+  gap: var(--space-4);
 }
 
 /* Primary Metric - Total Time (Hero Display) */
 .summary-primary {
   text-align: center;
-  padding: var(--space-sm) 0;
+  padding: var(--space-4) 0;
   border-bottom: 3px solid var(--border-light);
 }
 
@@ -2680,8 +2681,8 @@ input, select, textarea {
 .summary-timeline {
   display: flex;
   align-items: center;
-  gap: var(--space-sm);
-  padding: var(--space-xs) 0;
+  gap: var(--space-4);
+  padding: var(--space-2) 0;
   border-bottom: 3px solid var(--border-light);
 }
 
@@ -2718,7 +2719,7 @@ input, select, textarea {
 /* Secondary Metrics - Compact */
 .summary-secondary {
   text-align: center;
-  padding: var(--space-xs) 0;
+  padding: var(--space-2) 0;
 }
 
 .summary-secondary-text {
@@ -2736,7 +2737,7 @@ input, select, textarea {
   display: block;
   width: 100%;
   min-height: 56px;
-  padding: 0 var(--space-lg);
+  padding: 0 var(--space-8);
   font-size: 18px;
   font-weight: 900;
   text-transform: uppercase;
@@ -2777,7 +2778,7 @@ input, select, textarea {
   }
 
   .summary-timeline {
-    gap: var(--space-xs);
+    gap: var(--space-2);
   }
 
   .summary-timeline-label {
