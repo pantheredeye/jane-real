@@ -426,17 +426,6 @@ export default function HomePage({ initialCredits, initialSavedRoutes }: HomePag
 
           <CopyButtons route={calculatedRoute} />
 
-          {/* Save Route Button */}
-          <div style={{ marginTop: '2rem', textAlign: 'center' }}>
-            <button
-              className="calculate-btn"
-              onClick={() => routePersistence.setShowSaveDialog(true)}
-              style={{ maxWidth: '300px' }}
-            >
-              💾 SAVE ROUTE
-            </button>
-          </div>
-
         </section>
       )}
 
