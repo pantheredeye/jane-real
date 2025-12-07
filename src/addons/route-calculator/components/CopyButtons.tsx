@@ -43,18 +43,12 @@ export function CopyButtons({ route }: CopyButtonsProps) {
   }
 
   return (
-    <div className="copy-options">
-      <button 
-        className={`copy-btn client-copy ${copyStatus === 'success' ? 'btn-success' : ''}`}
-        onClick={handleCopy}
-      >
-        <span className={`btn-text ${copyStatus === 'success' ? 'hidden' : ''}`}>
-          📱 COPY DETAILS
-        </span>
-        <span className={`btn-success ${copyStatus === 'success' ? '' : 'hidden'}`}>
-          COPIED!
-        </span>
-      </button>
-    </div>
+    <button
+      className={`btn-base btn-md ${copyStatus === 'success' ? 'btn-success' : 'btn-primary'}`}
+      onClick={handleCopy}
+      style={{ width: '100%', marginTop: '1rem' }}
+    >
+      {copyStatus === 'success' ? '✓ COPIED!' : '📱 COPY DETAILS'}
+    </button>
   )
 }
