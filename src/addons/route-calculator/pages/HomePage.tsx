@@ -16,7 +16,6 @@ import { ErrorModal } from '../components/ErrorModal'
 import { ConfirmDialog } from '../components/ConfirmDialog'
 import { SaveRouteDialog } from '../components/SaveRouteDialog'
 import { SavedRoutesSection } from '../components/SavedRoutesSection'
-import '../mobile-layout.css'
 import { getUserCredits, type UserCreditsData } from '../server-functions/getUserCredits'
 import type { OptimizedRoute, PropertyInput, SavedRoute } from '../types'
 import { useRouteManager } from '../hooks/useRouteManager'
@@ -426,17 +425,6 @@ export default function HomePage({ initialCredits, initialSavedRoutes }: HomePag
           </div>
 
           <CopyButtons route={calculatedRoute} />
-
-          {/* Save Route Button */}
-          <div style={{ marginTop: '2rem', textAlign: 'center' }}>
-            <button
-              className="calculate-btn"
-              onClick={() => routePersistence.setShowSaveDialog(true)}
-              style={{ maxWidth: '300px' }}
-            >
-              💾 SAVE ROUTE
-            </button>
-          </div>
 
         </section>
       )}
