@@ -531,6 +531,7 @@ input, select, textarea {
 }
 
 /* Primary Buttons */
+/* TODO: Migrate to btn-base pattern - currently used in modals/dialogs */
 .calculate-btn {
   width: 100%;
   height: var(--touch-optimal);
@@ -1187,8 +1188,6 @@ input, select, textarea {
 
 /* Focus Styles for Accessibility */
 .calculate-btn:focus,
-.optimize-btn:focus,
-.copy-btn:focus,
 .duration-btn:focus {
   outline: 3px solid var(--accent-electric);
   outline-offset: 2px;
