@@ -35,27 +35,27 @@ Accessibility:  Min font size: 14px (--text-xs), Body text: 16px (--text-base)
 /* CSS Variables - Design System */
 :root {
   /* Background Layers */
-  --bg-primary: var(--bg-primary);
+  --bg-primary: #f8fafc;
   --bg-glass: rgba(255, 255, 255, 0.25);
   --bg-glass-elevated: rgba(255, 255, 255, 0.4);
   --bg-glass-strong: rgba(255, 255, 255, 0.6);
-  --bg-amber-tint: var(--bg-amber-tint);
-  --bg-danger-tint: var(--bg-danger-tint);
+  --bg-amber-tint: #fffbf0;
+  --bg-danger-tint: #ffebee;
 
   /* Typography */
   --text-primary: #0f172a;
-  --text-secondary: var(--text-secondary);
-  --text-tertiary: var(--text-tertiary);
+  --text-secondary: #334155;
+  --text-tertiary: #64748b;
   --text-white: #ffffff;
 
   /* Interactive Accents */
-  --accent-electric: var(--accent-electric);
-  --accent-electric-dark: var(--accent-electric-dark);
-  --accent-danger: var(--accent-danger);
-  --accent-danger-dark: var(--accent-danger-dark);
+  --accent-electric: #3b82f6;
+  --accent-electric-dark: #2563eb;
+  --accent-danger: #ef4444;
+  --accent-danger-dark: #dc2626;
   --accent-success: #10b981;
-  --accent-success-dark: var(--accent-success-dark);
-  --accent-warning: var(--accent-warning);
+  --accent-success-dark: #059669;
+  --accent-warning: #f59e0b;
 
   /* Backdrop Effects */
   --blur-light: blur(8px);
@@ -106,7 +106,7 @@ Accessibility:  Min font size: 14px (--text-xs), Body text: 16px (--text-base)
   --tap-lg: 56px;     /* Optimal for primary actions */
 
   /* Borders */
-  --border-light: var(--border-light);
+  --border-light: #e2e8f0;
 
   /* Border Radius */
   --radius-sm: 8px;
