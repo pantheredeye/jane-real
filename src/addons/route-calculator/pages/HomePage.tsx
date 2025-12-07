@@ -41,6 +41,7 @@ export default function HomePage({ initialCredits, initialSavedRoutes }: HomePag
   const [lastCalculatedFingerprint, setLastCalculatedFingerprint] = useState('')
   const [userCredits, setUserCredits] = useState<UserCreditsData | null>(initialCredits)
   const [showDiscardConfirm, setShowDiscardConfirm] = useState(false)
+  const [expandedCard, setExpandedCard] = useState<'start' | 'options' | null>(null)
 
   const {
     route: calculatedRoute,
@@ -172,7 +173,13 @@ export default function HomePage({ initialCredits, initialSavedRoutes }: HomePag
       }
 
       // Parse property
-      const property = parsePropertyInput(text)
+      const result = parsePropertyInput(text)
+
+      if (!result.success) {
+        return { success: false, error: result.error }
+      }
+
+      const property = result.property
 
       // Fetch thumbnail if URL
       if (property.sourceUrl) {
@@ -318,6 +325,8 @@ export default function HomePage({ initialCredits, initialSavedRoutes }: HomePag
             onStartingPropertyIndexChange={startLocation.handleStartingPropertyIndexChange}
             propertyAddresses={propertyList.propertyList.map(p => p.parsedAddress)}
             customAddressError={routeCalculation.customAddressError}
+            isExpanded={expandedCard === 'start'}
+            onToggleExpanded={() => setExpandedCard(expandedCard === 'start' ? null : 'start')}
           />
         </div>
       )}
@@ -338,6 +347,8 @@ export default function HomePage({ initialCredits, initialSavedRoutes }: HomePag
               setIsDirty(true)
               routeCalculation.resetSuccessState()
             }}
+            isExpanded={expandedCard === 'options'}
+            onToggleExpanded={() => setExpandedCard(expandedCard === 'options' ? null : 'options')}
           />
         </div>
       )}

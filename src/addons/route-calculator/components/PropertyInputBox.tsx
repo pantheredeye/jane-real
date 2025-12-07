@@ -34,7 +34,14 @@ export function PropertyInputBox({ onAdd }: PropertyInputBoxProps) {
       return
     }
 
-    const property = parsePropertyInput(inputValue)
+    const result = parsePropertyInput(inputValue)
+
+    if (!result.success) {
+      setError(result.error)
+      return
+    }
+
+    const property = result.property
 
     // If it's a listing URL, fetch the thumbnail
     if (property.sourceUrl) {

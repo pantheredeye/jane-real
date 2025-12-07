@@ -1405,13 +1405,17 @@ input, select, textarea {
 
 .input-error-message {
   margin-top: var(--space-xs);
-  padding: var(--space-xs) var(--space-sm);
-  background: rgba(239, 68, 68, 0.1);
-  border-left: 3px solid var(--accent-danger);
-  border-radius: var(--radius-sm);
+  padding: var(--space-sm) var(--space-md);
+  background: rgba(255, 255, 255, 0.5);
+  backdrop-filter: var(--blur-light);
+  border: 3px solid var(--accent-danger);
+  border-radius: var(--radius-md);
+  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.15);
   color: var(--accent-danger);
-  font-size: 14px;
-  font-weight: 600;
+  font-size: var(--text-sm);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
   animation: slideDown 0.2s ease-out;
 }
 

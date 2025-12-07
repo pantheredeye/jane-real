@@ -1,6 +1,5 @@
 'use client'
 
-import { useState } from 'react'
 import { DurationSelector } from './DurationSelector'
 
 interface RouteOptionsCardProps {
@@ -8,20 +7,23 @@ interface RouteOptionsCardProps {
   onStartTimeChange: (time: string) => void
   selectedDuration: number
   onDurationChange: (duration: number) => void
+  isExpanded: boolean
+  onToggleExpanded: () => void
 }
 
 export function RouteOptionsCard({
   startTime,
   onStartTimeChange,
   selectedDuration,
-  onDurationChange
+  onDurationChange,
+  isExpanded,
+  onToggleExpanded
 }: RouteOptionsCardProps) {
-  const [isExpanded, setIsExpanded] = useState(false)
 
   // Collapsed state
   if (!isExpanded) {
     return (
-      <div className="starting-location-card-compact" onClick={() => setIsExpanded(true)}>
+      <div className="starting-location-card-compact" onClick={onToggleExpanded}>
         <div className="starting-location-icon">⚙️</div>
         <div className="starting-location-compact-info">
           <div className="starting-location-label">Route Options</div>
@@ -40,7 +42,7 @@ export function RouteOptionsCard({
       <div className="text-right">
         <button
           className="collapse-link"
-          onClick={() => setIsExpanded(false)}
+          onClick={onToggleExpanded}
           aria-label="Collapse route options"
         >
           collapse ▲

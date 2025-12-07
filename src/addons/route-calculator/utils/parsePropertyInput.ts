@@ -3,6 +3,10 @@ import { parseZillowUrl, isZillowUrl } from './urlParsers/zillow'
 import { parseRealtorUrl, isRealtorUrl } from './urlParsers/realtor'
 import { formatAddress } from './addressFormatter'
 
+export type ParseResult =
+  | { success: true; property: PropertyInput }
+  | { success: false; error: string }
+
 /**
  * Parse user input to detect if it's a listing URL or plain address
  * Supports:
@@ -10,7 +14,7 @@ import { formatAddress } from './addressFormatter'
  * - Zillow URLs: https://www.zillow.com/homedetails/...
  * - Realtor.com URLs: https://www.realtor.com/realestateandhomes-detail/...
  */
-export function parsePropertyInput(rawInput: string): PropertyInput {
+export function parsePropertyInput(rawInput: string): ParseResult {
   const trimmed = rawInput.trim()
 
   // Try parsing as Zillow URL
@@ -18,11 +22,19 @@ export function parsePropertyInput(rawInput: string): PropertyInput {
     const parsedAddress = parseZillowUrl(trimmed)
     if (parsedAddress) {
       return {
-        id: crypto.randomUUID(),
-        rawInput: trimmed,
-        parsedAddress: formatAddress(parsedAddress),
-        sourceUrl: trimmed
+        success: true,
+        property: {
+          id: crypto.randomUUID(),
+          rawInput: trimmed,
+          parsedAddress: formatAddress(parsedAddress),
+          sourceUrl: trimmed
+        }
       }
+    }
+    // URL looks like Zillow but couldn't parse
+    return {
+      success: false,
+      error: 'Zillow URL format not supported (try property detail page)'
     }
   }
 
@@ -31,20 +43,31 @@ export function parsePropertyInput(rawInput: string): PropertyInput {
     const parsedAddress = parseRealtorUrl(trimmed)
     if (parsedAddress) {
       return {
-        id: crypto.randomUUID(),
-        rawInput: trimmed,
-        parsedAddress: formatAddress(parsedAddress),
-        sourceUrl: trimmed
+        success: true,
+        property: {
+          id: crypto.randomUUID(),
+          rawInput: trimmed,
+          parsedAddress: formatAddress(parsedAddress),
+          sourceUrl: trimmed
+        }
       }
+    }
+    // URL looks like Realtor but couldn't parse
+    return {
+      success: false,
+      error: 'Realtor.com URL format not supported (try property detail page)'
     }
   }
 
-  // Plain address input (or unparseable URL)
+  // Plain address input
   return {
-    id: crypto.randomUUID(),
-    rawInput: trimmed,
-    parsedAddress: formatAddress(trimmed),
-    sourceUrl: undefined
+    success: true,
+    property: {
+      id: crypto.randomUUID(),
+      rawInput: trimmed,
+      parsedAddress: formatAddress(trimmed),
+      sourceUrl: undefined
+    }
   }
 }
 

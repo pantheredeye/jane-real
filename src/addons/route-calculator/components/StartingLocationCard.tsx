@@ -1,7 +1,5 @@
 'use client'
 
-import { useState } from 'react'
-
 interface StartingLocationCardProps {
   startFromType: 'current' | 'property' | 'custom'
   onStartFromTypeChange: (type: 'current' | 'property' | 'custom') => void
@@ -14,6 +12,8 @@ interface StartingLocationCardProps {
   onStartingPropertyIndexChange: (index: number) => void
   propertyAddresses: string[]
   customAddressError?: string | null
+  isExpanded: boolean
+  onToggleExpanded: () => void
 }
 
 export function StartingLocationCard({
@@ -27,9 +27,10 @@ export function StartingLocationCard({
   startingPropertyIndex,
   onStartingPropertyIndexChange,
   propertyAddresses,
-  customAddressError
+  customAddressError,
+  isExpanded,
+  onToggleExpanded
 }: StartingLocationCardProps) {
-  const [isExpanded, setIsExpanded] = useState(false)
 
   // Note: We don't auto-request geolocation on mount because browsers
   // require user gestures for permission prompts (especially on mobile).
@@ -60,7 +61,7 @@ export function StartingLocationCard({
   // Collapsed state
   if (!isExpanded) {
     return (
-      <div className="starting-location-card-compact" onClick={() => setIsExpanded(true)}>
+      <div className="starting-location-card-compact" onClick={onToggleExpanded}>
         <div className="starting-location-icon">📍</div>
         <div className="starting-location-compact-info">
           <div className="starting-location-label">Starting from:</div>
@@ -77,7 +78,7 @@ export function StartingLocationCard({
       <div className="text-right">
         <button
           className="collapse-link"
-          onClick={() => setIsExpanded(false)}
+          onClick={onToggleExpanded}
           aria-label="Collapse starting location"
         >
           collapse ▲
