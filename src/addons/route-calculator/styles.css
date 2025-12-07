@@ -1685,9 +1685,14 @@ input, select, textarea {
     width: 100%;
   }
 }
-/* ==================== Compact Visual Timeline - New Card Design ==================== */
+/* ==================== Property Cards - Multiple Patterns ==================== */
+/* NOTE: Three card patterns coexist (transitioning design):
+   - .result-card: Starting location card (simple, no expand)
+   - .result-card-accessible: Main property cards (preferred, accessible)
+   - .property-card-expanded: Expanded state for accessible cards
+   Future: Consider consolidating when design direction is finalized */
 
-/* Result Card (Collapsed Timeline State) */
+/* Result Card - Used by StartingLocationResultCard */
 .result-card {
   display: flex;
   align-items: center;
