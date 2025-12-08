@@ -49,7 +49,7 @@ export function SavedRoutesSection({
               </div>
               <div style={{ display: 'flex', gap: '0.5rem' }}>
                 <button
-                  className="calculate-btn"
+                  className="btn-action btn-action-primary"
                   style={{
                     padding: '0.5rem 1rem',
                     fontSize: '0.9rem',
@@ -62,7 +62,7 @@ export function SavedRoutesSection({
                   📂 LOAD
                 </button>
                 <button
-                  className="calculate-btn"
+                  className="btn-action btn-action-secondary"
                   style={{
                     padding: '0.5rem 1rem',
                     fontSize: '0.9rem',

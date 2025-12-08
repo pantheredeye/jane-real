@@ -78,18 +78,15 @@ export function ErrorModal({ isOpen, errorMessage, onClose, onRetry }: ErrorModa
 
         <div className="error-modal-actions">
           <button
-            className="calculate-btn"
-            style={{
-              backgroundColor: '#6c757d',
-              minWidth: '120px'
-            }}
+            className="btn-action btn-action-secondary"
+            style={{ minWidth: '120px' }}
             onClick={onClose}
           >
             CLOSE
           </button>
           <button
             ref={retryButtonRef}
-            className="calculate-btn"
+            className="btn-action btn-action-primary"
             style={{ minWidth: '120px' }}
             onClick={onRetry}
           >

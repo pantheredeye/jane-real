@@ -266,9 +266,8 @@ export default function HomePage({ initialCredits, initialSavedRoutes }: HomePag
           </div>
           <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end' }}>
             <button
-              className="calculate-btn"
+              className="btn-action btn-action-secondary"
               style={{
-                backgroundColor: 'rgba(107, 114, 128, 0.3)',
                 padding: '0.5rem 0.75rem',
                 fontSize: '0.8rem',
                 minWidth: 'auto'
@@ -278,9 +277,8 @@ export default function HomePage({ initialCredits, initialSavedRoutes }: HomePag
               No Thanks
             </button>
             <button
-              className="calculate-btn"
+              className="btn-action btn-action-primary"
               style={{
-                backgroundColor: '#3b82f6',
                 padding: '0.5rem 1rem',
                 fontSize: '0.8rem',
                 minWidth: 'auto'
@@ -296,6 +294,26 @@ export default function HomePage({ initialCredits, initialSavedRoutes }: HomePag
       {/* Inline Property Input - always visible at top */}
       <div className="inline-input-section">
         <PropertyInputBox onAdd={propertyList.handleAddProperty} />
+      </div>
+
+      {/* Route Options Card - move to top, show always (collapsed when no properties) */}
+      <div className="inline-list-section">
+        <RouteOptionsCard
+          startTime={startTime}
+          onStartTimeChange={(time) => {
+            setStartTime(time)
+            setIsDirty(true)
+            routeCalculation.resetSuccessState()
+          }}
+          selectedDuration={selectedDuration}
+          onDurationChange={(duration) => {
+            setSelectedDuration(duration)
+            setIsDirty(true)
+            routeCalculation.resetSuccessState()
+          }}
+          isExpanded={expandedCard === 'options'}
+          onToggleExpanded={() => setExpandedCard(expandedCard === 'options' ? null : 'options')}
+        />
       </div>
 
       {/* Property List - show when properties exist */}
@@ -330,25 +348,17 @@ export default function HomePage({ initialCredits, initialSavedRoutes }: HomePag
         </div>
       )}
 
-      {/* Route Options Card - show when properties exist */}
-      {propertyList.propertyList.length > 0 && (
+      {/* Inline Calculate Button - after all configuration */}
+      {propertyList.propertyList.length >= 2 && (
         <div className="inline-list-section">
-          <RouteOptionsCard
-            startTime={startTime}
-            onStartTimeChange={(time) => {
-              setStartTime(time)
-              setIsDirty(true)
-              routeCalculation.resetSuccessState()
-            }}
-            selectedDuration={selectedDuration}
-            onDurationChange={(duration) => {
-              setSelectedDuration(duration)
-              setIsDirty(true)
-              routeCalculation.resetSuccessState()
-            }}
-            isExpanded={expandedCard === 'options'}
-            onToggleExpanded={() => setExpandedCard(expandedCard === 'options' ? null : 'options')}
-          />
+          <button
+            className="btn-action btn-action-primary"
+            style={{ width: '100%' }}
+            onClick={routeCalculation.handleCalculateRoute}
+            disabled={routeCalculation.isCalculating || propertyList.propertyList.length < 2}
+          >
+            {routeCalculation.isCalculating ? 'CALCULATING...' : 'CALCULATE ROUTE'}
+          </button>
         </div>
       )}
 

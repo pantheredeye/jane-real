@@ -531,28 +531,6 @@ input, select, textarea {
   box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.3);
 }
 
-/* Primary Buttons */
-/* TODO: Migrate to btn-base pattern - currently used in modals/dialogs */
-.calculate-btn {
-  width: 100%;
-  height: var(--touch-optimal);
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 28px;
-  font-weight: 400;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  background: var(--accent-electric);
-  border: 4px solid var(--text-primary);
-  border-radius: var(--radius-md);
-  color: var(--text-white);
-  cursor: pointer;
-  transition: all 0.15s ease;
-  box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.3);
-  position: relative;
-  overflow: hidden;
-}
-
-
 /* Action Buttons Container */
 .action-buttons {
   display: flex;
@@ -2168,6 +2146,158 @@ input, select, textarea {
   margin-top: var(--space-4);
 }
 
+/* ==================== Route Options Card ==================== */
+
+/* Route Options Card - Collapsed */
+.route-options-card-compact {
+  margin-bottom: var(--space-4);
+}
+
+.route-options-toggle-btn {
+  /* Reset button */
+  all: unset;
+  box-sizing: border-box;
+
+  /* Match property-list-item */
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  width: 100%;
+  padding: var(--space-4);
+  background: white;
+  border: 3px solid var(--text-primary);
+  border-radius: 0;
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.route-options-toggle-btn:hover {
+  transform: translateX(4px);
+  box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.2);
+}
+
+.route-options-toggle-btn:active {
+  transform: translateX(0);
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.15);
+}
+
+.route-options-toggle-btn:focus-visible {
+  outline: 3px solid var(--accent-electric);
+  outline-offset: 2px;
+}
+
+.route-icon {
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.route-text {
+  flex: 1;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--text-primary);
+  text-align: left;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.expand-icon {
+  font-size: 14px;
+  color: var(--text-secondary);
+  flex-shrink: 0;
+}
+
+/* Route Options Card - Expanded */
+.route-options-card-expanded {
+  background: white;  /* Not amber - match property-list-item */
+  border: 3px solid var(--text-primary);
+  border-radius: 0;
+  padding: var(--space-6);
+  margin-bottom: var(--space-4);
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.15);
+}
+
+/* Field labels - sentence case, larger */
+.field-label {
+  display: block;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: var(--space-2);
+}
+
+/* Time input - larger for accessibility */
+.time-input-large {
+  width: 100%;
+  min-height: 56px;
+  padding: 0 var(--space-4);
+  font-size: 20px;
+  font-weight: 600;
+  border: 3px solid var(--text-primary);
+  border-radius: 0;
+  background: white;
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.15);
+  transition: all 0.2s ease;
+}
+
+.time-input-large:focus {
+  outline: none;
+  border-color: var(--accent-electric);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+}
+
+/* Duration stepper - reuse pattern from PropertyControls */
+.duration-stepper {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.stepper-btn {
+  min-width: 56px;
+  min-height: 56px;
+  font-size: 28px;
+  font-weight: 700;
+  border: 3px solid var(--text-primary);
+  border-radius: 0;
+  background: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.15);
+  flex-shrink: 0;
+}
+
+.stepper-btn:hover:not(:disabled) {
+  border-color: var(--accent-electric);
+  transform: translate(-1px, -1px);
+  box-shadow: 5px 5px 0 rgba(0, 0, 0, 0.2);
+}
+
+.stepper-btn:active:not(:disabled) {
+  transform: translate(0, 0);
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.15);
+}
+
+.stepper-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.stepper-btn:focus-visible {
+  outline: 3px solid var(--accent-electric);
+  outline-offset: 2px;
+}
+
+.duration-display {
+  flex: 1;
+  text-align: center;
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
 /* Starting location result card (in results) */
 .starting-result-card {
   border-color: var(--accent-warning); /* Amber border to distinguish */
@@ -2887,18 +3017,11 @@ input, select, textarea {
   padding-bottom: calc(12px + env(safe-area-inset-bottom));
 }
 
-/* Paste button - 1/3 width */
-.bottom-bar-btn-secondary {
-  flex: 1;
-}
+/* ==================== Generic Action Buttons ==================== */
+/* Used in bottom bar, inline calculate, modals, dialogs */
 
-/* Calculate button - 2/3 width */
-.bottom-bar-btn-primary {
-  flex: 2;
-}
-
-.bottom-bar-btn {
-  flex: 1;
+/* Base action button */
+.btn-action {
   padding: 14px 8px;
   font-family: 'Bebas Neue', sans-serif;
   font-size: 16px;
@@ -2918,42 +3041,51 @@ input, select, textarea {
   position: relative;
 }
 
-/* Secondary buttons (Add, Settings) */
-.bottom-bar-btn-secondary {
+/* Secondary buttons (Add, Settings, Cancel) */
+.btn-action-secondary {
   background: white;
   color: var(--text-primary);
 }
 
-.bottom-bar-btn-secondary:hover {
+.btn-action-secondary:hover {
   background: var(--bg-glass);
   transform: translateY(-2px);
 }
 
-/* Primary button (Calculate) */
-.bottom-bar-btn-primary {
+/* Primary button (Calculate, Save, Confirm) */
+.btn-action-primary {
   background: var(--accent-electric);
   color: white;
   border-color: var(--accent-electric);
 }
 
-.bottom-bar-btn-primary:hover:not(:disabled) {
+.btn-action-primary:hover:not(:disabled) {
   background: var(--accent-electric-dark);
   transform: translateY(-2px);
 }
 
-.bottom-bar-btn-primary:disabled {
+.btn-action-primary:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
 
-.bottom-bar-btn-primary.btn-success {
+.btn-action-primary.btn-success {
   background: var(--accent-success);
   border-color: var(--accent-success);
 }
 
-.bottom-bar-btn:active:not(:disabled) {
+.btn-action:active:not(:disabled) {
   transform: translate(2px, 2px);
   box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.3);
+}
+
+/* Bottom bar specific layout - 1/3 and 2/3 width split */
+.bottom-bar .btn-action-secondary {
+  flex: 1;
+}
+
+.bottom-bar .btn-action-primary {
+  flex: 2;
 }
 
 /* Badge for property count */
@@ -2967,7 +3099,7 @@ input, select, textarea {
   text-align: center;
 }
 
-.bottom-bar-btn-secondary .bottom-bar-badge {
+.btn-action-secondary .bottom-bar-badge {
   background: var(--accent-electric);
 }
 
@@ -3360,7 +3492,7 @@ input, select, textarea {
     gap: 8px;
   }
 
-  .bottom-bar-btn {
+  .btn-action {
     padding: 12px 6px;
     font-size: 14px;
   }
@@ -3384,7 +3516,7 @@ input, select, textarea {
 
 /* ==================== Keyboard Focus States ==================== */
 
-.bottom-bar-btn:focus-visible,
+.btn-action:focus-visible,
 .hamburger-btn:focus-visible,
 .help-btn:focus-visible {
   outline: 3px solid var(--accent-electric);

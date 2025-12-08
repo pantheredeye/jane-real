@@ -53,14 +53,14 @@ export function BottomBar({
   return (
     <div className="bottom-bar">
       <button
-        className="bottom-bar-btn bottom-bar-btn-secondary"
+        className="btn-action btn-action-secondary"
         onClick={handlePaste}
         disabled={pasteState !== 'idle'}
       >
         {pasteButtonText}
       </button>
       <button
-        className={`bottom-bar-btn bottom-bar-btn-primary ${showSuccess && !isCalculationDirty ? 'btn-success' : ''}`}
+        className={`btn-action btn-action-primary ${showSuccess && !isCalculationDirty ? 'btn-success' : ''}`}
         onClick={onCalculatePress}
         disabled={isCalculating || propertyCount === 0 || (showSuccess && !isCalculationDirty)}
       >

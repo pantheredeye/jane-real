@@ -103,11 +103,8 @@ export function ConfirmDialog({
 
         <div className="error-modal-actions">
           <button
-            className="calculate-btn"
-            style={{
-              backgroundColor: '#6c757d',
-              minWidth: '120px'
-            }}
+            className="btn-action btn-action-secondary"
+            style={{ minWidth: '120px' }}
             onClick={onCancel}
             disabled={isLoading}
           >
@@ -115,7 +112,7 @@ export function ConfirmDialog({
           </button>
           <button
             ref={confirmButtonRef}
-            className="calculate-btn"
+            className="btn-action btn-action-primary"
             style={{
               backgroundColor: titleColor,
               minWidth: '120px'

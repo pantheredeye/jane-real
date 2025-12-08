@@ -82,18 +82,15 @@ export function SaveRouteDialog({
 
         <div style={{ display: 'flex', gap: '1rem', justifyContent: 'flex-end' }}>
           <button
-            className="calculate-btn"
-            style={{
-              backgroundColor: '#6c757d',
-              minWidth: '100px'
-            }}
+            className="btn-action btn-action-secondary"
+            style={{ minWidth: '100px' }}
             onClick={onClose}
             disabled={isSaving}
           >
             CANCEL
           </button>
           <button
-            className="calculate-btn"
+            className="btn-action btn-action-primary"
             style={{ minWidth: '100px' }}
             onClick={onSave}
             disabled={isSaving || !routeName.trim()}
