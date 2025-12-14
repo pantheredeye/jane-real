@@ -340,6 +340,32 @@ body.theme-diner .feature-badge {
   line-height: 1.6;
 }
 
+/* Footer */
+.landing-footer {
+  text-align: center;
+  padding: 40px 20px;
+  margin-top: 40px;
+  color: #666;
+  font-size: 14px;
+}
+
+.footer-link {
+  color: var(--primary-color);
+  text-decoration: none;
+  font-weight: 500;
+  transition: opacity 0.2s ease;
+}
+
+.footer-link:hover {
+  opacity: 0.7;
+  text-decoration: underline;
+}
+
+.footer-divider {
+  margin: 0 15px;
+  color: #999;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .theme-switcher {

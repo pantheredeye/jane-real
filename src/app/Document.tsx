@@ -1,5 +1,6 @@
 import styles from "../addons/route-calculator/styles.css?url";
 import landingStyles from "./pages/landing/styles.css?url";
+import aboutStyles from "./pages/about/styles.css?url";
 
 export const Document: React.FC<{ children: React.ReactNode }> = ({
   children,
@@ -17,6 +18,7 @@ export const Document: React.FC<{ children: React.ReactNode }> = ({
       />
       <link rel="modulepreload" href="/src/client.tsx" />
       <link rel="stylesheet" href={landingStyles} />
+      <link rel="stylesheet" href={aboutStyles} />
       <link rel="stylesheet" href={styles} />
     </head>
     <body>

@@ -1,0 +1,355 @@
+/* About Page - RouteFast */
+/* Matches landing page 50s comic book design system */
+
+.about-page {
+  max-width: 1200px;
+  margin: 40px auto;
+  padding: 0 20px;
+}
+
+/* Navigation */
+.about-nav {
+  margin-bottom: 20px;
+}
+
+.back-link {
+  display: inline-block;
+  color: var(--primary-color, #d32f2f);
+  text-decoration: none;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 18px;
+  letter-spacing: 1px;
+  padding: 10px 20px;
+  border: 3px solid var(--border-color, #1a1a1a);
+  background: white;
+  box-shadow: 4px 4px 0 rgba(0,0,0,0.2);
+  transition: all 0.2s ease;
+}
+
+.back-link:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 rgba(0,0,0,0.3);
+}
+
+.back-link:active {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0 rgba(0,0,0,0.2);
+}
+
+/* ========== HERO SECTION ========== */
+.about-hero {
+  text-align: center;
+  padding: 80px 40px;
+  background: white;
+  border: 6px solid var(--border-color, #1a1a1a);
+  box-shadow: 20px 20px 0 rgba(0,0,0,0.15);
+  position: relative;
+  margin-bottom: 40px;
+}
+
+.about-hero .halftone-shadow {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  width: 100%;
+  height: 100%;
+  background-image: radial-gradient(circle, rgba(0,0,0,0.5) 1.5px, transparent 1.5px);
+  background-size: 8px 8px;
+  opacity: 0.6;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.about-hero h1 {
+  font-family: 'Archivo Black', sans-serif;
+  font-size: clamp(36px, 8vw, 64px);
+  color: var(--primary-color, #d32f2f);
+  margin-bottom: 20px;
+  text-transform: uppercase;
+  line-height: 1;
+  font-style: italic;
+}
+
+.about-tagline {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 32px;
+  letter-spacing: 2px;
+  margin-bottom: 30px;
+  color: var(--text-color, #1a1a1a);
+}
+
+.about-description {
+  font-size: 18px;
+  line-height: 1.8;
+  max-width: 700px;
+  margin: 0 auto;
+  color: #333;
+}
+
+.about-description strong {
+  color: var(--primary-color, #d32f2f);
+}
+
+/* ========== STORY SECTION ========== */
+.about-story {
+  margin-bottom: 40px;
+}
+
+.about-story h2 {
+  font-family: 'Archivo Black', sans-serif;
+  font-size: 48px;
+  text-align: center;
+  margin-bottom: 40px;
+  text-transform: uppercase;
+  color: var(--primary-color, #d32f2f);
+  font-style: italic;
+}
+
+.story-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 30px;
+}
+
+.story-card {
+  background: white;
+  padding: 40px 30px;
+  border: 6px solid var(--border-color, #1a1a1a);
+  box-shadow: 10px 10px 0 rgba(0,0,0,0.15);
+  text-align: center;
+  position: relative;
+}
+
+.story-badge {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: var(--primary-color, #d32f2f);
+  border: 3px solid var(--border-color, #1a1a1a);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 36px;
+  margin: 0 auto 20px;
+  transform: rotate(-12deg);
+}
+
+.story-card h3 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 24px;
+  letter-spacing: 1px;
+  margin-bottom: 15px;
+  color: var(--text-color, #1a1a1a);
+}
+
+.story-card p {
+  font-size: 16px;
+  line-height: 1.7;
+  color: #666;
+}
+
+/* ========== PHILOSOPHY PANEL ========== */
+.about-philosophy {
+  background: var(--primary-color, #d32f2f);
+  color: white;
+  padding: 60px 40px;
+  text-align: center;
+  border: 6px solid var(--border-color, #1a1a1a);
+  box-shadow: 20px 20px 0 rgba(0,0,0,0.15);
+  margin-bottom: 40px;
+  position: relative;
+}
+
+.about-philosophy .halftone-shadow {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  width: 100%;
+  height: 100%;
+  background-image: radial-gradient(circle, rgba(0,0,0,0.5) 1.5px, transparent 1.5px);
+  background-size: 8px 8px;
+  opacity: 0.6;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.about-philosophy h2 {
+  font-family: 'Archivo Black', sans-serif;
+  font-size: 42px;
+  margin-bottom: 20px;
+  text-transform: uppercase;
+}
+
+.about-philosophy p {
+  font-size: 18px;
+  line-height: 1.8;
+  max-width: 700px;
+  margin: 0 auto 20px;
+}
+
+.about-philosophy p:last-child {
+  margin-bottom: 0;
+}
+
+.about-philosophy strong {
+  font-weight: 700;
+}
+
+/* ========== CTA SECTION ========== */
+.about-ctas {
+  background: white;
+  padding: 60px 40px;
+  border: 6px solid var(--border-color, #1a1a1a);
+  box-shadow: 10px 10px 0 rgba(0,0,0,0.15);
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.about-ctas h2 {
+  font-family: 'Archivo Black', sans-serif;
+  font-size: 42px;
+  margin-bottom: 40px;
+  text-transform: uppercase;
+  color: var(--primary-color, #d32f2f);
+  font-style: italic;
+}
+
+.cta-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 20px;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.about-cta-button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 24px;
+  letter-spacing: 1px;
+  padding: 30px 20px;
+  border: 4px solid var(--border-color, #1a1a1a);
+  text-decoration: none;
+  text-transform: uppercase;
+  box-shadow: 6px 6px 0 rgba(0,0,0,0.3);
+  transition: all 0.2s ease;
+  cursor: pointer;
+  min-height: 140px;
+}
+
+.about-cta-button.primary {
+  background: var(--primary-color, #d32f2f);
+  color: white;
+}
+
+.about-cta-button.secondary {
+  background: white;
+  color: var(--primary-color, #d32f2f);
+}
+
+.about-cta-button.tertiary {
+  background: #f5f1e8;
+  color: var(--text-color, #1a1a1a);
+}
+
+.about-cta-button:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 8px 8px 0 rgba(0,0,0,0.3);
+}
+
+.about-cta-button:active {
+  transform: translate(2px, 2px);
+  box-shadow: 4px 4px 0 rgba(0,0,0,0.3);
+}
+
+.about-cta-button .cta-note {
+  display: block;
+  margin-top: 10px;
+  font-size: 13px;
+  opacity: 0.8;
+  font-family: 'Inter', sans-serif;
+  text-transform: none;
+  letter-spacing: 0;
+  font-weight: 400;
+}
+
+/* ========== FOOTER ========== */
+.about-footer {
+  text-align: center;
+  padding: 40px 20px;
+  color: #666;
+}
+
+.about-footer p {
+  font-size: 16px;
+  line-height: 1.7;
+  margin-bottom: 15px;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.about-contact {
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.about-contact a {
+  color: var(--primary-color, #d32f2f);
+  text-decoration: none;
+  border-bottom: 2px solid var(--primary-color, #d32f2f);
+  transition: opacity 0.2s ease;
+}
+
+.about-contact a:hover {
+  opacity: 0.7;
+}
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 768px) {
+  .about-hero {
+    padding: 60px 30px;
+  }
+
+  .about-tagline {
+    font-size: 24px;
+  }
+
+  .about-description {
+    font-size: 16px;
+  }
+
+  .about-story h2,
+  .about-philosophy h2,
+  .about-ctas h2 {
+    font-size: 32px;
+  }
+
+  .story-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .about-philosophy {
+    padding: 40px 30px;
+  }
+
+  .about-ctas {
+    padding: 40px 20px;
+  }
+
+  .cta-grid {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  .about-cta-button {
+    font-size: 20px;
+    padding: 25px 20px;
+    min-height: 120px;
+  }
+}

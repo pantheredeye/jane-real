@@ -7,6 +7,7 @@ import { userRoutes } from "@/app/pages/user/routes";
 import { routeCalculatorRoutes } from "@/addons/route-calculator/routes";
 import { subscriptionRoutes } from "@/addons/subscription/routes";
 import landingRoutes from "@/app/pages/landing/routes";
+import aboutRoutes from "@/app/pages/about/routes";
 import { accountRoutes } from "@/app/pages/account/routes";
 import { legalRoutes } from "@/app/pages/legal/routes";
 import { shareRoutes } from "@/app/pages/share/routes";
@@ -80,6 +81,7 @@ export default defineApp([
   },
   render(Document, [
     ...landingRoutes,
+    ...aboutRoutes,
     route("/signup", () => {
       return new Response(null, {
         status: 302,

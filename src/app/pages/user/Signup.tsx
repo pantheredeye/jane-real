@@ -73,7 +73,7 @@ export function Signup() {
         <div className="halftone-shadow"></div>
 
         <h1 className="signup-title">RouteFast</h1>
-        <p className="signup-subtitle">Start Your Free Trial</p>
+        <p className="signup-subtitle">Start with 15 Free Calculations</p>
 
         <div className="signup-form">
           <div className="form-group">

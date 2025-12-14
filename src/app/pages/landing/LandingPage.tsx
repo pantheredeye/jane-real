@@ -12,6 +12,14 @@ export default function LandingPage() {
         <HeroSection />
         <PricingSection />
         <FeaturesSection />
+
+        <footer className="landing-footer">
+          <a href="/about" className="footer-link">About RouteFast</a>
+          <span className="footer-divider">•</span>
+          <a href="/legal/privacy" className="footer-link">Privacy</a>
+          <span className="footer-divider">•</span>
+          <a href="/legal/terms" className="footer-link">Terms</a>
+        </footer>
       </div>
     </>
   );
