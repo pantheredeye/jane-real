@@ -31,6 +31,7 @@ model User {
   username    String?     // Optional display name/username
   name        String?
   avatar      String?
+  passwordHash String?    // Bcrypt hash for password auth (nullable - passkey users won't have)
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
 

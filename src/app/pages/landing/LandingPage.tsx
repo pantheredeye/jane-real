@@ -19,6 +19,8 @@ export default function LandingPage() {
           <a href="/legal/privacy" className="footer-link">Privacy</a>
           <span className="footer-divider">•</span>
           <a href="/legal/terms" className="footer-link">Terms</a>
+          <span className="footer-divider">•</span>
+          <a href="https://digitalglue.dev" target="_blank" rel="noopener noreferrer" className="footer-link">Crafted by Digital Glue</a>
         </footer>
       </div>
     </>

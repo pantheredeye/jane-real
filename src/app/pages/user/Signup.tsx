@@ -6,16 +6,60 @@ import {
   checkEmailAvailable,
   finishPasskeyRegistration,
   startPasskeyRegistration,
+  signupWithPassword,
 } from "./functions";
 import "./signup.css";
 
 export function Signup() {
+  const [authMode, setAuthMode] = useState<"password" | "passkey">("password");
   const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [result, setResult] = useState("");
   const [isPending, startTransition] = useTransition();
 
-  const handleSignup = async () => {
+  const handlePasswordSignup = async () => {
+    if (!email.trim()) {
+      setResult("Please enter your email");
+      return;
+    }
+
+    // Basic email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setResult("Please enter a valid email address");
+      return;
+    }
+
+    if (!password) {
+      setResult("Please enter a password");
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      setResult("Passwords don't match");
+      return;
+    }
+
+    if (!agreedToTerms) {
+      setResult("Please agree to the Terms of Service and Privacy Policy");
+      return;
+    }
+
+    try {
+      const success = await signupWithPassword(email, password);
+      if (success) {
+        setResult("Account created successfully!");
+        window.location.href = "/route/";
+      }
+    } catch (error: any) {
+      console.error("Signup error:", error);
+      setResult(error?.message || "Signup failed. Please try again.");
+    }
+  };
+
+  const handlePasskeySignup = async () => {
     if (!email.trim()) {
       setResult("Please enter your email");
       return;
@@ -64,7 +108,9 @@ export function Signup() {
   };
 
   const handlePerformSignup = () => {
-    startTransition(() => void handleSignup());
+    startTransition(() =>
+      void (authMode === "password" ? handlePasswordSignup() : handlePasskeySignup())
+    );
   };
 
   return (
@@ -76,6 +122,25 @@ export function Signup() {
         <p className="signup-subtitle">Start with 15 Free Calculations</p>
 
         <div className="signup-form">
+          <div className="auth-mode-toggle">
+            <button
+              type="button"
+              className={`auth-mode-btn ${authMode === "password" ? "active" : ""}`}
+              onClick={() => setAuthMode("password")}
+              disabled={isPending}
+            >
+              Password
+            </button>
+            <button
+              type="button"
+              className={`auth-mode-btn ${authMode === "passkey" ? "active" : ""}`}
+              onClick={() => setAuthMode("passkey")}
+              disabled={isPending}
+            >
+              Passkey
+            </button>
+          </div>
+
           <div className="form-group">
             <label htmlFor="email">Email Address</label>
             <input
@@ -96,9 +161,51 @@ export function Signup() {
             />
           </div>
 
-          <p className="signup-explainer">
-            We'll create a secure passkey for your account—no password needed.
-          </p>
+          {authMode === "password" ? (
+            <>
+              <div className="form-group">
+                <label htmlFor="password">Password</label>
+                <input
+                  id="password"
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && !isPending) {
+                      handlePerformSignup();
+                    }
+                  }}
+                  placeholder="At least 8 characters"
+                  className="signup-input"
+                  disabled={isPending}
+                  autoComplete="new-password"
+                />
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="confirmPassword">Confirm Password</label>
+                <input
+                  id="confirmPassword"
+                  type="password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && !isPending) {
+                      handlePerformSignup();
+                    }
+                  }}
+                  placeholder="Re-enter your password"
+                  className="signup-input"
+                  disabled={isPending}
+                  autoComplete="new-password"
+                />
+              </div>
+            </>
+          ) : (
+            <p className="signup-explainer">
+              We'll create a secure passkey for your account—no password needed.
+            </p>
+          )}
 
           <div className="terms-checkbox-container">
             <label className="terms-checkbox-label">
@@ -167,6 +274,10 @@ export function Signup() {
         <span className="footer-divider">•</span>
         <a href="mailto:barrett@digitalglue.dev" className="footer-link">
           Contact
+        </a>
+        <span className="footer-divider">•</span>
+        <a href="https://digitalglue.dev" target="_blank" rel="noopener noreferrer" className="footer-link">
+          Crafted by Digital Glue
         </a>
       </div>
     </div>

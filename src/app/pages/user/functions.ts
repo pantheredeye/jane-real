@@ -12,6 +12,7 @@ import { sessions } from "@/session/store";
 import { requestInfo } from "rwsdk/worker";
 import { db } from "@/db";
 import { env } from "cloudflare:workers";
+import { hashPassword, verifyPassword, validatePasswordStrength } from "./password";
 
 function getWebAuthnConfig(request: Request) {
   const rpID = env.WEBAUTHN_RP_ID ?? new URL(request.url).hostname;
@@ -242,4 +243,109 @@ export async function finishPasskeyLogin(login: AuthenticationResponseJSON) {
   });
 
   return true;
+}
+
+// ============================================================================
+// PASSWORD AUTHENTICATION
+// ============================================================================
+
+export async function signupWithPassword(email: string, password: string) {
+  try {
+    const { response } = requestInfo;
+
+    // Validate password strength
+    const validation = validatePasswordStrength(password);
+    if (!validation.valid) {
+      throw new Error(validation.error || 'Invalid password');
+    }
+
+    // Check if email is already taken
+    const existing = await db.user.findUnique({ where: { email } });
+    if (existing) {
+      throw new Error('Email already registered');
+    }
+
+    // Hash password
+    const passwordHash = await hashPassword(password);
+
+    const freeCredits = parseInt(process.env.FREE_CREDITS_AMOUNT || '15', 10);
+
+    // Create user with password hash
+    const user = await db.user.create({
+      data: {
+        email,
+        username: email,
+        passwordHash,
+        creditsRemaining: freeCredits,
+        totalCreditsGranted: freeCredits,
+      },
+    });
+
+    // Auto-create personal tenant for new user
+    const tenant = await db.tenant.create({
+      data: {
+        name: `${email}'s Workspace`,
+        slug: `${email.split('@')[0]}-${Date.now()}`,
+        status: "ACTIVE",
+      },
+    });
+
+    const membership = await db.tenantMembership.create({
+      data: {
+        userId: user.id,
+        tenantId: tenant.id,
+        role: "OWNER",
+      },
+    });
+
+    // Save session with tenant context
+    await sessions.save(response.headers, {
+      userId: user.id,
+      tenantId: tenant.id,
+      membershipId: membership.id,
+    });
+
+    console.log("signupWithPassword: Success for user:", email);
+    return true;
+  } catch (error) {
+    console.error("signupWithPassword: Error:", error);
+    throw error;
+  }
+}
+
+export async function loginWithPassword(email: string, password: string) {
+  try {
+    const { response } = requestInfo;
+
+    // Find user by email
+    const user = await db.user.findUnique({ where: { email } });
+    if (!user || !user.passwordHash) {
+      throw new Error('Invalid email or password');
+    }
+
+    // Verify password
+    const valid = await verifyPassword(password, user.passwordHash);
+    if (!valid) {
+      throw new Error('Invalid email or password');
+    }
+
+    // Load user's tenant membership (use first one for now)
+    const membership = await db.tenantMembership.findFirst({
+      where: { userId: user.id },
+      orderBy: { createdAt: "asc" }, // Use oldest membership (primary tenant)
+    });
+
+    // Save session
+    await sessions.save(response.headers, {
+      userId: user.id,
+      tenantId: membership?.tenantId ?? null,
+      membershipId: membership?.id ?? null,
+    });
+
+    console.log("loginWithPassword: Success for user:", email);
+    return true;
+  } catch (error) {
+    console.error("loginWithPassword: Error:", error);
+    throw error;
+  }
 }
