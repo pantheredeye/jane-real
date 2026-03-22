@@ -63,13 +63,13 @@
 ### Test 4: Database Queries
 ```bash
 # Check users and memberships
-pnpm wrangler d1 execute jane-real-prior-crayfish --local \
+pnpm wrangler d1 execute routefast --local \
   --command="SELECT u.name, t.name as tenant, tm.role FROM User u
              JOIN TenantMembership tm ON u.id = tm.userId
              JOIN Tenant t ON tm.tenantId = t.id"
 
 # Check routes
-pnpm wrangler d1 execute jane-real-prior-crayfish --local \
+pnpm wrangler d1 execute routefast --local \
   --command="SELECT * FROM Route"
 ```
 

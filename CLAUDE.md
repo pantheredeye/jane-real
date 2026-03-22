@@ -1,4 +1,4 @@
-# Real Estate Route Calculator - RedwoodSDK Project
+# RouteFast - RedwoodSDK Project
 
 ## Project Overview
 This is a RedwoodSDK application featuring a real estate route calculator that helps agents optimize their property showing schedules. The project follows RedwoodSDK's full-stack colocation architecture and React Server Components (RSC) patterns.

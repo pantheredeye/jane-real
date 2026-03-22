@@ -2,7 +2,7 @@
 
 **Last Updated:** November 27, 2025
 
-This Privacy Policy describes how Jane Real ("we", "our", or "us") collects, uses, and protects your information when you use our route calculator service.
+This Privacy Policy describes how RouteFast ("we", "our", or "us") collects, uses, and protects your information when you use our route calculator service.
 
 ## Information We Collect
 

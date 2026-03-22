@@ -2,11 +2,11 @@
 
 **Last Updated:** November 27, 2025
 
-Welcome to Jane Real. By using our service, you agree to these terms.
+Welcome to RouteFast. By using our service, you agree to these terms.
 
 ## The Service
 
-Jane Real is a route calculator for real estate professionals. We provide tools to optimize property showing schedules. This is an actively developed project - features may change, bugs may occur.
+RouteFast is a route calculator for real estate professionals. We provide tools to optimize property showing schedules. This is an actively developed project - features may change, bugs may occur.
 
 ## Account & Subscription
 
