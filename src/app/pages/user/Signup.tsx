@@ -47,15 +47,12 @@ export function Signup() {
       return;
     }
 
-    try {
-      const success = await signupWithPassword(email, password);
-      if (success) {
-        setResult("Account created successfully!");
-        window.location.href = "/route/";
-      }
-    } catch (error: any) {
-      console.error("Signup error:", error);
-      setResult(error?.message || "Signup failed. Please try again.");
+    const result = await signupWithPassword(email, password);
+    if (result.success) {
+      setResult("Account created successfully!");
+      window.location.href = "/route/";
+    } else {
+      setResult(result.error || "Signup failed. Please try again.");
     }
   };
 
@@ -175,7 +172,7 @@ export function Signup() {
                       handlePerformSignup();
                     }
                   }}
-                  placeholder="At least 8 characters"
+                  placeholder="At least 12 characters"
                   className="signup-input"
                   disabled={isPending}
                   autoComplete="new-password"

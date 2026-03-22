@@ -14,8 +14,13 @@ export default function Privacy() {
   // Bold
   html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
 
-  // Links [text](url)
-  html = html.replace(/\[(.+?)\]\((.+?)\)/g, '<a href="$2">$1</a>')
+  // Links [text](url) — only allow safe URL schemes
+  html = html.replace(/\[(.+?)\]\((.+?)\)/g, (_match: string, text: string, url: string) => {
+    if (/^https?:\/\//i.test(url) || url.startsWith('/') || url.startsWith('mailto:')) {
+      return `<a href="${url}">${text}</a>`
+    }
+    return text
+  })
 
   // Lists - process line by line
   const lines = html.split('\n')

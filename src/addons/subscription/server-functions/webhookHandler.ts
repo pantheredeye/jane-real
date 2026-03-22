@@ -11,6 +11,14 @@ export async function handleStripeWebhook(
   env: { STRIPE_SECRET_KEY?: string }
 ): Promise<{ success: boolean; message: string }> {
   try {
+    // Idempotency: skip already-processed events (Stripe retries on failure)
+    const existing = await db.processedWebhookEvent.findUnique({
+      where: { eventId: event.id },
+    })
+    if (existing) {
+      return { success: true, message: `Already processed ${event.id}` }
+    }
+
     switch (event.type) {
       case 'customer.subscription.created':
       case 'customer.subscription.updated': {
@@ -40,6 +48,11 @@ export async function handleStripeWebhook(
       default:
         console.log(`Unhandled event type: ${event.type}`)
     }
+
+    // Record successful processing for idempotency
+    await db.processedWebhookEvent.create({
+      data: { eventId: event.id },
+    })
 
     return { success: true, message: `Processed ${event.type}` }
   } catch (error) {

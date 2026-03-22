@@ -9,7 +9,29 @@ interface OgImageResult {
   description: string | null
 }
 
+const ALLOWED_HOSTS = [
+  'zillow.com',
+  'realtor.com',
+  'redfin.com',
+  'trulia.com',
+]
+
+function isAllowedUrl(url: string): boolean {
+  try {
+    const parsed = new URL(url)
+    if (parsed.protocol !== 'https:') return false
+    const hostname = parsed.hostname.toLowerCase().replace(/^www\./, '')
+    return ALLOWED_HOSTS.some(h => hostname === h || hostname.endsWith('.' + h))
+  } catch {
+    return false
+  }
+}
+
+const NULL_RESULT: OgImageResult = { thumbnailUrl: null, title: null, description: null }
+
 export async function fetchOgImage(url: string): Promise<OgImageResult> {
+  if (!isAllowedUrl(url)) return NULL_RESULT
+
   try {
     // Fetch the HTML page
     const response = await fetch(url, {

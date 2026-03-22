@@ -49,12 +49,13 @@ model User {
   creditsRemaining       Int               @default(15) // Free credits remaining
   totalCreditsGranted    Int               @default(15) // Total credits ever granted
 
-  credentials     Credential[]       // WebAuthn credentials
-  memberships     TenantMembership[] // Many-to-many with tenants
-  createdRoutes   Route[]            // Routes created by this user
-  routeShares     RouteShare[]       // Routes shared by this user
-  auditLogs       AuditLog[]         // Activity logs
-  usageLogs       UsageLog[]         // Credits usage tracking
+  credentials          Credential[]           // WebAuthn credentials
+  memberships          TenantMembership[]     // Many-to-many with tenants
+  createdRoutes        Route[]                // Routes created by this user
+  routeShares          RouteShare[]           // Routes shared by this user
+  auditLogs            AuditLog[]             // Activity logs
+  usageLogs            UsageLog[]             // Credits usage tracking
+  passwordResetTokens  PasswordResetToken[]   // Password reset tokens
 
   @@index([email])
   @@index([username])
@@ -227,4 +228,25 @@ model UsageLog {
   @@index([userId])
   @@index([createdAt])
   @@index([action])
+}
+
+// Password reset tokens
+model PasswordResetToken {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  token     String   @unique
+  expiresAt DateTime
+  used      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([token])
+  @@index([expiresAt])
+}
+
+model ProcessedWebhookEvent {
+  id          String   @id @default(cuid())
+  eventId     String   @unique
+  processedAt DateTime @default(now())
 }
