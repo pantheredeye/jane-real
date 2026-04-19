@@ -25,9 +25,14 @@
     "generate": "rw-scripts ensure-env && prisma generate && wrangler types",
     "check": "npm run generate && npm run types",
     "types": "tsc",
-    "prepare": "vibe-rules install cursor"
+    "prepare": "vibe-rules install cursor",
+    "cap:sync": "npx cap sync",
+    "cap:open:ios": "npx cap open ios",
+    "cap:open:android": "npx cap open android"
   },
   "dependencies": {
+    "@capacitor/cli": "^8.3.1",
+    "@capacitor/core": "^8.3.1",
     "@googlemaps/google-maps-services-js": "^3.4.2",
     "@prisma/adapter-d1": "~6.8.2",
     "@prisma/client": "~6.8.2",

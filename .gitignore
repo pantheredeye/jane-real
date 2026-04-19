@@ -70,3 +70,7 @@ generated/
 # Local SQLite database (not used - we use D1)
 prisma/dev.db
 prisma/dev.db-journal
+
+# Capacitor native platforms
+/ios
+/android

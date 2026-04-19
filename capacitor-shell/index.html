@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <title>RouteFast</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        background: #0a0a0a;
+        color: #fff;
+        font-family: -apple-system, system-ui, sans-serif;
+      }
+      .shell {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        text-align: center;
+        padding: 1rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="shell">
+      <p>Loading RouteFast…</p>
+    </div>
+    <script>
+      // Native shell — redirect to production worker.
+      // Override via capacitor.config.ts `server.url` for dev.
+      window.location.replace('https://routefast.app')
+    </script>
+  </body>
+</html>
