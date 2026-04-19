@@ -18,6 +18,7 @@ import { Session } from "./session/durableObject";
 import { type User, type Tenant, type TenantMembership, db, setupDb } from "@/db";
 import { env } from "cloudflare:workers";
 export { SessionDurableObject } from "./session/durableObject";
+export { AgentStateDO } from "./addons/agent/durableObject";
 
 export type AppContext = {
   session: Session | null;

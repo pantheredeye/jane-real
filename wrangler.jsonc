@@ -24,8 +24,15 @@
       {
         "name": "SESSION_DURABLE_OBJECT",
         "class_name": "SessionDurableObject"
+      },
+      {
+        "name": "AGENT_STATE_DO",
+        "class_name": "AgentStateDO"
       }
     ]
+  },
+  "ai": {
+    "binding": "AI"
   },
   "vars": {
     "WEBAUTHN_APP_NAME": "routefast",
@@ -36,6 +43,12 @@
       "tag": "v1",
       "new_sqlite_classes": [
         "SessionDurableObject"
+      ]
+    },
+    {
+      "tag": "v2",
+      "new_sqlite_classes": [
+        "AgentStateDO"
       ]
     }
   ],
@@ -70,14 +83,27 @@
           {
             "name": "SESSION_DURABLE_OBJECT",
             "class_name": "SessionDurableObject"
+          },
+          {
+            "name": "AGENT_STATE_DO",
+            "class_name": "AgentStateDO"
           }
         ]
+      },
+      "ai": {
+        "binding": "AI"
       },
       "migrations": [
         {
           "tag": "v1",
           "new_sqlite_classes": [
             "SessionDurableObject"
+          ]
+        },
+        {
+          "tag": "v2",
+          "new_sqlite_classes": [
+            "AgentStateDO"
           ]
         }
       ]
