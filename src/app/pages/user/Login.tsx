@@ -3,7 +3,19 @@
 import { useState, useTransition } from "react";
 import { startAuthentication } from "@simplewebauthn/browser";
 import { finishPasskeyLogin, startPasskeyLogin, loginWithPassword } from "./functions";
+import { ensureTimezone } from "@/addons/agent/server-functions/preferences";
+import { detectTimezone } from "@/addons/agent/utils/timezone";
 import "./login.css";
+
+async function captureTimezone() {
+  const tz = detectTimezone();
+  if (!tz) return;
+  try {
+    await ensureTimezone(tz);
+  } catch (err) {
+    console.error("ensureTimezone failed", err);
+  }
+}
 
 export function Login() {
   const [authMode, setAuthMode] = useState<"password" | "passkey">("password");
@@ -26,6 +38,7 @@ export function Login() {
     const result = await loginWithPassword(email, password);
     if (result.success) {
       setResult("Login successful!");
+      await captureTimezone();
       window.location.href = "/route/";
     } else {
       setResult(result.error || "Login failed. Please try again.");
@@ -45,6 +58,7 @@ export function Login() {
       }
 
       setResult("Login successful!");
+      await captureTimezone();
       window.location.href = "/route/";
     } catch (error) {
       console.error("Login error:", error);

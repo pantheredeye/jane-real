@@ -7,7 +7,19 @@ import {
   startPasskeyRegistration,
   signupWithPassword,
 } from "./functions";
+import { ensureTimezone } from "@/addons/agent/server-functions/preferences";
+import { detectTimezone } from "@/addons/agent/utils/timezone";
 import "./signup.css";
+
+async function captureTimezone() {
+  const tz = detectTimezone();
+  if (!tz) return;
+  try {
+    await ensureTimezone(tz);
+  } catch (err) {
+    console.error("ensureTimezone failed", err);
+  }
+}
 
 export function Signup() {
   const [authMode, setAuthMode] = useState<"password" | "passkey">("password");
@@ -49,6 +61,7 @@ export function Signup() {
     const result = await signupWithPassword(email, password);
     if (result.success) {
       setResult("Account created successfully!");
+      await captureTimezone();
       window.location.href = "/route/";
     } else {
       setResult(result.error || "Signup failed. Please try again.");
@@ -87,6 +100,7 @@ export function Signup() {
         setResult("Signup failed. Please try again.");
       } else {
         setResult("Account created successfully!");
+        await captureTimezone();
         // Redirect to route calculator after successful signup
         window.location.href = "/route/";
       }
