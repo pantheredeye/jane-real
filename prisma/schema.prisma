@@ -52,6 +52,9 @@ model User {
   // When the user last dismissed the "set a password" nudge (for magic-link-only users)
   passwordNudgeDismissedAt DateTime?
 
+  // Agent + notification preferences (JSON). Defaults applied in code, not DB.
+  preferences          String?
+
   credentials          Credential[]           // WebAuthn credentials
   memberships          TenantMembership[]     // Many-to-many with tenants
   createdRoutes        Route[]                // Routes created by this user
@@ -59,6 +62,9 @@ model User {
   auditLogs            AuditLog[]             // Activity logs
   usageLogs            UsageLog[]             // Credits usage tracking
   authTokens           AuthToken[]            // Password reset + magic link tokens
+  events               Event[]                // Calendar events
+  reminders            Reminder[]             // Event reminders
+  pushSubscriptions    PushSubscription[]     // Web push subscriptions
 
   @@index([email])
   @@index([username])
@@ -109,6 +115,8 @@ model Tenant {
   memberships TenantMembership[]
   routes      Route[]
   auditLogs   AuditLog[]
+  events      Event[]
+  reminders   Reminder[]
 
   @@index([slug])
   @@index([status])
@@ -166,6 +174,7 @@ model Route {
   tenant      Tenant      @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   createdBy   User        @relation(fields: [createdById], references: [id])
   shares      RouteShare[]
+  events      Event[]
 
   @@index([tenantId])
   @@index([createdById])
@@ -264,4 +273,100 @@ model ProcessedWebhookEvent {
   id          String   @id @default(cuid())
   eventId     String   @unique
   processedAt DateTime @default(now())
+}
+
+// ============================================================================
+// AI AGENT MODELS - Events, Reminders, Push Subscriptions
+// ============================================================================
+
+model Event {
+  id              String      @id @default(uuid())
+  userId          String
+  tenantId        String
+  title           String
+  type            EventType
+  date            String      // ISO date "YYYY-MM-DD"
+  time            String      // "HH:MM"
+  durationMinutes Int         @default(30)
+  address         String?
+  coordinates     String?     // JSON {lat, lng}
+  sourceUrl       String?
+  contactName     String?
+  contactPhone    String?
+  contactEmail    String?
+  notes           String?
+  metadata        String?     // JSON
+  status          EventStatus @default(SCHEDULED)
+  routeId         String?
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tenant    Tenant     @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  route     Route?     @relation(fields: [routeId], references: [id], onDelete: SetNull)
+  reminders Reminder[]
+
+  @@index([userId])
+  @@index([tenantId])
+  @@index([date])
+  @@index([routeId])
+}
+
+enum EventType {
+  SHOWING
+  CLOSING
+  INSPECTION
+  APPRAISAL
+  LAWYER
+  TITLE
+  MEETING
+  OPEN_HOUSE
+  DEADLINE
+  OTHER
+}
+
+enum EventStatus {
+  SCHEDULED
+  COMPLETED
+  CANCELLED
+}
+
+model Reminder {
+  id        String         @id @default(uuid())
+  userId    String
+  tenantId  String
+  eventId   String?
+  message   String
+  remindAt  DateTime
+  status    ReminderStatus @default(PENDING)
+  metadata  String?        // JSON
+  createdAt DateTime       @default(now())
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  event  Event? @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([tenantId])
+  @@index([eventId])
+  @@index([remindAt, status])
+}
+
+enum ReminderStatus {
+  PENDING
+  SENT
+  DISMISSED
+}
+
+model PushSubscription {
+  id        String   @id @default(uuid())
+  userId    String
+  endpoint  String
+  keys      String   // JSON {p256dh, auth}
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([endpoint])
 }
