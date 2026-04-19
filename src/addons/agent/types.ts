@@ -143,3 +143,19 @@ export const DismissReminderInputSchema = z.object({
   reminderId: z.string().min(1),
 });
 export type DismissReminderInput = z.infer<typeof DismissReminderInputSchema>;
+
+export const OptimizeDayInputSchema = z.object({
+  date: DateSchema,
+});
+export type OptimizeDayInput = z.infer<typeof OptimizeDayInputSchema>;
+
+export const LookupPropertyInputSchema = z.object({
+  query: z.string().min(1),
+});
+export type LookupPropertyInput = z.infer<typeof LookupPropertyInputSchema>;
+
+export const ExportItineraryInputSchema = z.object({
+  format: z.enum(["client", "detailed"]),
+  route: z.unknown(),
+});
+export type ExportItineraryInput = z.infer<typeof ExportItineraryInputSchema>;

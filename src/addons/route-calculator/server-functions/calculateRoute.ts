@@ -133,7 +133,12 @@ async function consumeCredit(requestData: CalculateRouteRequest): Promise<void> 
 }
 
 
-async function optimizeRoute(request: CalculateRouteRequest): Promise<RouteStructure> {
+/**
+ * Core TSP optimization logic.
+ * Exported so internal callers (e.g. agent handlers) can run optimization
+ * without the serverAction credit-consumption path.
+ */
+export async function optimizeRoute(request: CalculateRouteRequest): Promise<RouteStructure> {
   // Step 1: Geocode all addresses
   const geocodingResults = await geocodeAddresses(request.addresses)
 
