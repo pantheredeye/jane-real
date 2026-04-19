@@ -31,7 +31,7 @@ model User {
   username    String?     // Optional display name/username
   name        String?
   avatar      String?
-  passwordHash String?    // Bcrypt hash for password auth (nullable - passkey users won't have)
+  passwordHash String?    // PBKDF2 hash for password auth (nullable - passkey users won't have)
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
 
@@ -49,13 +49,16 @@ model User {
   creditsRemaining       Int               @default(15) // Free credits remaining
   totalCreditsGranted    Int               @default(15) // Total credits ever granted
 
+  // When the user last dismissed the "set a password" nudge (for magic-link-only users)
+  passwordNudgeDismissedAt DateTime?
+
   credentials          Credential[]           // WebAuthn credentials
   memberships          TenantMembership[]     // Many-to-many with tenants
   createdRoutes        Route[]                // Routes created by this user
   routeShares          RouteShare[]           // Routes shared by this user
   auditLogs            AuditLog[]             // Activity logs
   usageLogs            UsageLog[]             // Credits usage tracking
-  passwordResetTokens  PasswordResetToken[]   // Password reset tokens
+  authTokens           AuthToken[]            // Password reset + magic link tokens
 
   @@index([email])
   @@index([username])
@@ -64,13 +67,17 @@ model User {
 }
 
 model Credential {
-  id            String   @id @default(uuid()) // Internal DB ID
-  userId        String   @unique // Every credential is linked to a specific user
-  user          User     @relation(fields: [userId], references: [id])
-  createdAt     DateTime @default(now())
-  credentialId  String   @unique // WebAuthn credential identifier
-  publicKey     Bytes
-  counter       Int      @default(0)
+  id             String   @id @default(uuid()) // Internal DB ID
+  userId         String
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt      DateTime @default(now())
+  credentialId   String   @unique // WebAuthn credential identifier
+  publicKey      Bytes
+  counter        Int      @default(0)
+  label          String?  // User-friendly label like "iPhone" or "Work MacBook"
+  lastUsedAt     DateTime? // For display/cleanup
+  failedAttempts Int      @default(0)
+  lastFailedAt   DateTime?
 
   @@index([credentialId])
   @@index([userId])
@@ -230,19 +237,27 @@ model UsageLog {
   @@index([action])
 }
 
-// Password reset tokens
-model PasswordResetToken {
-  id        String   @id @default(uuid())
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  token     String   @unique
+// Auth tokens: password reset + magic link sign-in
+model AuthToken {
+  id        String        @id @default(uuid())
+  email     String        // captured for pending-signup flows (userId may be null)
+  userId    String?       // null = new-user magic-link pending signup
+  user      User?         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type      AuthTokenType
+  token     String        @unique
   expiresAt DateTime
-  used      Boolean  @default(false)
-  createdAt DateTime @default(now())
+  used      Boolean       @default(false)
+  createdAt DateTime      @default(now())
 
   @@index([userId])
+  @@index([email])
   @@index([token])
   @@index([expiresAt])
+}
+
+enum AuthTokenType {
+  PASSWORD_RESET
+  MAGIC_LINK
 }
 
 model ProcessedWebhookEvent {

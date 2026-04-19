@@ -1,11 +1,14 @@
 import { route } from "rwsdk/router";
-import { Login } from "./Login";
-import { Signup } from "./Signup";
+import { AuthPage } from "./AuthPage";
+import { ForgotPassword } from "./ForgotPassword";
+import { ResetPassword } from "./ResetPassword";
+import { MagicLanding } from "./MagicLanding";
 import { sessions } from "@/session/store";
+import { loginRateLimit, passwordResetRateLimit } from "@/app/interruptors/rateLimit";
 
 export const userRoutes = [
-  route("/login", [
-    // Redirect logged-in users to the app
+  route("/auth", [
+    loginRateLimit,
     ({ ctx }) => {
       if (ctx.user && ctx.tenant) {
         return new Response(null, {
@@ -14,20 +17,19 @@ export const userRoutes = [
         });
       }
     },
-    Login,
+    AuthPage,
   ]),
-  route("/signup", [
-    // Redirect logged-in users to the app
-    ({ ctx }) => {
-      if (ctx.user && ctx.tenant) {
-        return new Response(null, {
-          status: 302,
-          headers: { Location: "/route/" },
-        });
-      }
-    },
-    Signup,
-  ]),
+  route("/login", () => new Response(null, {
+    status: 302,
+    headers: { Location: "/user/auth" },
+  })),
+  route("/signup", () => new Response(null, {
+    status: 302,
+    headers: { Location: "/user/auth" },
+  })),
+  route("/forgot-password", [ForgotPassword]),
+  route("/reset-password", [passwordResetRateLimit, ResetPassword]),
+  route("/magic", [passwordResetRateLimit, MagicLanding]),
   route("/logout", async function ({ request }) {
     const headers = new Headers();
     await sessions.remove(request, headers);

@@ -37,10 +37,10 @@ import type {
 } from '../types'
 import { CalculateRouteRequestSchema } from '../types'
 import { db } from '@/db'
-import { requestInfo } from 'rwsdk/worker'
+import { requestInfo, serverAction } from 'rwsdk/worker'
 import { sessions } from '@/session/store'
 
-export async function calculateRoute(requestData: CalculateRouteRequest): Promise<RouteStructure> {
+export const calculateRoute = serverAction(async (requestData: CalculateRouteRequest): Promise<RouteStructure> => {
   try {
     const validatedData = CalculateRouteRequestSchema.parse(requestData)
 
@@ -53,7 +53,7 @@ export async function calculateRoute(requestData: CalculateRouteRequest): Promis
     console.error('Route calculation error:', error)
     throw new Error(error instanceof Error ? error.message : 'Unknown error occurred')
   }
-}
+})
 
 /**
  * Consume 1 credit for route calculation

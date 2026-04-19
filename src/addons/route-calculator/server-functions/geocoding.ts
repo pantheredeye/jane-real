@@ -3,10 +3,11 @@
 import { Client } from '@googlemaps/google-maps-services-js'
 import type { GeocodingResult, DistanceMatrixResult, Coordinates } from '../types'
 import { env } from 'cloudflare:workers'
+import { serverQuery } from 'rwsdk/worker'
 
 const client = new Client({})
 
-export async function geocodeAddresses(addresses: string[]): Promise<GeocodingResult[]> {
+export const geocodeAddresses = serverQuery(async (addresses: string[]): Promise<GeocodingResult[]> => {
   if (!env.GOOGLE_MAPS_API_KEY_SERVER) {
     throw new Error('Google Maps server API key not configured')
   }
@@ -60,12 +61,12 @@ export async function geocodeAddresses(addresses: string[]): Promise<GeocodingRe
   }
 
   return results
-}
+})
 
-export async function calculateDistanceMatrix(
+export const calculateDistanceMatrix = serverQuery(async (
   origins: Coordinates[],
   destinations: Coordinates[]
-): Promise<DistanceMatrixResult> {
+): Promise<DistanceMatrixResult> => {
   if (!env.GOOGLE_MAPS_API_KEY_SERVER) {
     throw new Error('Google Maps server API key not configured')
   }
@@ -113,4 +114,4 @@ export async function calculateDistanceMatrix(
   } catch (error) {
     throw new Error(`Distance matrix API failed: ${error instanceof Error ? error.message : 'Unknown error'}`)
   }
-}
+})

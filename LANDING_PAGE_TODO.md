@@ -210,7 +210,7 @@ Convert 50s retro-styled landing page mockup to production RedwoodSDK app with s
 - Theme choice affects landing page only, not app interior
 
 ### Current Mockup Status
-- v5 mockup location: `/home/ptre/code/github/routefast/mockups/v5-two-themes-oval-badge.html`
+- v5 mockup location: `mockups/v5-two-themes-oval-badge.html`
 - Two themes implemented: Comic Book (Red) and Diner (Mint)
 - Oval badge design approved
 - Copy approved: "From Property Links to Perfect Route in Seconds"

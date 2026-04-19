@@ -2,8 +2,9 @@
 
 import { format } from 'date-fns'
 import type { OptimizedRoute, ExportRequest } from '../types'
+import { serverQuery } from 'rwsdk/worker'
 
-export async function exportItinerary(requestInfo: { request: Request }): Promise<Response> {
+export const exportItinerary = serverQuery(async (requestInfo: { request: Request }): Promise<Response> => {
   const request = requestInfo.request
   try {
     const url = new URL(request.url)
@@ -48,7 +49,7 @@ export async function exportItinerary(requestInfo: { request: Request }): Promis
       headers: { 'Content-Type': 'application/json' },
     })
   }
-}
+})
 
 export function generateClientItinerary(route: OptimizedRoute): string {
   if (!route.items.length) return ''
@@ -122,6 +123,14 @@ export function generateDetailedItinerary(route: OptimizedRoute): string {
   return text
 }
 
+function escapeICalText(text: string): string {
+  return text
+    .replace(/\\/g, '\\\\')
+    .replace(/;/g, '\\;')
+    .replace(/,/g, '\\,')
+    .replace(/\r\n|\r|\n/g, '\\n')
+}
+
 export function generateICalendar(route: OptimizedRoute): string {
   let ical = 'BEGIN:VCALENDAR\n'
   ical += 'VERSION:2.0\n'
@@ -131,14 +140,14 @@ export function generateICalendar(route: OptimizedRoute): string {
   route.items.forEach((routeItem, index) => {
     const startTime = routeItem.appointmentTime
     const endTime = new Date(startTime.getTime() + routeItem.property.showingDuration * 60000)
-    
+
     ical += 'BEGIN:VEVENT\n'
-    ical += `UID:showing-${routeItem.property.id}-${Date.now()}\n`
+    ical += `UID:showing-${routeItem.property.id}-${crypto.randomUUID()}\n`
     ical += `DTSTART:${formatICalDate(startTime)}\n`
     ical += `DTEND:${formatICalDate(endTime)}\n`
-    ical += `SUMMARY:Property Showing - ${routeItem.property.address}\n`
-    ical += `DESCRIPTION:Property showing appointment\\n\\nDuration: ${routeItem.property.showingDuration} minutes\n`
-    ical += `LOCATION:${routeItem.property.address}\n`
+    ical += `SUMMARY:${escapeICalText(`Property Showing - ${routeItem.property.address}`)}\n`
+    ical += `DESCRIPTION:${escapeICalText(`Property showing appointment\n\nDuration: ${routeItem.property.showingDuration} minutes`)}\n`
+    ical += `LOCATION:${escapeICalText(routeItem.property.address)}\n`
     ical += `STATUS:CONFIRMED\n`
     ical += 'END:VEVENT\n'
   })

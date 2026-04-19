@@ -2,17 +2,25 @@
 
 interface CTAButtonProps {
   showNote?: boolean;
+  href?: string;
+  label?: string;
+  note?: string;
 }
 
-export default function CTAButton({ showNote = false }: CTAButtonProps) {
+export default function CTAButton({
+  showNote = false,
+  href = "/user/auth",
+  label = "Start Routing Faster",
+  note = "15 free calculations to start",
+}: CTAButtonProps) {
   const handleClick = () => {
-    window.location.href = "/user/signup";
+    window.location.href = href;
   };
 
   return (
     <button onClick={handleClick} className="cta-button">
-      Start Routing Faster
-      {showNote && <span className="cta-note">15 free calculations to start</span>}
+      {label}
+      {showNote && <span className="cta-note">{note}</span>}
     </button>
   );
 }

@@ -1,16 +1,21 @@
+import { RequestInfo } from "rwsdk/worker";
 import ThemeSwitcher from "./components/ThemeSwitcher";
+import LandingHeader from "./components/LandingHeader";
 import HeroSection from "./components/HeroSection";
 import PricingSection from "./components/PricingSection";
 import FeaturesSection from "./components/FeaturesSection";
 
-export default function LandingPage() {
+export default function LandingPage({ ctx }: RequestInfo) {
+  const isLoggedIn = Boolean(ctx.user);
+
   return (
     <>
       <ThemeSwitcher />
 
       <div className="landing-page">
-        <HeroSection />
-        <PricingSection />
+        <LandingHeader isLoggedIn={isLoggedIn} />
+        <HeroSection isLoggedIn={isLoggedIn} />
+        <PricingSection isLoggedIn={isLoggedIn} />
         <FeaturesSection />
 
         <footer className="landing-footer">

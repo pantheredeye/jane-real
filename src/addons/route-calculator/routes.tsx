@@ -3,8 +3,8 @@ import HomePageWrapper from "./pages/HomePageWrapper";
 import { exportItinerary } from "./server-functions/export";
 import { requireTenant, requireMember } from "@/app/interruptors";
 import { requireCredits } from "@/app/interruptors/credits";
+import { apiRateLimit } from "@/app/interruptors/rateLimit";
 
-// TODO: Add rate limiting to API endpoints
 // TODO: Add request/response validation with Zod schemas
 // TODO: Add logging and monitoring interruptors
 // TODO: Add caching strategies for geocoding results
@@ -17,7 +17,7 @@ export const routeCalculatorRoutes = [
   // No HTTP routes needed for calculate/re-optimize
 
   // Export endpoints - requires MEMBER or OWNER role
-  route("/api/export/:format", [requireMember, exportItinerary]),
+  route("/api/export/:format", [apiRateLimit, requireMember, exportItinerary]),
 
   // Health check endpoint - public
   route("/api/health", [

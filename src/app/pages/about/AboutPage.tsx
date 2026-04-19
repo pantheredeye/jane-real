@@ -80,7 +80,7 @@ export default function AboutPage() {
         <h2>What's Next?</h2>
 
         <div className="cta-grid">
-          <a href="/user/signup" className="about-cta-button primary">
+          <a href="/user/auth" className="about-cta-button primary">
             Click to Try for Free
             <span className="cta-note">15 free calculations to start</span>
           </a>

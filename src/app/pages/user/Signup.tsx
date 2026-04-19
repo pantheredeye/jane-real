@@ -3,7 +3,6 @@
 import { useState, useTransition } from "react";
 import { startRegistration } from "@simplewebauthn/browser";
 import {
-  checkEmailAvailable,
   finishPasskeyRegistration,
   startPasskeyRegistration,
   signupWithPassword,
@@ -75,14 +74,7 @@ export function Signup() {
     }
 
     try {
-      // 1. Check if email is already registered
-      const isAvailable = await checkEmailAvailable(email);
-      if (!isAvailable) {
-        setResult("account-exists");
-        return;
-      }
-
-      // 2. Get a challenge from the worker
+      // 1. Get a challenge from the worker
       const options = await startPasskeyRegistration(email);
 
       // 3. Ask the browser to create a passkey
@@ -134,7 +126,7 @@ export function Signup() {
               onClick={() => setAuthMode("passkey")}
               disabled={isPending}
             >
-              Passkey
+              Fingerprint / Face
             </button>
           </div>
 
@@ -172,7 +164,7 @@ export function Signup() {
                       handlePerformSignup();
                     }
                   }}
-                  placeholder="At least 12 characters"
+                  placeholder="At least 8 characters"
                   className="signup-input"
                   disabled={isPending}
                   autoComplete="new-password"
@@ -200,7 +192,7 @@ export function Signup() {
             </>
           ) : (
             <p className="signup-explainer">
-              We'll create a secure passkey for your account—no password needed.
+              We'll set up fingerprint or face sign-in for this device — no password to remember.
             </p>
           )}
 

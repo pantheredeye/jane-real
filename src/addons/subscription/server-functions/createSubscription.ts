@@ -2,7 +2,7 @@
 
 import { getStripe, STRIPE_CONFIG } from '../utils/stripe'
 import { db } from '@/db'
-import { requestInfo } from 'rwsdk/worker'
+import { requestInfo, serverAction } from 'rwsdk/worker'
 import { sessions } from '@/session/store'
 
 type CreateSubscriptionParams = {
@@ -11,14 +11,14 @@ type CreateSubscriptionParams = {
   promoCode?: string
 }
 
-export async function createSubscription(
+export const createSubscription = serverAction(async (
   params: CreateSubscriptionParams
 ): Promise<{
   success: boolean
   clientSecret?: string
   subscriptionId?: string
   error?: string
-}> {
+}> => {
   try {
     // Get current user from session
     const userSession = await sessions.load(requestInfo.request)
@@ -139,4 +139,4 @@ export async function createSubscription(
       error: error instanceof Error ? error.message : 'Failed to create subscription'
     }
   }
-}
+})

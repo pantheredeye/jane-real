@@ -1,13 +1,13 @@
 "use server";
 
-import { requestInfo } from "rwsdk/worker";
+import { serverAction, requestInfo } from "rwsdk/worker";
 import { db } from "@/db";
 import type { Property } from "../types";
 
 /**
  * Save a calculated route to the database
  */
-export async function saveRoute({
+export const saveRoute = serverAction(async ({
   name,
   date,
   startTime,
@@ -21,7 +21,7 @@ export async function saveRoute({
   properties: Property[];
   optimized: boolean;
   frozen?: Record<number, string>;
-}) {
+}) => {
   const { ctx } = requestInfo;
 
   if (!ctx.user || !ctx.tenant) {
@@ -42,49 +42,12 @@ export async function saveRoute({
   });
 
   return route;
-}
-
-/**
- * Get all routes for the current tenant
- */
-export async function getRoutes() {
-  const { ctx } = requestInfo;
-
-  if (!ctx.user || !ctx.tenant) {
-    throw new Error("User must be authenticated with active tenant");
-  }
-
-  const routes = await db.route.findMany({
-    where: {
-      tenantId: ctx.tenant.id,
-    },
-    orderBy: {
-      date: "desc",
-    },
-    include: {
-      createdBy: {
-        select: {
-          id: true,
-          name: true,
-          email: true,
-        },
-      },
-    },
-  });
-
-  // Parse JSON fields
-  return routes.map((route) => ({
-    ...route,
-    properties: JSON.parse(route.properties) as Property[],
-    optimized: route.optimized === 1,
-    frozen: route.frozen ? JSON.parse(route.frozen) : null,
-  }));
-}
+});
 
 /**
  * Delete a route
  */
-export async function deleteRoute(routeId: string) {
+export const deleteRoute = serverAction(async (routeId: string) => {
   const { ctx } = requestInfo;
 
   if (!ctx.user || !ctx.tenant) {
@@ -120,4 +83,4 @@ export async function deleteRoute(routeId: string) {
   });
 
   return { success: true };
-}
+});

@@ -106,6 +106,77 @@ body {
   padding: 0 20px;
 }
 
+/* ========== LANDING HEADER ========== */
+.landing-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 0 24px;
+  margin-right: 140px; /* clear fixed .theme-switcher */
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.landing-header-brand {
+  font-family: 'Archivo Black', sans-serif;
+  font-size: 22px;
+  color: var(--primary-color);
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-style: italic;
+  transition: opacity 0.2s ease;
+}
+
+.landing-header-brand:hover {
+  opacity: 0.8;
+}
+
+.landing-header-nav {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.landing-header-link {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 18px;
+  letter-spacing: 1px;
+  color: var(--text-color);
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: color 0.2s ease;
+}
+
+.landing-header-link:hover {
+  color: var(--primary-color);
+}
+
+.landing-header-cta {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 16px;
+  letter-spacing: 1.5px;
+  background: var(--primary-color);
+  color: white;
+  border: 3px solid var(--border-color);
+  border-radius: var(--border-radius);
+  padding: 8px 18px;
+  text-decoration: none;
+  text-transform: uppercase;
+  box-shadow: 4px 4px 0 rgba(0,0,0,0.25);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.landing-header-cta:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 rgba(0,0,0,0.3);
+}
+
+.landing-header-cta:active {
+  transform: translate(1px, 1px);
+  box-shadow: 3px 3px 0 rgba(0,0,0,0.25);
+}
+
 /* Hero Section */
 .hero {
   text-align: center;
@@ -287,6 +358,23 @@ body.theme-diner .hero h1 {
   letter-spacing: 0;
 }
 
+.hero-secondary-link {
+  font-size: 16px;
+  color: #333;
+  margin: 0;
+}
+
+.hero-secondary-link a {
+  color: var(--primary-color);
+  font-weight: 600;
+  text-decoration: underline;
+  transition: opacity 0.2s ease;
+}
+
+.hero-secondary-link a:hover {
+  opacity: 0.75;
+}
+
 /* Features */
 .features {
   display: grid;
@@ -377,6 +465,30 @@ body.theme-diner .feature-badge {
   .theme-button {
     width: 40px;
     height: 40px;
+  }
+
+  .landing-header {
+    margin-right: 110px; /* narrower theme switcher */
+    padding-top: 4px;
+    padding-bottom: 16px;
+    gap: 10px;
+  }
+
+  .landing-header-brand {
+    font-size: 18px;
+  }
+
+  .landing-header-nav {
+    gap: 12px;
+  }
+
+  .landing-header-link {
+    font-size: 16px;
+  }
+
+  .landing-header-cta {
+    font-size: 14px;
+    padding: 6px 14px;
   }
 
   /* h1 uses clamp() for fluid sizing */

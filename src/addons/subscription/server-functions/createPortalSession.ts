@@ -2,11 +2,11 @@
 
 import { getStripe } from '../utils/stripe'
 import { db } from '@/db'
-import { requestInfo } from 'rwsdk/worker'
+import { requestInfo, serverAction } from 'rwsdk/worker'
 
-export async function createPortalSession(
+export const createPortalSession = serverAction(async (
   returnUrl: string
-): Promise<{ url: string | null; error?: string }> {
+): Promise<{ url: string | null; error?: string }> => {
   try {
     // Get current user from context
     const { ctx } = requestInfo
@@ -39,4 +39,4 @@ export async function createPortalSession(
     console.error('Portal session creation failed:', error)
     return { url: null, error: 'Failed to create portal session' }
   }
-}
+})

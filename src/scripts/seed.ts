@@ -6,17 +6,15 @@ export default defineScript(async ({ env }) => {
 
   console.log("🌱 Starting seed...");
 
-  // Clear existing data
-  await db.$executeRawUnsafe(`
-    DELETE FROM AuditLog;
-    DELETE FROM RouteShare;
-    DELETE FROM Route;
-    DELETE FROM TenantMembership;
-    DELETE FROM Tenant;
-    DELETE FROM Credential;
-    DELETE FROM User;
-    DELETE FROM sqlite_sequence;
-  `);
+  // Clear existing data — D1 requires single-statement raw SQL per call
+  await db.$executeRawUnsafe(`DELETE FROM AuditLog`);
+  await db.$executeRawUnsafe(`DELETE FROM RouteShare`);
+  await db.$executeRawUnsafe(`DELETE FROM Route`);
+  await db.$executeRawUnsafe(`DELETE FROM TenantMembership`);
+  await db.$executeRawUnsafe(`DELETE FROM Tenant`);
+  await db.$executeRawUnsafe(`DELETE FROM Credential`);
+  await db.$executeRawUnsafe(`DELETE FROM User`);
+  await db.$executeRawUnsafe(`DELETE FROM sqlite_sequence`);
 
   console.log("✓ Cleared existing data");
 

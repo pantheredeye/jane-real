@@ -1,0 +1,334 @@
+/* Account Page - 50s Retro Theme */
+
+.account-page {
+  min-height: 100vh;
+  padding: 40px 20px;
+  background: var(--bg-color, #f5f1e8);
+}
+
+.account-container {
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.account-title {
+  font-family: 'Archivo Black', sans-serif;
+  font-size: 42px;
+  color: var(--primary-color, #d32f2f);
+  margin: 0 0 8px 0;
+  text-transform: uppercase;
+  line-height: 1;
+}
+
+.account-subtitle {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 20px;
+  letter-spacing: 2px;
+  color: var(--text-color, #1a1a1a);
+  margin: 0 0 32px 0;
+}
+
+.account-email {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 18px;
+  letter-spacing: 1px;
+  color: #666;
+  margin-bottom: 32px;
+}
+
+.passkey-panel {
+  background: white;
+  border: var(--border-width, 6px) var(--border-style, solid) var(--border-color, #1a1a1a);
+  border-radius: var(--border-radius, 0px);
+  box-shadow: 12px 12px 0 rgba(0,0,0,0.15);
+  padding: 32px;
+  margin-bottom: 32px;
+}
+
+.passkey-panel-title {
+  font-family: 'Archivo Black', sans-serif;
+  font-size: 28px;
+  color: var(--text-color, #1a1a1a);
+  margin: 0 0 12px 0;
+  text-transform: uppercase;
+}
+
+.passkey-panel-status {
+  font-size: 16px;
+  color: #555;
+  margin: 0 0 24px 0;
+}
+
+.passkey-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 24px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.passkey-list-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px;
+  border: 3px solid var(--border-color, #1a1a1a);
+  border-radius: var(--border-radius, 0px);
+  background: #faf7f0;
+}
+
+.passkey-list-info {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.passkey-list-label {
+  font-family: 'Archivo Black', sans-serif;
+  font-size: 18px;
+  color: var(--text-color, #1a1a1a);
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.passkey-list-meta {
+  font-size: 14px;
+  color: #666;
+}
+
+.passkey-btn-small {
+  padding: 8px 16px;
+  font-size: 16px;
+  letter-spacing: 1px;
+  box-shadow: 3px 3px 0 rgba(0,0,0,0.2);
+}
+
+@media (max-width: 500px) {
+  .passkey-list-item {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .passkey-btn-small {
+    width: 100%;
+  }
+}
+
+.passkey-btn {
+  padding: 14px 28px;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 20px;
+  letter-spacing: 1.5px;
+  border: 3px solid var(--border-color, #1a1a1a);
+  border-radius: var(--border-radius, 0px);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+  box-shadow: 4px 4px 0 rgba(0,0,0,0.2);
+}
+
+.passkey-btn:hover:not(:disabled) {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 rgba(0,0,0,0.25);
+}
+
+.passkey-btn:active:not(:disabled) {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0 rgba(0,0,0,0.2);
+}
+
+.passkey-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.passkey-btn-primary {
+  background: var(--primary-color, #d32f2f);
+  color: white;
+}
+
+.passkey-btn-danger {
+  background: white;
+  color: var(--primary-color, #d32f2f);
+}
+
+.passkey-btn-warning {
+  background: #ffb300;
+  color: #1a1a1a;
+}
+
+.passkey-panel-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.passkey-failure-banner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 18px;
+  margin-bottom: 20px;
+  background: #fff4d6;
+  border: 3px solid #ffb300;
+  border-radius: var(--border-radius, 0px);
+  box-shadow: 4px 4px 0 rgba(0,0,0,0.15);
+}
+
+.passkey-failure-banner-text {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 16px;
+  letter-spacing: 1px;
+  color: #5a3a00;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.passkey-message {
+  margin-top: 20px;
+  padding: 14px 18px;
+  border: 3px solid;
+  border-radius: var(--border-radius, 0px);
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 16px;
+  letter-spacing: 1px;
+}
+
+.passkey-message-success {
+  background: #e8f5e9;
+  border-color: #4caf50;
+  color: #2e7d32;
+}
+
+.passkey-message-error {
+  background: #ffebee;
+  border-color: #f44336;
+  color: #c62828;
+}
+
+.account-back-link {
+  display: inline-block;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 18px;
+  letter-spacing: 1.5px;
+  color: var(--primary-color, #d32f2f);
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.account-back-link:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 600px) {
+  .account-title {
+    font-size: 32px;
+  }
+
+  .passkey-panel {
+    padding: 24px;
+  }
+}
+
+/* Set-password form inputs inside .passkey-panel */
+.passkey-panel .form-group {
+  margin-bottom: 16px;
+}
+
+.passkey-panel .form-group label {
+  display: block;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 16px;
+  letter-spacing: 1px;
+  color: #555;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+}
+
+.passkey-panel .form-group input {
+  width: 100%;
+  padding: 12px 14px;
+  font-family: 'Inter', sans-serif;
+  font-size: 16px;
+  border: 3px solid var(--border-color, #1a1a1a);
+  border-radius: var(--border-radius, 0px);
+  background: #faf7f0;
+  box-sizing: border-box;
+}
+
+.passkey-panel .form-group input:focus {
+  outline: none;
+  background: white;
+}
+
+/* Password nudge banner on /route/ */
+.password-nudge {
+  max-width: 700px;
+  margin: 20px auto;
+  padding: 16px 20px;
+  background: #fff4d6;
+  border: 4px solid #ffb300;
+  border-radius: var(--border-radius, 0px);
+  box-shadow: 6px 6px 0 rgba(0,0,0,0.15);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.password-nudge-text {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 16px;
+  letter-spacing: 1px;
+  color: #5a3a00;
+  flex: 1 1 auto;
+  min-width: 200px;
+}
+
+.password-nudge-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.password-nudge-btn {
+  padding: 8px 16px;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 14px;
+  letter-spacing: 1px;
+  border: 3px solid var(--border-color, #1a1a1a);
+  border-radius: var(--border-radius, 0px);
+  cursor: pointer;
+  text-transform: uppercase;
+  text-decoration: none;
+  display: inline-block;
+  box-shadow: 3px 3px 0 rgba(0,0,0,0.2);
+}
+
+.password-nudge-btn-primary {
+  background: var(--primary-color, #d32f2f);
+  color: white;
+}
+
+.password-nudge-btn-secondary {
+  background: white;
+  color: #5a3a00;
+}
+
+.password-nudge-btn:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0 rgba(0,0,0,0.22);
+}
+
+.password-nudge-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

@@ -1,6 +1,10 @@
 import CTAButton from "./CTAButton";
 
-export default function PricingSection() {
+interface PricingSectionProps {
+  isLoggedIn: boolean;
+}
+
+export default function PricingSection({ isLoggedIn }: PricingSectionProps) {
   return (
     <section className="pricing">
       <div className="halftone-shadow"></div>
@@ -13,7 +17,11 @@ export default function PricingSection() {
         Perfect for agents who need it when the moment strikes.
       </p>
       <p className="no-commitment">Subscribe when you're ready. Cancel anytime.</p>
-      <CTAButton showNote={true} />
+      {isLoggedIn ? (
+        <CTAButton href="/route/" label="Open Route Calculator" />
+      ) : (
+        <CTAButton showNote={true} />
+      )}
     </section>
   );
 }

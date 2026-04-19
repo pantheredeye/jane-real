@@ -75,7 +75,7 @@ export function ResetPassword() {
             </p>
 
             <div style={{ marginTop: '30px' }}>
-              <a href="/user/login" className="login-button login-button-primary" style={{ display: 'block', textAlign: 'center', textDecoration: 'none' }}>
+              <a href="/user/auth" className="login-button login-button-primary" style={{ display: 'block', textAlign: 'center', textDecoration: 'none' }}>
                 Go to Login
               </a>
             </div>
@@ -106,7 +106,7 @@ export function ResetPassword() {
                   handlePerformSubmit();
                 }
               }}
-              placeholder="At least 12 characters"
+              placeholder="At least 8 characters"
               className="login-input"
               disabled={isPending}
               autoComplete="new-password"

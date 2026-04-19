@@ -1,7 +1,11 @@
 import CTAButton from "./CTAButton";
 import ScreenshotComicStrip from "./ScreenshotComicStrip";
 
-export default function HeroSection() {
+interface HeroSectionProps {
+  isLoggedIn: boolean;
+}
+
+export default function HeroSection({ isLoggedIn }: HeroSectionProps) {
   return (
     <>
       <section className="hero">
@@ -27,8 +31,17 @@ export default function HeroSection() {
           <br />
           <strong>Done in 15 seconds, not 15 minutes.</strong>
         </p>
-        <div style={{ display: "flex", gap: "20px", justifyContent: "center", flexWrap: "wrap" }}>
-          <CTAButton />
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "16px" }}>
+          {isLoggedIn ? (
+            <CTAButton href="/route/" label="Open Route Calculator" />
+          ) : (
+            <>
+              <CTAButton />
+              <p className="hero-secondary-link">
+                Already have an account? <a href="/user/auth">Log in</a>
+              </p>
+            </>
+          )}
         </div>
       </section>
 

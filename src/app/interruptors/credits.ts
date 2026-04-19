@@ -15,7 +15,7 @@ export async function requireCredits({ ctx }: { ctx: AppContext }) {
   if (!ctx.user) {
     return new Response(null, {
       status: 302,
-      headers: { Location: '/user/login' }
+      headers: { Location: '/user/auth' }
     });
   }
 

@@ -23,38 +23,38 @@ export function Login() {
       return;
     }
 
-    try {
-      const success = await loginWithPassword(email, password);
-      if (success) {
-        setResult("Login successful!");
-        window.location.href = "/route/";
-      }
-    } catch (error: any) {
-      console.error("Login error:", error);
-      setResult(error?.message || "Login failed. Please try again.");
+    const result = await loginWithPassword(email, password);
+    if (result.success) {
+      setResult("Login successful!");
+      window.location.href = "/route/";
+    } else {
+      setResult(result.error || "Login failed. Please try again.");
     }
   };
 
   const handlePasskeyLogin = async () => {
     try {
-      // 1. Get a challenge from the worker
       const options = await startPasskeyLogin();
-
-      // 2. Ask the browser to sign the challenge
       const login = await startAuthentication({ optionsJSON: options });
-
-      // 3. Give the signed challenge to the worker to finish the login process
       const success = await finishPasskeyLogin(login);
 
       if (!success) {
-        setResult("Login failed. Please try again.");
-      } else {
-        setResult("Login successful!");
-        window.location.href = "/route/";
+        setResult("Fingerprint or face sign-in isn't set up for your account. Use password instead.");
+        setAuthMode("password");
+        return;
       }
+
+      setResult("Login successful!");
+      window.location.href = "/route/";
     } catch (error) {
       console.error("Login error:", error);
-      setResult("Login failed. Please try again.");
+      if (error instanceof Error && error.name === "NotAllowedError") {
+        setResult("No fingerprint or face sign-in found on this device. Try password login or reset via email.");
+        setAuthMode("password");
+        return;
+      }
+      setResult("Fingerprint or face sign-in failed. Try password instead.");
+      setAuthMode("password");
     }
   };
 
@@ -88,7 +88,7 @@ export function Login() {
               onClick={() => setAuthMode("passkey")}
               disabled={isPending}
             >
-              Passkey
+              Fingerprint / Face
             </button>
           </div>
 
@@ -140,11 +140,17 @@ export function Login() {
               >
                 {isPending ? "Logging In..." : "Log In"}
               </button>
+
+              <div style={{ marginTop: '16px', textAlign: 'center' }}>
+                <a href="/user/forgot-password" className="login-link">
+                  Forgot password?
+                </a>
+              </div>
             </>
           ) : (
             <>
               <p className="login-explainer">
-                Click the button below to log in with your passkey.
+                Sign in with fingerprint or face on this device.
               </p>
 
               <button
@@ -152,7 +158,7 @@ export function Login() {
                 disabled={isPending}
                 className="login-button login-button-primary"
               >
-                {isPending ? "Logging In..." : "Log In with Passkey"}
+                {isPending ? "Signing In..." : "Sign in with fingerprint or face"}
               </button>
             </>
           )}

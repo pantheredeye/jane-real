@@ -8,7 +8,7 @@ export async function requireAuth({ ctx }: { ctx: any }) {
   if (!ctx.user) {
     return new Response(null, {
       status: 302,
-      headers: { Location: "/user/login" },
+      headers: { Location: "/user/auth" },
     });
   }
 }
@@ -21,7 +21,7 @@ export async function requireTenant({ ctx }: { ctx: any }) {
   if (!ctx.user) {
     return new Response(null, {
       status: 302,
-      headers: { Location: "/user/login" },
+      headers: { Location: "/user/auth" },
     });
   }
 
@@ -50,7 +50,7 @@ export function requireRole(allowedRoles: MemberRole[]) {
     if (!ctx.user) {
       return new Response(null, {
         status: 302,
-        headers: { Location: "/user/login" },
+        headers: { Location: "/user/auth" },
       });
     }
 
@@ -94,7 +94,7 @@ export async function requireSubscription({ ctx }: { ctx: any }) {
   if (!ctx.user) {
     return new Response(null, {
       status: 302,
-      headers: { Location: "/user/login" },
+      headers: { Location: "/user/auth" },
     });
   }
 

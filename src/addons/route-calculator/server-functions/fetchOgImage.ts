@@ -1,5 +1,7 @@
 'use server'
 
+import { serverQuery } from 'rwsdk/worker'
+
 // Fetch Open Graph image from a URL
 // Used to get property thumbnails from Zillow, Realtor.com, etc.
 
@@ -29,7 +31,7 @@ function isAllowedUrl(url: string): boolean {
 
 const NULL_RESULT: OgImageResult = { thumbnailUrl: null, title: null, description: null }
 
-export async function fetchOgImage(url: string): Promise<OgImageResult> {
+export const fetchOgImage = serverQuery(async (url: string): Promise<OgImageResult> => {
   if (!isAllowedUrl(url)) return NULL_RESULT
 
   try {
@@ -91,4 +93,4 @@ export async function fetchOgImage(url: string): Promise<OgImageResult> {
     console.error('Error fetching og:image:', error)
     return { thumbnailUrl: null, title: null, description: null }
   }
-}
+})

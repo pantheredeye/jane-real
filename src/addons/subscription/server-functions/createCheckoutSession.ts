@@ -2,8 +2,19 @@
 
 import { getStripe, STRIPE_CONFIG } from '../utils/stripe'
 import { db } from '@/db'
-import { requestInfo } from 'rwsdk/worker'
+import { requestInfo, serverAction } from 'rwsdk/worker'
 import { sessions } from '@/session/store'
+import { env } from 'cloudflare:workers'
+
+function isValidReturnUrl(url: string): boolean {
+  try {
+    const parsed = new URL(url)
+    const appOrigin = new URL((env as { APP_URL?: string }).APP_URL || 'https://routefast.app').origin
+    return parsed.origin === appOrigin
+  } catch {
+    return false
+  }
+}
 
 type CheckoutSessionParams = {
   plan: 'monthly' | 'annual'
@@ -11,9 +22,9 @@ type CheckoutSessionParams = {
   cancelUrl: string
 }
 
-export async function createCheckoutSession(
+export const createCheckoutSession = serverAction(async (
   params: CheckoutSessionParams
-): Promise<{ url: string | null; error?: string }> {
+): Promise<{ url: string | null; error?: string }> => {
   try {
     // Get current user from session
     const userSession = await sessions.load(requestInfo.request)
@@ -63,6 +74,11 @@ export async function createCheckoutSession(
       })
     }
 
+    // Validate return URLs to prevent open redirect
+    const appOriginFallback = (env as { APP_URL?: string }).APP_URL || 'https://routefast.app'
+    const successUrl = isValidReturnUrl(params.successUrl) ? params.successUrl : `${appOriginFallback}/route/`
+    const cancelUrl = isValidReturnUrl(params.cancelUrl) ? params.cancelUrl : `${appOriginFallback}/route/`
+
     // Create checkout session
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
@@ -79,8 +95,8 @@ export async function createCheckoutSession(
           userId: user.id,
         },
       },
-      success_url: params.successUrl,
-      cancel_url: params.cancelUrl,
+      success_url: successUrl,
+      cancel_url: cancelUrl,
       allow_promotion_codes: true,
     })
 
@@ -89,4 +105,4 @@ export async function createCheckoutSession(
     console.error('Checkout session creation failed:', error)
     return { url: null, error: 'Failed to create checkout session' }
   }
-}
+})

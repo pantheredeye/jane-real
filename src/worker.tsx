@@ -11,6 +11,8 @@ import aboutRoutes from "@/app/pages/about/routes";
 import { accountRoutes } from "@/app/pages/account/routes";
 import { legalRoutes } from "@/app/pages/legal/routes";
 import { shareRoutes } from "@/app/pages/share/routes";
+import { appleAppSiteAssociation, androidAssetLinks } from "@/app/deepLinks";
+import { magicVerifyHandler, authStatusHandler } from "@/app/pages/user/authApi";
 import { sessions, setupSessionStore } from "./session/store";
 import { Session } from "./session/durableObject";
 import { type User, type Tenant, type TenantMembership, db, setupDb } from "@/db";
@@ -45,7 +47,7 @@ export default defineApp([
         }
 
         await sessions.remove(request, response.headers);
-        response.headers.set("Location", "/user/login");
+        response.headers.set("Location", "/user/auth");
 
         return new Response(null, {
           status: 302,
@@ -79,13 +81,27 @@ export default defineApp([
       }
     }
   },
+  route("/.well-known/apple-app-site-association", () =>
+    Response.json(appleAppSiteAssociation),
+  ),
+  route("/.well-known/assetlinks.json", () =>
+    Response.json(androidAssetLinks),
+  ),
+  route("/api/auth/magic/verify", magicVerifyHandler),
+  route("/api/auth/status", authStatusHandler),
   render(Document, [
     ...landingRoutes,
     ...aboutRoutes,
     route("/signup", () => {
       return new Response(null, {
         status: 302,
-        headers: { Location: "/user/signup" },
+        headers: { Location: "/user/auth" },
+      });
+    }),
+    route("/login", () => {
+      return new Response(null, {
+        status: 302,
+        headers: { Location: "/user/auth" },
       });
     }),
     route("/protected", [
@@ -93,7 +109,7 @@ export default defineApp([
         if (!ctx.user) {
           return new Response(null, {
             status: 302,
-            headers: { Location: "/user/login" },
+            headers: { Location: "/user/auth" },
           });
         }
       },
@@ -105,5 +121,6 @@ export default defineApp([
     prefix("/account", accountRoutes),
     prefix("/legal", legalRoutes),
     prefix("/share", shareRoutes),
+    route("*", () => new Response("Not Found", { status: 404 })),
   ]),
 ]);

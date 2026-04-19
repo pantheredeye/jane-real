@@ -1,7 +1,7 @@
 'use server'
 
 import { db } from '@/db'
-import { requestInfo } from 'rwsdk/worker'
+import { requestInfo, serverQuery } from 'rwsdk/worker'
 
 export interface UserCreditsData {
   creditsRemaining: number
@@ -13,7 +13,7 @@ export interface UserCreditsData {
  * Get current user's credits information
  * Returns credits data for display in UI
  */
-export async function getUserCredits(): Promise<UserCreditsData | null> {
+export const getUserCredits = serverQuery(async (): Promise<UserCreditsData | null> => {
   try {
     // Get current user from context
     const { ctx } = requestInfo
@@ -50,4 +50,4 @@ export async function getUserCredits(): Promise<UserCreditsData | null> {
     console.error('Failed to get user credits:', error)
     return null
   }
-}
+})
