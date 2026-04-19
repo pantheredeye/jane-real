@@ -1,0 +1,135 @@
+/* Voice Mic Button — routefast agent addon
+   Uses tokens from src/addons/route-calculator/styles.css
+   (--accent-electric, --accent-danger, --bg-glass, --tap-lg, etc.) */
+
+.voice-mic {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.voice-mic__button {
+  position: relative;
+  width: var(--tap-lg);
+  height: var(--tap-lg);
+  min-width: var(--tap-lg);
+  min-height: var(--tap-lg);
+  border-radius: 50%;
+  border: 3px solid var(--text-primary);
+  background: var(--accent-electric);
+  color: var(--text-white);
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    transform 0.12s ease,
+    background 0.15s ease,
+    box-shadow 0.15s ease;
+  box-shadow: 4px 4px 0 rgba(15, 23, 42, 0.18);
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  padding: 0;
+}
+
+.voice-mic__button:hover:not(:disabled) {
+  transform: translate(-1px, -1px);
+  box-shadow: 5px 5px 0 rgba(15, 23, 42, 0.22);
+}
+
+.voice-mic__button:active:not(:disabled) {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0 rgba(15, 23, 42, 0.22);
+}
+
+.voice-mic__button:focus-visible {
+  outline: 3px solid var(--accent-electric-dark);
+  outline-offset: 3px;
+}
+
+.voice-mic__button--recording {
+  background: var(--accent-danger);
+  transition: box-shadow 0.08s ease;
+}
+
+.voice-mic__button--processing {
+  opacity: 0.7;
+  cursor: not-allowed;
+  background: var(--bg-glass-strong);
+  color: var(--text-primary);
+}
+
+/* Pulsing ring around recording button */
+.voice-mic__ring {
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  border: 3px solid var(--accent-danger);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.voice-mic__ring--active {
+  animation: voice-mic-pulse 1.4s ease-out infinite;
+}
+
+@keyframes voice-mic-pulse {
+  0% {
+    opacity: 0.7;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.6);
+  }
+}
+
+.voice-mic__spinner {
+  width: 22px;
+  height: 22px;
+  border: 3px solid rgba(15, 23, 42, 0.2);
+  border-top-color: var(--text-primary);
+  border-radius: 50%;
+  animation: voice-mic-spin 0.75s linear infinite;
+}
+
+@keyframes voice-mic-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.voice-mic__timer {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: var(--text-sm);
+  letter-spacing: 0.04em;
+  color: var(--accent-danger);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+
+.voice-mic__label {
+  font-size: var(--text-xs);
+  color: var(--text-secondary);
+  text-align: center;
+  margin: 0;
+  line-height: var(--leading-tight);
+}
+
+.voice-mic__label--error {
+  color: var(--accent-danger);
+  font-weight: 600;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .voice-mic__ring--active {
+    animation: none;
+    opacity: 0.5;
+  }
+  .voice-mic__spinner {
+    animation-duration: 1.6s;
+  }
+}

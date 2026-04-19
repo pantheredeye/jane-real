@@ -12,6 +12,7 @@ import legalStyles from "./pages/legal/legal.css?url";
 import subscriptionStyles from "../addons/subscription/pages/styles.css?url";
 import theaterModalStyles from "./components/shared/theaterModal/theater-modal.css?url";
 import theaterCloseStyles from "./components/shared/theaterModal/theater-close-button.css?url";
+import voiceMicStyles from "../addons/agent/components/voice-mic.css?url";
 
 export const Document: React.FC<{ children: React.ReactNode }> = ({
   children,
@@ -44,6 +45,7 @@ export const Document: React.FC<{ children: React.ReactNode }> = ({
       <link rel="stylesheet" href={theaterCloseStyles} />
       <link rel="stylesheet" href={styles} />
       <link rel="stylesheet" href={footerStyles} />
+      <link rel="stylesheet" href={voiceMicStyles} />
     </head>
     <body>
       <div id="root">{children}</div>
