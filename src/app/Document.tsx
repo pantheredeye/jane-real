@@ -13,10 +13,17 @@ import subscriptionStyles from "../addons/subscription/pages/styles.css?url";
 import theaterModalStyles from "./components/shared/theaterModal/theater-modal.css?url";
 import theaterCloseStyles from "./components/shared/theaterModal/theater-close-button.css?url";
 import voiceMicStyles from "../addons/agent/components/voice-mic.css?url";
+import agentChatStyles from "../addons/agent/styles.css?url";
+import { requestInfo } from "rwsdk/worker";
+import { ChatButton } from "../addons/agent/components/ChatButton";
+import type { AppContext } from "../worker";
 
 export const Document: React.FC<{ children: React.ReactNode }> = ({
   children,
-}) => (
+}) => {
+  const ctx = requestInfo.ctx as AppContext;
+  const showChat = Boolean(ctx?.user);
+  return (
   <html lang="en">
     <head>
       <meta charSet="utf-8" />
@@ -57,10 +64,13 @@ export const Document: React.FC<{ children: React.ReactNode }> = ({
       <link rel="stylesheet" href={styles} />
       <link rel="stylesheet" href={footerStyles} />
       <link rel="stylesheet" href={voiceMicStyles} />
+      <link rel="stylesheet" href={agentChatStyles} />
     </head>
     <body>
       <div id="root">{children}</div>
+      {showChat && <ChatButton />}
       <script>import("/src/client.tsx")</script>
     </body>
   </html>
-);
+  );
+};
