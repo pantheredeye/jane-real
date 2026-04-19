@@ -18,6 +18,8 @@ import { sessions, setupSessionStore } from "./session/store";
 import { Session } from "./session/durableObject";
 import { type User, type Tenant, type TenantMembership, db, setupDb } from "@/db";
 import { env } from "cloudflare:workers";
+import { runReminderCron } from "@/addons/agent/server-functions/reminderCron";
+import { runDailyDigest } from "@/addons/agent/server-functions/dailyDigest";
 export { SessionDurableObject } from "./session/durableObject";
 export { AgentStateDO } from "./addons/agent/durableObject";
 
@@ -28,7 +30,7 @@ export type AppContext = {
   membership: TenantMembership | null;
 };
 
-export default defineApp([
+const app = defineApp([
   setCommonHeaders(),
   async ({ ctx, request, response, isAction }) => {
     await setupDb(env);
@@ -127,3 +129,19 @@ export default defineApp([
     route("*", () => new Response("Not Found", { status: 404 })),
   ]),
 ]);
+
+export default {
+  fetch: app.fetch,
+  async scheduled(
+    event: ScheduledController,
+    _env: Env,
+    ctx: ExecutionContext,
+  ): Promise<void> {
+    await setupDb(env);
+    if (event.cron === "*/5 * * * *") {
+      ctx.waitUntil(runReminderCron());
+    } else if (event.cron === "0 12 * * *") {
+      ctx.waitUntil(runDailyDigest());
+    }
+  },
+} satisfies ExportedHandler<Env>;
