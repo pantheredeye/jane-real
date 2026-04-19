@@ -5,6 +5,7 @@ import { Home } from "@/app/pages/Home";
 import { setCommonHeaders } from "@/app/headers";
 import { userRoutes } from "@/app/pages/user/routes";
 import { routeCalculatorRoutes } from "@/addons/route-calculator/routes";
+import { agentRoutes } from "@/addons/agent/routes";
 import { subscriptionRoutes } from "@/addons/subscription/routes";
 import landingRoutes from "@/app/pages/landing/routes";
 import aboutRoutes from "@/app/pages/about/routes";
@@ -90,6 +91,7 @@ export default defineApp([
   ),
   route("/api/auth/magic/verify", magicVerifyHandler),
   route("/api/auth/status", authStatusHandler),
+  prefix("/agent", agentRoutes),
   render(Document, [
     ...landingRoutes,
     ...aboutRoutes,

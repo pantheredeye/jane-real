@@ -1,0 +1,179 @@
+import { route } from "rwsdk/router";
+import { env } from "cloudflare:workers";
+import { db } from "@/db";
+import { requireAuth, requireTenant } from "@/app/interruptors";
+import { apiRateLimit } from "@/app/interruptors/rateLimit";
+import { runChat } from "./server-functions/chat";
+import type { AppContext } from "@/worker";
+
+function jsonResponse(data: unknown, status = 200): Response {
+  return new Response(JSON.stringify(data), {
+    status,
+    headers: { "Content-Type": "application/json" },
+  });
+}
+
+type AiRun = (
+  model: string,
+  input: { audio: number[] },
+) => Promise<{ text?: string; transcription?: string } | string>;
+
+async function transcribeAudio(body: ArrayBuffer): Promise<string> {
+  if (body.byteLength === 0) {
+    throw new Error("Empty audio body");
+  }
+  const run = env.AI.run as unknown as AiRun;
+  const result = await run("@cf/openai/whisper-large-v3-turbo", {
+    audio: Array.from(new Uint8Array(body)),
+  });
+  if (typeof result === "string") return result;
+  return result?.text ?? result?.transcription ?? "";
+}
+
+export const agentRoutes = [
+  route("/chat", [
+    requireAuth,
+    requireTenant,
+    apiRateLimit,
+    async ({ request, ctx }: { request: Request; ctx: AppContext }) => {
+      if (request.method !== "POST") {
+        return new Response("Method not allowed", { status: 405 });
+      }
+      if (!ctx.user || !ctx.tenant) {
+        return jsonResponse({ error: "Auth required" }, 401);
+      }
+
+      let message: string;
+      try {
+        const body = (await request.json()) as { message?: unknown };
+        if (typeof body.message !== "string" || body.message.trim() === "") {
+          return jsonResponse({ error: "message is required" }, 400);
+        }
+        message = body.message;
+      } catch {
+        return jsonResponse({ error: "Invalid JSON body" }, 400);
+      }
+
+      try {
+        const result = await runChat({
+          message,
+          user: ctx.user,
+          tenant: ctx.tenant,
+        });
+        return jsonResponse(result);
+      } catch (err) {
+        const msg = err instanceof Error ? err.message : String(err);
+        return jsonResponse({ error: msg }, 500);
+      }
+    },
+  ]),
+
+  route("/voice", [
+    requireAuth,
+    requireTenant,
+    apiRateLimit,
+    async ({ request, ctx }: { request: Request; ctx: AppContext }) => {
+      if (request.method !== "POST") {
+        return new Response("Method not allowed", { status: 405 });
+      }
+      if (!ctx.user || !ctx.tenant) {
+        return jsonResponse({ error: "Auth required" }, 401);
+      }
+
+      let transcription: string;
+      try {
+        const body = await request.arrayBuffer();
+        transcription = await transcribeAudio(body);
+      } catch (err) {
+        const msg = err instanceof Error ? err.message : String(err);
+        return jsonResponse({ error: `Transcription failed: ${msg}` }, 400);
+      }
+
+      if (!transcription || transcription.trim() === "") {
+        return jsonResponse({ error: "Empty transcription" }, 400);
+      }
+
+      try {
+        const result = await runChat({
+          message: transcription,
+          user: ctx.user,
+          tenant: ctx.tenant,
+        });
+        return jsonResponse({ transcription, ...result });
+      } catch (err) {
+        const msg = err instanceof Error ? err.message : String(err);
+        return jsonResponse({ error: msg }, 500);
+      }
+    },
+  ]),
+
+  route("/history", [
+    requireAuth,
+    requireTenant,
+    async ({ request, ctx }: { request: Request; ctx: AppContext }) => {
+      if (!ctx.user) {
+        return jsonResponse({ error: "Auth required" }, 401);
+      }
+      const doId = env.AGENT_STATE_DO.idFromName(ctx.user.id);
+      const stub = env.AGENT_STATE_DO.get(doId);
+
+      if (request.method === "GET") {
+        const turns = await stub.getHistory(100);
+        return jsonResponse({ messages: turns });
+      }
+      if (request.method === "DELETE") {
+        await stub.clearHistory();
+        return jsonResponse({ ok: true });
+      }
+      return new Response("Method not allowed", { status: 405 });
+    },
+  ]),
+
+  route("/badge", [
+    requireAuth,
+    requireTenant,
+    async ({ ctx }: { ctx: AppContext }) => {
+      if (!ctx.tenant) {
+        return jsonResponse({ error: "Auth required" }, 401);
+      }
+      const tz = parseTimezone(ctx.user?.preferences);
+      const today = todayYmd(tz);
+      const [events, reminders] = await Promise.all([
+        db.event.count({
+          where: {
+            tenantId: ctx.tenant.id,
+            status: "SCHEDULED",
+            date: { gte: today, lte: today },
+          },
+        }),
+        db.reminder.count({
+          where: { tenantId: ctx.tenant.id, status: "PENDING" },
+        }),
+      ]);
+      return jsonResponse({ events, reminders });
+    },
+  ]),
+];
+
+function parseTimezone(raw: string | null | undefined): string {
+  if (!raw) return "UTC";
+  try {
+    const parsed = JSON.parse(raw) as { timezone?: string | null };
+    return parsed.timezone ?? "UTC";
+  } catch {
+    return "UTC";
+  }
+}
+
+function todayYmd(timezone: string): string {
+  try {
+    return new Intl.DateTimeFormat("en-CA", {
+      timeZone: timezone,
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    }).format(new Date());
+  } catch {
+    return new Date().toISOString().slice(0, 10);
+  }
+}
