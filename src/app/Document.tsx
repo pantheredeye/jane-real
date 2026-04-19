@@ -16,6 +16,7 @@ import voiceMicStyles from "../addons/agent/components/voice-mic.css?url";
 import agentChatStyles from "../addons/agent/styles.css?url";
 import { requestInfo } from "rwsdk/worker";
 import { ChatButton } from "../addons/agent/components/ChatButton";
+import { VoiceProvider } from "../addons/agent/contexts/VoiceContext";
 import type { AppContext } from "../worker";
 
 export const Document: React.FC<{ children: React.ReactNode }> = ({
@@ -68,7 +69,11 @@ export const Document: React.FC<{ children: React.ReactNode }> = ({
     </head>
     <body>
       <div id="root">{children}</div>
-      {showChat && <ChatButton />}
+      {showChat && (
+        <VoiceProvider>
+          <ChatButton />
+        </VoiceProvider>
+      )}
       <script>import("/src/client.tsx")</script>
     </body>
   </html>

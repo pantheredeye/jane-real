@@ -42,9 +42,20 @@ interface ChatApiResponse {
   error?: string;
 }
 
+export interface SeedMessage {
+  id: string;
+  role: "user" | "agent";
+  content: string;
+  toolCalls?: ToolCallLite[];
+  events?: EventCardData[];
+  reminders?: ReminderCardData[];
+}
+
 interface ChatPanelProps {
   open: boolean;
   onClose: () => void;
+  seedMessages?: SeedMessage[];
+  scrollToMessageId?: string;
 }
 
 const CONFIRM_MESSAGE = "Yes, please proceed.";
@@ -54,7 +65,12 @@ function hasNeedsConfirmation(calls: ToolCallLite[] | undefined): boolean {
   return calls.some((c) => c.result?.needsConfirmation === true);
 }
 
-export function ChatPanel({ open, onClose }: ChatPanelProps) {
+export function ChatPanel({
+  open,
+  onClose,
+  seedMessages,
+  scrollToMessageId,
+}: ChatPanelProps) {
   const [messages, setMessages] = useState<ChatTurn[]>([]);
   const [input, setInput] = useState("");
   const [sending, setSending] = useState(false);
@@ -62,13 +78,46 @@ export function ChatPanel({ open, onClose }: ChatPanelProps) {
   const messagesRef = useRef<HTMLDivElement | null>(null);
   const inputRef = useRef<HTMLTextAreaElement | null>(null);
   const dragStartRef = useRef<number | null>(null);
+  const seededKeyRef = useRef<string | null>(null);
 
-  // Auto-scroll on new message
+  // Seed messages on open when provided. Re-seeds when a new set arrives.
+  useEffect(() => {
+    if (!open || !seedMessages || seedMessages.length === 0) return;
+    const key = seedMessages.map((s) => s.id).join("|");
+    if (seededKeyRef.current === key) return;
+    seededKeyRef.current = key;
+    setMessages((prev) => {
+      const existingIds = new Set(prev.map((p) => p.id));
+      const fresh: ChatTurn[] = seedMessages
+        .filter((s) => !existingIds.has(s.id))
+        .map((s) => ({
+          id: s.id,
+          role: s.role,
+          content: s.content,
+          toolCalls: s.toolCalls,
+          events: s.events,
+          reminders: s.reminders,
+          needsConfirmation: hasNeedsConfirmation(s.toolCalls),
+        }));
+      return [...prev, ...fresh];
+    });
+  }, [open, seedMessages]);
+
+  // Auto-scroll on new message (or scroll to specific seed message)
   useEffect(() => {
     const el = messagesRef.current;
     if (!el) return;
+    if (scrollToMessageId) {
+      const target = el.querySelector(
+        `[data-message-id="${scrollToMessageId}"]`,
+      ) as HTMLElement | null;
+      if (target) {
+        target.scrollIntoView({ behavior: "smooth", block: "center" });
+        return;
+      }
+    }
     el.scrollTop = el.scrollHeight;
-  }, [messages, sending]);
+  }, [messages, sending, scrollToMessageId]);
 
   // Focus input when panel opens
   useEffect(() => {
@@ -228,18 +277,19 @@ export function ChatPanel({ open, onClose }: ChatPanelProps) {
             </div>
           )}
           {messages.map((m) => (
-            <AgentMessage
-              key={m.id}
-              role={m.role}
-              content={m.content}
-              toolCalls={m.toolCalls}
-              events={m.events}
-              reminders={m.reminders}
-              pendingConfirm={m.needsConfirmation}
-              sending={sending}
-              onConfirm={handleConfirm}
-              onCancel={handleCancel}
-            />
+            <div key={m.id} data-message-id={m.id}>
+              <AgentMessage
+                role={m.role}
+                content={m.content}
+                toolCalls={m.toolCalls}
+                events={m.events}
+                reminders={m.reminders}
+                pendingConfirm={m.needsConfirmation}
+                sending={sending}
+                onConfirm={handleConfirm}
+                onCancel={handleCancel}
+              />
+            </div>
           ))}
           {sending && (
             <div
