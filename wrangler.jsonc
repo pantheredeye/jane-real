@@ -36,7 +36,12 @@
   },
   "vars": {
     "WEBAUTHN_APP_NAME": "routefast",
-    "STRIPE_PUBLISHABLE_KEY": "pk_test_your_stripe_publishable_key_here"
+    "STRIPE_PUBLISHABLE_KEY": "pk_test_your_stripe_publishable_key_here",
+    // VAPID Web Push keys — override in prod via `wrangler secret put`.
+    // Generate with: `node --experimental-strip-types src/scripts/generate-vapid-keys.ts`
+    "VAPID_PUBLIC_KEY": "",
+    "VAPID_PRIVATE_KEY": "",
+    "VAPID_SUBJECT": "mailto:admin@routefast.app"
   },
   "migrations": [
     {
@@ -69,7 +74,10 @@
       ],
       "vars": {
         "WEBAUTHN_APP_NAME": "routefast-staging",
-        "STRIPE_PUBLISHABLE_KEY": "pk_test_your_stripe_publishable_key_here"
+        "STRIPE_PUBLISHABLE_KEY": "pk_test_your_stripe_publishable_key_here",
+        "VAPID_PUBLIC_KEY": "",
+        "VAPID_PRIVATE_KEY": "",
+        "VAPID_SUBJECT": "mailto:admin@routefast.app"
       },
       "d1_databases": [
         {
