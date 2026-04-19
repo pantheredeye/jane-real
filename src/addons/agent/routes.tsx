@@ -4,6 +4,8 @@ import { db } from "@/db";
 import { requireAuth, requireTenant } from "@/app/interruptors";
 import { apiRateLimit } from "@/app/interruptors/rateLimit";
 import { runChat } from "./server-functions/chat";
+import { dismissReminder } from "./handlers/reminder";
+import { DEFAULT_PREFERENCES } from "./server-functions/preferences";
 import type { AppContext } from "@/worker";
 
 function jsonResponse(data: unknown, status = 200): Response {
@@ -126,6 +128,50 @@ export const agentRoutes = [
         return jsonResponse({ ok: true });
       }
       return new Response("Method not allowed", { status: 405 });
+    },
+  ]),
+
+  route("/reminders/:id/dismiss", [
+    requireAuth,
+    requireTenant,
+    apiRateLimit,
+    async ({
+      request,
+      params,
+      ctx,
+    }: {
+      request: Request;
+      params: { id: string };
+      ctx: AppContext;
+    }) => {
+      if (request.method !== "POST") {
+        return new Response("Method not allowed", { status: 405 });
+      }
+      if (!ctx.user || !ctx.tenant) {
+        return jsonResponse({ error: "Auth required" }, 401);
+      }
+      if (!params.id) {
+        return jsonResponse({ error: "reminderId required" }, 400);
+      }
+      try {
+        const result = await dismissReminder(
+          { reminderId: params.id },
+          {
+            db,
+            userId: ctx.user.id,
+            tenantId: ctx.tenant.id,
+            userPreferences: DEFAULT_PREFERENCES,
+            env,
+          },
+        );
+        if (!result.ok) {
+          return jsonResponse({ error: result.error ?? "Failed" }, 404);
+        }
+        return jsonResponse({ ok: true, reminder: result.data });
+      } catch (err) {
+        const msg = err instanceof Error ? err.message : String(err);
+        return jsonResponse({ error: msg }, 500);
+      }
     },
   ]),
 

@@ -9,11 +9,19 @@ import {
   type PointerEvent as ReactPointerEvent,
 } from "react";
 import { AgentMessage } from "./AgentMessage";
+import type { EventCardData, ReminderCardData } from "./cardTypes";
 
 interface ToolCallLite {
   id: string;
   name: string;
-  result?: { needsConfirmation?: boolean; preview?: unknown } | null;
+  result?: {
+    ok?: boolean;
+    data?: unknown;
+    needsConfirmation?: boolean;
+    preview?: unknown;
+    warning?: string;
+    error?: string;
+  } | null;
 }
 
 interface ChatTurn {
@@ -21,12 +29,16 @@ interface ChatTurn {
   role: "user" | "agent";
   content: string;
   toolCalls?: ToolCallLite[];
+  events?: EventCardData[];
+  reminders?: ReminderCardData[];
   needsConfirmation?: boolean;
 }
 
 interface ChatApiResponse {
   reply?: string;
   toolCalls?: ToolCallLite[];
+  events?: EventCardData[];
+  reminders?: ReminderCardData[];
   error?: string;
 }
 
@@ -106,6 +118,8 @@ export function ChatPanel({ open, onClose }: ChatPanelProps) {
           role: "agent",
           content: reply,
           toolCalls: calls,
+          events: data.events,
+          reminders: data.reminders,
           needsConfirmation: hasNeedsConfirmation(calls),
         };
         setMessages((m) => {
@@ -219,6 +233,8 @@ export function ChatPanel({ open, onClose }: ChatPanelProps) {
               role={m.role}
               content={m.content}
               toolCalls={m.toolCalls}
+              events={m.events}
+              reminders={m.reminders}
               pendingConfirm={m.needsConfirmation}
               sending={sending}
               onConfirm={handleConfirm}
