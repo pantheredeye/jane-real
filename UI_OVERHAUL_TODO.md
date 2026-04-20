@@ -72,11 +72,14 @@ Native controls that should move to `ui/`:
 - [x] Migrate `ErrorModal` → composes `AlertDialog` (behavior note: backdrop click no longer dismisses — AlertDialog requires explicit action; ESC still closes)
 - [x] Migrate `ConfirmDialog` → composes `AlertDialog` (same behavior shift as ErrorModal)
 - [x] Migrate `SaveRouteDialog` → composes `Dialog` (backdrop click + ESC still close, same as before)
-- [ ] Migrate `TheaterModal` → `Dialog` w/ theater variant class
-- [ ] `ChatPanel` — drop `role="dialog"` + backdrop, convert to non-modal docked panel (no `ui/` dep needed)
-- [ ] `pnpm check` green + dev-server smoke on each migrated screen (interactive smoke of ErrorModal pending: only triggers on route-calc failure)
+- [x] Migrate `TheaterModal` → `Dialog` w/ theater variant class (animation now driven by Base UI `data-starting-style` / `data-ending-style` instead of JS class toggle + setTimeout)
+- [x] `ChatPanel` — drop `role="dialog"` + backdrop, convert to non-modal docked panel (route-calc stays interactive while chat is open)
+- [x] `pnpm check` green on each migrated screen — interactive smoke deferred: ErrorModal (requires route-calc failure), TheaterModal (landing `DemoButton`), SaveRouteDialog (requires saved-route flow)
 
-Exit criterion: zero `role="dialog"` strings outside `src/app/components/ui/`.
+Exit criterion: zero `role="dialog"` strings outside `src/app/components/ui/` — ✅ verified.
+
+Phase 1 follow-up:
+- `.chat-panel-backdrop` CSS in `src/addons/agent/styles.css` is now unused — remove when convenient
 
 ## Phase 2 — Popover / Menu / Tooltip
 

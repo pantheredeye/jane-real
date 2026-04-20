@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Dialog } from "@/app/components/ui/Dialog";
 import TheaterCloseButton from "./TheaterCloseButton";
 import "./theater-modal.css";
 
@@ -11,64 +11,21 @@ interface TheaterModalProps {
 }
 
 export default function TheaterModal({ isOpen, onClose, children }: TheaterModalProps) {
-  const [isAnimating, setIsAnimating] = useState(false);
-  const [shouldRender, setShouldRender] = useState(false);
-
-  useEffect(() => {
-    if (isOpen) {
-      setShouldRender(true);
-      // Need longer delay to ensure initial state is painted before animating
-      const timer = setTimeout(() => {
-        setIsAnimating(true);
-      }, 50); // 50ms delay ensures browser paints initial state first
-      return () => clearTimeout(timer);
-    } else {
-      setIsAnimating(false);
-      // Wait for animation to complete before unmounting
-      const timer = setTimeout(() => {
-        setShouldRender(false);
-      }, 600); // Match animation duration
-      return () => clearTimeout(timer);
-    }
-  }, [isOpen]);
-
-  // Close on Escape key
-  useEffect(() => {
-    const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === "Escape" && isOpen) {
-        onClose();
-      }
-    };
-
-    document.addEventListener("keydown", handleEscape);
-    return () => document.removeEventListener("keydown", handleEscape);
-  }, [isOpen, onClose]);
-
-  if (!shouldRender) return null;
-
   return (
-    <div
-      className={`theater-modal-overlay ${isAnimating ? "theater-modal-open" : ""}`}
-      onClick={(e) => {
-        // Close if clicking the overlay (not the content)
-        if (e.target === e.currentTarget) {
-          onClose();
-        }
-      }}
-    >
-      <div className="theater-modal-container">
-        {/* Close button */}
-        <TheaterCloseButton onClick={onClose} />
+    <Dialog.Root open={isOpen} onOpenChange={(open) => { if (!open) onClose(); }}>
+      <Dialog.Portal>
+        <Dialog.Backdrop className="theater-modal-backdrop" />
+        <Dialog.Popup className="theater-modal-container">
+          <TheaterCloseButton onClick={onClose} />
 
-        {/* Comic borders that expand during animation */}
-        <div className="theater-modal-border theater-modal-border-top"></div>
-        <div className="theater-modal-border theater-modal-border-right"></div>
-        <div className="theater-modal-border theater-modal-border-bottom"></div>
-        <div className="theater-modal-border theater-modal-border-left"></div>
+          <div className="theater-modal-border theater-modal-border-top"></div>
+          <div className="theater-modal-border theater-modal-border-right"></div>
+          <div className="theater-modal-border theater-modal-border-bottom"></div>
+          <div className="theater-modal-border theater-modal-border-left"></div>
 
-        {/* Content area */}
-        <div className="theater-modal-content">{children}</div>
-      </div>
-    </div>
+          <div className="theater-modal-content">{children}</div>
+        </Dialog.Popup>
+      </Dialog.Portal>
+    </Dialog.Root>
   );
 }

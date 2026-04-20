@@ -234,18 +234,10 @@ export function ChatPanel({
   if (!open) return null;
 
   return (
-    <>
-      <div
-        className="chat-panel-backdrop"
-        onClick={onClose}
-        aria-hidden="true"
-      />
-      <aside
-        className="chat-panel"
-        role="dialog"
-        aria-modal="true"
-        aria-label="Agent chat"
-      >
+    <aside
+      className="chat-panel"
+      aria-label="Agent chat"
+    >
         <div
           className="chat-panel__handle"
           aria-label="Drag to close"
@@ -331,7 +323,6 @@ export function ChatPanel({
             Send
           </button>
         </div>
-      </aside>
-    </>
+    </aside>
   );
 }
