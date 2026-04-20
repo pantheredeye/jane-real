@@ -17,16 +17,28 @@ function jsonResponse(data: unknown, status = 200): Response {
 
 type AiRun = (
   model: string,
-  input: { audio: number[] },
+  input: { audio: string },
 ) => Promise<{ text?: string; transcription?: string } | string>;
+
+function toBase64(bytes: Uint8Array): string {
+  let binary = "";
+  const chunk = 0x8000;
+  for (let i = 0; i < bytes.length; i += chunk) {
+    binary += String.fromCharCode(...bytes.subarray(i, i + chunk));
+  }
+  return btoa(binary);
+}
 
 async function transcribeAudio(body: ArrayBuffer): Promise<string> {
   if (body.byteLength === 0) {
     throw new Error("Empty audio body");
   }
+  if (import.meta.env.VITE_IS_DEV_SERVER) {
+    return "what do i have coming up today";
+  }
   const run = env.AI.run as unknown as AiRun;
   const result = await run("@cf/openai/whisper-large-v3-turbo", {
-    audio: Array.from(new Uint8Array(body)),
+    audio: toBase64(new Uint8Array(body)),
   });
   if (typeof result === "string") return result;
   return result?.text ?? result?.transcription ?? "";
