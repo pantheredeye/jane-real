@@ -2934,7 +2934,19 @@ input, select, textarea {
   }
 }
 
-/* Error Modal */
+/* Error Modal — Base UI Backdrop (sibling of Popup, dim only) */
+.error-modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 1000;
+  animation: fadeIn 0.2s ease;
+}
+
+/* Error Modal — legacy overlay used by ConfirmDialog/SaveRouteDialog (until migrated) */
 .error-modal-overlay {
   position: fixed;
   top: 0;

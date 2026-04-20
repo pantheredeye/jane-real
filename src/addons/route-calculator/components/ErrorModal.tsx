@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { AlertDialog } from '../../../app/components/ui/AlertDialog'
 
 interface ErrorModalProps {
   isOpen: boolean
@@ -10,90 +10,53 @@ interface ErrorModalProps {
 }
 
 export function ErrorModal({ isOpen, errorMessage, onClose, onRetry }: ErrorModalProps) {
-  const modalRef = useRef<HTMLDivElement>(null)
-  const retryButtonRef = useRef<HTMLButtonElement>(null)
-
-  // ESC key handler
-  useEffect(() => {
-    if (!isOpen) return
-
-    const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        onClose()
-      }
-    }
-
-    document.addEventListener('keydown', handleEscape)
-    return () => document.removeEventListener('keydown', handleEscape)
-  }, [isOpen, onClose])
-
-  // Focus trap and initial focus
-  useEffect(() => {
-    if (!isOpen) return
-
-    // Focus retry button on open
-    retryButtonRef.current?.focus()
-
-    // Store previous active element
-    const previouslyFocused = document.activeElement as HTMLElement
-
-    return () => {
-      // Restore focus on close
-      previouslyFocused?.focus()
-    }
-  }, [isOpen])
-
-  if (!isOpen) return null
-
   return (
-    <div
-      className="error-modal-overlay"
-      onClick={onClose}
-      role="presentation"
-    >
-      <div
-        ref={modalRef}
-        className="glass-card error-modal-content"
-        style={{ padding: '2rem' }}
-        onClick={(e) => e.stopPropagation()}
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="error-modal-title"
-        aria-describedby="error-modal-message"
-      >
-        <h2
-          id="error-modal-title"
-          className="section-title"
-          style={{ marginTop: 0, color: 'var(--accent-danger)' }}
+    <AlertDialog.Root open={isOpen} onOpenChange={(open) => { if (!open) onClose() }}>
+      <AlertDialog.Portal>
+        <AlertDialog.Backdrop className="error-modal-backdrop" />
+        <AlertDialog.Popup
+          className="glass-card error-modal-content"
+          style={{
+            padding: '2rem',
+            position: 'fixed',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            zIndex: 1001,
+          }}
         >
-          ⚠️ ROUTE CALCULATION FAILED
-        </h2>
-
-        <div
-          id="error-modal-message"
-          className="error-message-text"
-        >
-          {errorMessage}
-        </div>
-
-        <div className="error-modal-actions">
-          <button
-            className="btn-action btn-action-secondary"
-            style={{ minWidth: '120px' }}
-            onClick={onClose}
+          <AlertDialog.Title
+            className="section-title"
+            style={{ marginTop: 0, color: 'var(--accent-danger)' }}
           >
-            CLOSE
-          </button>
-          <button
-            ref={retryButtonRef}
-            className="btn-action btn-action-primary"
-            style={{ minWidth: '120px' }}
-            onClick={onRetry}
+            ⚠️ ROUTE CALCULATION FAILED
+          </AlertDialog.Title>
+
+          <AlertDialog.Description
+            render={<div />}
+            className="error-message-text"
           >
-            TRY AGAIN
-          </button>
-        </div>
-      </div>
-    </div>
+            {errorMessage}
+          </AlertDialog.Description>
+
+          <div className="error-modal-actions">
+            <AlertDialog.Close
+              className="btn-action btn-action-secondary"
+              style={{ minWidth: '120px' }}
+            >
+              CLOSE
+            </AlertDialog.Close>
+            <button
+              className="btn-action btn-action-primary"
+              style={{ minWidth: '120px' }}
+              onClick={onRetry}
+              autoFocus
+            >
+              TRY AGAIN
+            </button>
+          </div>
+        </AlertDialog.Popup>
+      </AlertDialog.Portal>
+    </AlertDialog.Root>
   )
 }

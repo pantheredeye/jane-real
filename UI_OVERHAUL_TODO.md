@@ -63,18 +63,18 @@ Native controls that should move to `ui/`:
 - [x] Create `src/app/components/ui/` + `ui/README.md` stating the policy
 - [x] Full grep inventory of hand-rolled primitives; appended above
 - [x] Add CLAUDE.md section: "Interactive primitives MUST come from `src/app/components/ui/`. Never hand-roll Dialog/Popover/Select/Menu/Sheet/Tooltip. New primitives: add a wrapper to `ui/` first, then consume."
-- [ ] Commit: no behavior change
+- [x] Commit: no behavior change
 
 ## Phase 1 — Dialog family
 
 - [ ] `ui/Dialog.tsx` — Base UI `Dialog` w/ `.glass-card` panel, overlay, focus trap, ESC
-- [ ] `ui/AlertDialog.tsx` — destructive-confirm variant
-- [ ] Migrate `ErrorModal` → composes `AlertDialog`
+- [x] `ui/AlertDialog.tsx` — destructive-confirm variant (re-exports Base UI AlertDialog parts)
+- [x] Migrate `ErrorModal` → composes `AlertDialog` (behavior note: backdrop click no longer dismisses — AlertDialog requires explicit action; ESC still closes)
 - [ ] Migrate `ConfirmDialog` → composes `AlertDialog`
 - [ ] Migrate `SaveRouteDialog` → composes `Dialog`
 - [ ] Migrate `TheaterModal` → `Dialog` w/ theater variant class
 - [ ] `ChatPanel` — drop `role="dialog"` + backdrop, convert to non-modal docked panel (no `ui/` dep needed)
-- [ ] `pnpm check` green + dev-server smoke on each migrated screen
+- [ ] `pnpm check` green + dev-server smoke on each migrated screen (interactive smoke of ErrorModal pending: only triggers on route-calc failure)
 
 Exit criterion: zero `role="dialog"` strings outside `src/app/components/ui/`.
 
