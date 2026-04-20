@@ -1,8 +1,9 @@
 'use client'
 
-import { useState, useRef, useEffect } from 'react'
+import { useState } from 'react'
 import type { PropertyInput } from '../types'
 import { isListingUrl } from '../utils/parsePropertyInput'
+import { Menu } from '../../../app/components/ui/Menu'
 
 interface PropertyListItemProps {
   property: PropertyInput
@@ -15,7 +16,6 @@ export function PropertyListItem({ property, index, onEdit, onDelete }: Property
   const [isEditing, setIsEditing] = useState(false)
   const [editValue, setEditValue] = useState(property.parsedAddress)
   const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const menuRef = useRef<HTMLDivElement>(null)
 
   const handleSaveEdit = () => {
     if (editValue.trim()) {
@@ -35,44 +35,6 @@ export function PropertyListItem({ property, index, onEdit, onDelete }: Property
     } else if (e.key === 'Escape') {
       handleCancelEdit()
     }
-  }
-
-  // Close menu when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
-        setIsMenuOpen(false)
-      }
-    }
-
-    if (isMenuOpen) {
-      document.addEventListener('mousedown', handleClickOutside)
-      return () => document.removeEventListener('mousedown', handleClickOutside)
-    }
-  }, [isMenuOpen])
-
-  // Close menu on Escape key
-  useEffect(() => {
-    const handleEscape = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        setIsMenuOpen(false)
-      }
-    }
-
-    if (isMenuOpen) {
-      document.addEventListener('keydown', handleEscape)
-      return () => document.removeEventListener('keydown', handleEscape)
-    }
-  }, [isMenuOpen])
-
-  const handleEdit = () => {
-    setIsMenuOpen(false)
-    setIsEditing(true)
-  }
-
-  const handleDelete = () => {
-    setIsMenuOpen(false)
-    onDelete(property.id)
   }
 
   const hasListingUrl = property.sourceUrl && isListingUrl(property.sourceUrl)
@@ -115,44 +77,42 @@ export function PropertyListItem({ property, index, onEdit, onDelete }: Property
             </button>
           </>
         ) : (
-          <div className="property-list-item-menu" ref={menuRef}>
-            <button
+          <Menu.Root open={isMenuOpen} onOpenChange={setIsMenuOpen}>
+            <Menu.Trigger
               className="property-list-item-btn property-list-item-btn-menu"
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
               aria-label="More actions"
-              aria-expanded={isMenuOpen}
             >
               ⋮
-            </button>
-
-            {isMenuOpen && (
-              <div className="property-list-item-dropdown">
-                {hasListingUrl && (
-                  <a
-                    href={property.sourceUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="property-list-item-dropdown-item property-list-item-dropdown-link"
-                    onClick={() => setIsMenuOpen(false)}
+            </Menu.Trigger>
+            <Menu.Portal>
+              <Menu.Positioner side="bottom" align="end" sideOffset={4}>
+                <Menu.Popup className="property-list-item-dropdown">
+                  {hasListingUrl && (
+                    <Menu.LinkItem
+                      href={property.sourceUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="property-list-item-dropdown-item property-list-item-dropdown-link"
+                    >
+                      🏠 View Listing
+                    </Menu.LinkItem>
+                  )}
+                  <Menu.Item
+                    className="property-list-item-dropdown-item"
+                    onClick={() => setIsEditing(true)}
                   >
-                    🏠 View Listing
-                  </a>
-                )}
-                <button
-                  className="property-list-item-dropdown-item"
-                  onClick={handleEdit}
-                >
-                  ✎ Edit
-                </button>
-                <button
-                  className="property-list-item-dropdown-item property-list-item-dropdown-item-delete"
-                  onClick={handleDelete}
-                >
-                  🗑 Delete
-                </button>
-              </div>
-            )}
-          </div>
+                    ✎ Edit
+                  </Menu.Item>
+                  <Menu.Item
+                    className="property-list-item-dropdown-item property-list-item-dropdown-item-delete"
+                    onClick={() => onDelete(property.id)}
+                  >
+                    🗑 Delete
+                  </Menu.Item>
+                </Menu.Popup>
+              </Menu.Positioner>
+            </Menu.Portal>
+          </Menu.Root>
         )}
       </div>
     </div>

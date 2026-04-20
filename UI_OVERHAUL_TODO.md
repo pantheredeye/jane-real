@@ -83,10 +83,10 @@ Phase 1 follow-up:
 
 ## Phase 2 — Popover / Menu / Tooltip
 
-- [ ] `ui/Popover.tsx`
-- [ ] `ui/Menu.tsx` (DropdownMenu — items, separators, submenu)
-- [ ] `ui/Tooltip.tsx`
-- [ ] Migrate existing call sites
+- [ ] `ui/Popover.tsx` — deferred: no current call site, add when first consumer arrives
+- [x] `ui/Menu.tsx` (DropdownMenu — items, separators, submenu — full re-export)
+- [ ] `ui/Tooltip.tsx` — deferred: no current call site
+- [x] Migrate existing call sites — `PropertyListItem` only. `RouteOptionsCard` is a disclosure/collapse (not popover); left as-is.
 
 ## Phase 3 — Sheet (replace vaul) — deferred until Capacitor devices available
 

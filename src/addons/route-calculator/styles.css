@@ -1500,11 +1500,8 @@ input, select, textarea {
   color: var(--accent-electric);
 }
 
-/* Dropdown Menu */
+/* Dropdown Menu — positioning handled by Base UI Menu.Positioner */
 .property-list-item-dropdown {
-  position: absolute;
-  top: calc(100% + 4px);
-  right: 0;
   min-width: 160px;
   background: white;
   border-radius: 0;
@@ -1512,18 +1509,13 @@ input, select, textarea {
   box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.3);
   padding: 6px;
   z-index: 1000;
-  animation: dropdownSlideIn 0.2s ease-out;
+  opacity: 1;
+  transition: opacity 0.15s ease-out;
 }
 
-@keyframes dropdownSlideIn {
-  from {
-    opacity: 0;
-    transform: translateY(-8px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+.property-list-item-dropdown[data-starting-style],
+.property-list-item-dropdown[data-ending-style] {
+  opacity: 0;
 }
 
 .property-list-item-dropdown-item,
