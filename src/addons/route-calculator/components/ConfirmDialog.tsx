@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { AlertDialog } from '../../../app/components/ui/AlertDialog'
 
 interface ConfirmDialogProps {
   isOpen: boolean
@@ -14,6 +14,12 @@ interface ConfirmDialogProps {
   onCancel: () => void
 }
 
+const variantColors = {
+  danger: 'var(--accent-danger)',
+  warning: '#f59e0b',
+  info: '#3b82f6',
+}
+
 export function ConfirmDialog({
   isOpen,
   title,
@@ -23,107 +29,66 @@ export function ConfirmDialog({
   variant = 'info',
   isLoading = false,
   onConfirm,
-  onCancel
+  onCancel,
 }: ConfirmDialogProps) {
-  const modalRef = useRef<HTMLDivElement>(null)
-  const confirmButtonRef = useRef<HTMLButtonElement>(null)
-
-  // ESC key handler
-  useEffect(() => {
-    if (!isOpen) return
-
-    const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && !isLoading) {
-        onCancel()
-      }
-    }
-
-    document.addEventListener('keydown', handleEscape)
-    return () => document.removeEventListener('keydown', handleEscape)
-  }, [isOpen, isLoading, onCancel])
-
-  // Focus trap and initial focus
-  useEffect(() => {
-    if (!isOpen) return
-
-    // Focus confirm button on open
-    confirmButtonRef.current?.focus()
-
-    // Store previous active element
-    const previouslyFocused = document.activeElement as HTMLElement
-
-    return () => {
-      // Restore focus on close
-      previouslyFocused?.focus()
-    }
-  }, [isOpen])
-
-  if (!isOpen) return null
-
-  // Variant color mapping
-  const variantColors = {
-    danger: 'var(--accent-danger)',
-    warning: '#f59e0b', // amber
-    info: '#3b82f6' // blue
-  }
-
   const titleColor = variantColors[variant]
 
   return (
-    <div
-      className="error-modal-overlay"
-      onClick={isLoading ? undefined : onCancel}
-      role="presentation"
+    <AlertDialog.Root
+      open={isOpen}
+      onOpenChange={(open) => {
+        if (!open && !isLoading) onCancel()
+      }}
     >
-      <div
-        ref={modalRef}
-        className="glass-card error-modal-content"
-        style={{ padding: '2rem' }}
-        onClick={(e) => e.stopPropagation()}
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="confirm-dialog-title"
-        aria-describedby="confirm-dialog-message"
-      >
-        <h2
-          id="confirm-dialog-title"
-          className="section-title"
-          style={{ marginTop: 0, color: titleColor }}
+      <AlertDialog.Portal>
+        <AlertDialog.Backdrop className="error-modal-backdrop" />
+        <AlertDialog.Popup
+          className="glass-card error-modal-content"
+          style={{
+            padding: '2rem',
+            position: 'fixed',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            zIndex: 1001,
+          }}
         >
-          {title}
-        </h2>
-
-        <div
-          id="confirm-dialog-message"
-          className="error-message-text"
-          style={{ color: 'rgba(255, 255, 255, 0.9)' }}
-        >
-          {message}
-        </div>
-
-        <div className="error-modal-actions">
-          <button
-            className="btn-action btn-action-secondary"
-            style={{ minWidth: '120px' }}
-            onClick={onCancel}
-            disabled={isLoading}
+          <AlertDialog.Title
+            className="section-title"
+            style={{ marginTop: 0, color: titleColor }}
           >
-            {cancelText}
-          </button>
-          <button
-            ref={confirmButtonRef}
-            className="btn-action btn-action-primary"
-            style={{
-              backgroundColor: titleColor,
-              minWidth: '120px'
-            }}
-            onClick={onConfirm}
-            disabled={isLoading}
+            {title}
+          </AlertDialog.Title>
+
+          <AlertDialog.Description
+            render={<div />}
+            className="error-message-text"
+            style={{ color: 'rgba(255, 255, 255, 0.9)' }}
           >
-            {isLoading ? 'LOADING...' : confirmText}
-          </button>
-        </div>
-      </div>
-    </div>
+            {message}
+          </AlertDialog.Description>
+
+          <div className="error-modal-actions">
+            <button
+              className="btn-action btn-action-secondary"
+              style={{ minWidth: '120px' }}
+              onClick={onCancel}
+              disabled={isLoading}
+            >
+              {cancelText}
+            </button>
+            <button
+              className="btn-action btn-action-primary"
+              style={{ backgroundColor: titleColor, minWidth: '120px' }}
+              onClick={onConfirm}
+              disabled={isLoading}
+              autoFocus
+            >
+              {isLoading ? 'LOADING...' : confirmText}
+            </button>
+          </div>
+        </AlertDialog.Popup>
+      </AlertDialog.Portal>
+    </AlertDialog.Root>
   )
 }

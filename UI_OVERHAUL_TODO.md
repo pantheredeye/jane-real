@@ -67,11 +67,11 @@ Native controls that should move to `ui/`:
 
 ## Phase 1 — Dialog family
 
-- [ ] `ui/Dialog.tsx` — Base UI `Dialog` w/ `.glass-card` panel, overlay, focus trap, ESC
+- [x] `ui/Dialog.tsx` — Base UI `Dialog` re-exports
 - [x] `ui/AlertDialog.tsx` — destructive-confirm variant (re-exports Base UI AlertDialog parts)
 - [x] Migrate `ErrorModal` → composes `AlertDialog` (behavior note: backdrop click no longer dismisses — AlertDialog requires explicit action; ESC still closes)
-- [ ] Migrate `ConfirmDialog` → composes `AlertDialog`
-- [ ] Migrate `SaveRouteDialog` → composes `Dialog`
+- [x] Migrate `ConfirmDialog` → composes `AlertDialog` (same behavior shift as ErrorModal)
+- [x] Migrate `SaveRouteDialog` → composes `Dialog` (backdrop click + ESC still close, same as before)
 - [ ] Migrate `TheaterModal` → `Dialog` w/ theater variant class
 - [ ] `ChatPanel` — drop `role="dialog"` + backdrop, convert to non-modal docked panel (no `ui/` dep needed)
 - [ ] `pnpm check` green + dev-server smoke on each migrated screen (interactive smoke of ErrorModal pending: only triggers on route-calc failure)
