@@ -31,6 +31,7 @@
     "cap:open:android": "npx cap open android"
   },
   "dependencies": {
+    "@base-ui/react": "^1.4.0",
     "@capacitor/cli": "^8.3.1",
     "@capacitor/core": "^8.3.1",
     "@googlemaps/google-maps-services-js": "^3.4.2",

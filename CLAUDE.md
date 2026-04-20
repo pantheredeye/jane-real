@@ -229,6 +229,14 @@ The project uses Prisma with D1. Key models:
 ### Cloudflare Workers - Cross-Request Promise Resolution
 **CRITICAL**: All async operations (Prisma, API calls) MUST be awaited before returning from server components/functions. Unawaited promises cause "cross-request promise resolution" errors. Always `await` all DB queries and async operations.
 
+## Interactive Primitives (`src/app/components/ui/`)
+
+Interactive primitives MUST come from `src/app/components/ui/`. Never hand-roll Dialog, AlertDialog, Popover, Menu, Sheet, Select, Combobox, Tooltip, Switch, Checkbox, RadioGroup, Tabs.
+
+- New primitive needed? Add a wrapper to `src/app/components/ui/` first (Base UI — `@base-ui/react`), then consume it. Feature composites (e.g. `ErrorModal`) stay in their feature dir and compose `ui/` primitives.
+- Direct `@base-ui/react` imports are banned outside `src/app/components/ui/`.
+- Phased migration plan + inventory: `UI_OVERHAUL_TODO.md`.
+
 ## Error Handling Patterns
 
 ### No Toasts
