@@ -13,7 +13,7 @@ interface BadgeApi {
 }
 
 const DEFAULT: BadgeCounts = { events: 0, reminders: 0 };
-const POLL_MS = 60_000;
+const POLL_MS = 300_000;
 
 // Polls /agent/badge, returns current counts, and mirrors total to the PWA
 // icon via navigator.setAppBadge when supported.
