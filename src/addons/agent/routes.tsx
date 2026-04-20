@@ -15,11 +15,6 @@ function jsonResponse(data: unknown, status = 200): Response {
   });
 }
 
-type AiRun = (
-  model: string,
-  input: { audio: number[] },
-) => Promise<{ text?: string; transcription?: string } | string>;
-
 async function transcribeAudio(
   body: ArrayBuffer,
   contentType: string,
@@ -34,9 +29,14 @@ async function transcribeAudio(
     bytes: body.byteLength,
     contentType,
   });
-  const run = env.AI.run as unknown as AiRun;
   try {
-    const result = await run("@cf/openai/whisper", {
+    const ai = env.AI as unknown as {
+      run: (
+        model: string,
+        input: { audio: number[] },
+      ) => Promise<{ text?: string; transcription?: string } | string>;
+    };
+    const result = await ai.run("@cf/openai/whisper", {
       audio: [...new Uint8Array(body)],
     });
     const text =
