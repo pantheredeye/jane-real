@@ -19,7 +19,7 @@ export interface BadgeCounts {
 
 const HISTORY_CAP = 40;
 const PRUNE_BATCH = 20;
-const KIMI_MODEL = "@cf/moonshot/kimi-k2.5";
+const KIMI_MODEL = "@cf/moonshotai/kimi-k2.5";
 
 type ConversationRow = {
   id: number;

@@ -29,7 +29,7 @@ export type ToolCallResult = {
   result: ToolResult;
 };
 
-const KIMI_MODEL = "@cf/moonshot/kimi-k2.5";
+const KIMI_MODEL = "@cf/moonshotai/kimi-k2.5";
 const DEFAULT_MAX_ITERATIONS = 5;
 
 type WorkersAiResponse = {
