@@ -172,11 +172,13 @@ async function summarize(
     : `You are summarizing a real estate agent's chat history. Keep under 500 words. Prioritize client names, property addresses, event dates/times, reminders, and unresolved requests.`;
 
   // Kimi K2.5 is live on the account but not in the static AiModels type.
-  const aiRun = env.AI.run as unknown as (
-    model: string,
-    input: { messages: Array<{ role: string; content: string }> },
-  ) => Promise<{ response?: string } | string>;
-  const result = await aiRun(KIMI_MODEL, {
+  const ai = env.AI as unknown as {
+    run: (
+      model: string,
+      input: { messages: Array<{ role: string; content: string }> },
+    ) => Promise<{ response?: string } | string>;
+  };
+  const result = await ai.run(KIMI_MODEL, {
     messages: [
       { role: "system", content: system },
       { role: "user", content: transcript },

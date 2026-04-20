@@ -140,15 +140,14 @@ export async function runAgentLoop(args: {
   const events: Event[] = [];
   const reminders: Reminder[] = [];
 
-  const aiRun = args.ctx.env.AI.run as unknown as (
-    model: string,
-    opts: unknown,
-  ) => Promise<unknown>;
+  const ai = args.ctx.env.AI as unknown as {
+    run: (model: string, opts: unknown) => Promise<unknown>;
+  };
 
   let lastText = "";
 
   for (let i = 0; i < max; i++) {
-    const raw = await aiRun(KIMI_MODEL, {
+    const raw = await ai.run(KIMI_MODEL, {
       messages,
       tools: args.tools,
     });
