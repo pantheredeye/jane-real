@@ -1,11 +1,29 @@
 /* Agent chat UI — ChatButton FAB + ChatPanel slide-up + AgentMessage bubbles
    Reuses design tokens from src/addons/route-calculator/styles.css */
 
+/* Lift the FAB (and AgentResponseCard) above the route-calculator BottomBar
+   when it's on-page. :has() selects any page that renders .bottom-bar;
+   fallback is 0 so other pages keep the standard floating offset. */
+:root {
+  --chat-fab-bar-h: 0px;
+}
+body:has(.bottom-bar) {
+  --chat-fab-bar-h: 72px;
+}
+@media (max-width: 480px) {
+  body:has(.bottom-bar) {
+    --chat-fab-bar-h: 64px;
+  }
+}
+
 /* ---------- ChatButton (FAB) ---------- */
 .chat-fab {
   position: fixed;
   right: var(--space-4);
-  bottom: calc(var(--space-4) + env(safe-area-inset-bottom, 0px));
+  bottom: calc(
+    var(--chat-fab-bar-h, 0px) + var(--space-4) +
+      env(safe-area-inset-bottom, 0px)
+  );
   width: var(--tap-lg);
   height: var(--tap-lg);
   min-width: var(--tap-lg);
@@ -129,7 +147,10 @@
 .agent-response-card {
   position: fixed;
   right: var(--space-4);
-  bottom: calc(var(--space-4) + var(--tap-lg) + var(--space-4) + env(safe-area-inset-bottom, 0px));
+  bottom: calc(
+    var(--chat-fab-bar-h, 0px) + var(--space-4) + var(--tap-lg) +
+      var(--space-4) + env(safe-area-inset-bottom, 0px)
+  );
   max-width: min(360px, calc(100vw - var(--space-4) * 2));
   z-index: 45;
   display: flex;
