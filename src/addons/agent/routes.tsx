@@ -29,19 +29,40 @@ function toBase64(bytes: Uint8Array): string {
   return btoa(binary);
 }
 
-async function transcribeAudio(body: ArrayBuffer): Promise<string> {
+async function transcribeAudio(
+  body: ArrayBuffer,
+  contentType: string,
+): Promise<string> {
   if (body.byteLength === 0) {
     throw new Error("Empty audio body");
   }
   if (import.meta.env.VITE_IS_DEV_SERVER) {
     return "what do i have coming up today";
   }
-  const run = env.AI.run as unknown as AiRun;
-  const result = await run("@cf/openai/whisper-large-v3-turbo", {
-    audio: toBase64(new Uint8Array(body)),
+  console.log("[voice] transcribe start", {
+    bytes: body.byteLength,
+    contentType,
   });
-  if (typeof result === "string") return result;
-  return result?.text ?? result?.transcription ?? "";
+  const run = env.AI.run as unknown as AiRun;
+  try {
+    const result = await run("@cf/openai/whisper-large-v3-turbo", {
+      audio: toBase64(new Uint8Array(body)),
+    });
+    const text =
+      typeof result === "string"
+        ? result
+        : (result?.text ?? result?.transcription ?? "");
+    console.log("[voice] transcribe ok", { len: text.length });
+    return text;
+  } catch (err) {
+    console.error("[voice] transcribe failed", {
+      name: err instanceof Error ? err.name : typeof err,
+      message: err instanceof Error ? err.message : String(err),
+      stack: err instanceof Error ? err.stack : undefined,
+      raw: err,
+    });
+    throw err;
+  }
 }
 
 export const agentRoutes = [
@@ -97,10 +118,15 @@ export const agentRoutes = [
       let transcription: string;
       try {
         const body = await request.arrayBuffer();
-        transcription = await transcribeAudio(body);
+        const contentType = request.headers.get("content-type") ?? "";
+        transcription = await transcribeAudio(body, contentType);
       } catch (err) {
         const msg = err instanceof Error ? err.message : String(err);
-        return jsonResponse({ error: `Transcription failed: ${msg}` }, 400);
+        const stack = err instanceof Error ? err.stack : undefined;
+        return jsonResponse(
+          { error: `Transcription failed: ${msg}`, stack, debug: true },
+          400,
+        );
       }
 
       if (!transcription || transcription.trim() === "") {
