@@ -253,7 +253,9 @@ body:has(.bottom-bar) {
   background: rgba(15, 23, 42, 0.35);
   backdrop-filter: var(--blur-light);
   -webkit-backdrop-filter: var(--blur-light);
-  z-index: 50;
+  /* Sit above the route-calc bottom-bar (z-index 100) so the panel fully
+     covers it while open. Restores access to the reply composer. */
+  z-index: 105;
   animation: chat-backdrop-in 0.18s ease-out;
 }
 
@@ -276,7 +278,8 @@ body:has(.bottom-bar) {
   box-shadow: 0 -8px 32px rgba(15, 23, 42, 0.18);
   display: flex;
   flex-direction: column;
-  z-index: 60;
+  /* Above .bottom-bar (z-index 100) so the composer isn't hidden. */
+  z-index: 110;
   animation: chat-panel-in 0.24s cubic-bezier(0.2, 0.8, 0.2, 1);
   padding-bottom: env(safe-area-inset-bottom, 0px);
 }
