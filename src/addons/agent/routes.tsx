@@ -24,46 +24,25 @@ function toBase64(bytes: Uint8Array): string {
   return btoa(binary);
 }
 
-async function transcribeAudio(
-  body: ArrayBuffer,
-  contentType: string,
-): Promise<string> {
+async function transcribeAudio(body: ArrayBuffer): Promise<string> {
   if (body.byteLength === 0) {
     throw new Error("Empty audio body");
   }
   if (import.meta.env.VITE_IS_DEV_SERVER) {
     return "what do i have coming up today";
   }
-  console.log("[voice] transcribe start", {
-    bytes: body.byteLength,
-    contentType,
+  const ai = env.AI as unknown as {
+    run: (
+      model: string,
+      input: { audio: string; language?: string },
+    ) => Promise<{ text?: string; transcription?: string } | string>;
+  };
+  const result = await ai.run("@cf/openai/whisper-large-v3-turbo", {
+    audio: toBase64(new Uint8Array(body)),
+    language: "en",
   });
-  try {
-    const ai = env.AI as unknown as {
-      run: (
-        model: string,
-        input: { audio: string; language?: string },
-      ) => Promise<{ text?: string; transcription?: string } | string>;
-    };
-    const result = await ai.run("@cf/openai/whisper-large-v3-turbo", {
-      audio: toBase64(new Uint8Array(body)),
-      language: "en",
-    });
-    const text =
-      typeof result === "string"
-        ? result
-        : (result?.text ?? result?.transcription ?? "");
-    console.log("[voice] transcribe ok", { len: text.length });
-    return text;
-  } catch (err) {
-    console.error("[voice] transcribe failed", {
-      name: err instanceof Error ? err.name : typeof err,
-      message: err instanceof Error ? err.message : String(err),
-      stack: err instanceof Error ? err.stack : undefined,
-      raw: err,
-    });
-    throw err;
-  }
+  if (typeof result === "string") return result;
+  return result?.text ?? result?.transcription ?? "";
 }
 
 export const agentRoutes = [
@@ -98,6 +77,11 @@ export const agentRoutes = [
         });
         return jsonResponse(result);
       } catch (err) {
+        console.error("[chat] runChat failed", {
+          name: err instanceof Error ? err.name : typeof err,
+          message: err instanceof Error ? err.message : String(err),
+          stack: err instanceof Error ? err.stack : undefined,
+        });
         const msg = err instanceof Error ? err.message : String(err);
         return jsonResponse({ error: msg }, 500);
       }
@@ -119,15 +103,10 @@ export const agentRoutes = [
       let transcription: string;
       try {
         const body = await request.arrayBuffer();
-        const contentType = request.headers.get("content-type") ?? "";
-        transcription = await transcribeAudio(body, contentType);
+        transcription = await transcribeAudio(body);
       } catch (err) {
         const msg = err instanceof Error ? err.message : String(err);
-        const stack = err instanceof Error ? err.stack : undefined;
-        return jsonResponse(
-          { error: `Transcription failed: ${msg}`, stack, debug: true },
-          400,
-        );
+        return jsonResponse({ error: `Transcription failed: ${msg}` }, 400);
       }
 
       if (!transcription || transcription.trim() === "") {
@@ -142,6 +121,11 @@ export const agentRoutes = [
         });
         return jsonResponse({ transcription, ...result });
       } catch (err) {
+        console.error("[voice] runChat failed", {
+          name: err instanceof Error ? err.name : typeof err,
+          message: err instanceof Error ? err.message : String(err),
+          stack: err instanceof Error ? err.stack : undefined,
+        });
         const msg = err instanceof Error ? err.message : String(err);
         return jsonResponse({ error: msg }, 500);
       }
