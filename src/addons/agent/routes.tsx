@@ -15,6 +15,15 @@ function jsonResponse(data: unknown, status = 200): Response {
   });
 }
 
+function toBase64(bytes: Uint8Array): string {
+  let binary = "";
+  const chunk = 0x8000;
+  for (let i = 0; i < bytes.length; i += chunk) {
+    binary += String.fromCharCode(...bytes.subarray(i, i + chunk));
+  }
+  return btoa(binary);
+}
+
 async function transcribeAudio(
   body: ArrayBuffer,
   contentType: string,
@@ -33,11 +42,12 @@ async function transcribeAudio(
     const ai = env.AI as unknown as {
       run: (
         model: string,
-        input: { audio: number[] },
+        input: { audio: string; language?: string },
       ) => Promise<{ text?: string; transcription?: string } | string>;
     };
-    const result = await ai.run("@cf/openai/whisper", {
-      audio: [...new Uint8Array(body)],
+    const result = await ai.run("@cf/openai/whisper-large-v3-turbo", {
+      audio: toBase64(new Uint8Array(body)),
+      language: "en",
     });
     const text =
       typeof result === "string"
