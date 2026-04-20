@@ -17,17 +17,8 @@ function jsonResponse(data: unknown, status = 200): Response {
 
 type AiRun = (
   model: string,
-  input: { audio: string },
+  input: { audio: number[] },
 ) => Promise<{ text?: string; transcription?: string } | string>;
-
-function toBase64(bytes: Uint8Array): string {
-  let binary = "";
-  const chunk = 0x8000;
-  for (let i = 0; i < bytes.length; i += chunk) {
-    binary += String.fromCharCode(...bytes.subarray(i, i + chunk));
-  }
-  return btoa(binary);
-}
 
 async function transcribeAudio(
   body: ArrayBuffer,
@@ -45,8 +36,8 @@ async function transcribeAudio(
   });
   const run = env.AI.run as unknown as AiRun;
   try {
-    const result = await run("@cf/openai/whisper-large-v3-turbo", {
-      audio: toBase64(new Uint8Array(body)),
+    const result = await run("@cf/openai/whisper", {
+      audio: [...new Uint8Array(body)],
     });
     const text =
       typeof result === "string"
