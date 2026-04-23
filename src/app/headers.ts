@@ -23,7 +23,7 @@ export const setCommonHeaders =
     // Explicitly disables access to specific browser features/APIs
     response.headers.set(
       "Permissions-Policy",
-      "geolocation=(self), microphone=(), camera=()",
+      "geolocation=(self), microphone=(self), camera=()",
     );
 
     // Defines trusted sources for content loading and script execution:

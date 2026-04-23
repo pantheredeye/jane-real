@@ -1,9 +1,13 @@
 'use client'
 
-import { useState, ReactNode } from 'react'
-import { BottomBar } from './BottomBar'
+import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { MenuSheet } from './MenuSheet'
 import type { PropertyInput } from '../types'
+import {
+  EVT_REQUEST_STATE,
+  setPrimaryAction,
+  setSecondaryActions,
+} from '../../agent/dock-bridge'
 
 interface AppShellProps {
   // Children for main viewport
@@ -58,6 +62,105 @@ export function AppShell({
   isSubscribed = false
 }: AppShellProps) {
   const [menuOpen, setMenuOpen] = useState(false)
+  const [pasteState, setPasteState] = useState<'idle' | 'pasting' | 'added' | 'invalid' | 'denied' | 'empty'>(
+    'idle',
+  )
+
+  // Keep fresh handler refs so the bridge publishes don't stale-close.
+  const onCalculateRef = useRef(onCalculate)
+  onCalculateRef.current = onCalculate
+  const onPasteRef = useRef(onPaste)
+  onPasteRef.current = onPaste
+
+  const propertyCount = properties.length
+  const primaryDisabled =
+    isCalculating || propertyCount === 0 || (showSuccess && !isCalculationDirty)
+  const primaryLabel = isCalculating
+    ? 'CALCULATING…'
+    : showSuccess && !isCalculationDirty
+      ? '✓ DONE'
+      : isCalculationDirty
+        ? `RECALCULATE${propertyCount > 0 ? ` (${propertyCount})` : ''}`
+        : `CALCULATE${propertyCount > 0 ? ` (${propertyCount})` : ''}`
+  const primarySuccess = showSuccess && !isCalculationDirty
+
+  const pasteLabel = {
+    idle: '📋 Paste address',
+    pasting: 'Pasting…',
+    added: '✓ Added',
+    invalid: 'Invalid',
+    denied: 'Clipboard denied',
+    empty: 'Clipboard empty',
+  }[pasteState]
+
+  const handlePasteAction = async () => {
+    setPasteState('pasting')
+    const result = await onPasteRef.current()
+    if (result.success) {
+      setPasteState('added')
+      setTimeout(() => setPasteState('idle'), 1500)
+    } else {
+      const nextState: typeof pasteState = result.error?.includes('permission')
+        ? 'denied'
+        : result.error?.includes('empty')
+          ? 'empty'
+          : 'invalid'
+      setPasteState(nextState)
+      setTimeout(() => setPasteState('idle'), 2000)
+    }
+  }
+
+  // Publish primary (Calculate) + secondary (Paste) actions to the dock.
+  useEffect(() => {
+    setPrimaryAction({
+      label: primaryLabel,
+      disabled: primaryDisabled,
+      success: primarySuccess,
+      onAction: () => onCalculateRef.current(),
+    })
+    setSecondaryActions([
+      {
+        id: 'paste',
+        label: pasteLabel,
+        disabled: pasteState !== 'idle',
+        onAction: () => {
+          void handlePasteAction()
+        },
+      },
+    ])
+  }, [primaryLabel, primaryDisabled, primarySuccess, pasteLabel, pasteState])
+
+  // Re-emit on dock request (dock mounts after page tree).
+  useEffect(() => {
+    const onRequest = () => {
+      setPrimaryAction({
+        label: primaryLabel,
+        disabled: primaryDisabled,
+        success: primarySuccess,
+        onAction: () => onCalculateRef.current(),
+      })
+      setSecondaryActions([
+        {
+          id: 'paste',
+          label: pasteLabel,
+          disabled: pasteState !== 'idle',
+          onAction: () => {
+            void handlePasteAction()
+          },
+        },
+      ])
+    }
+    window.addEventListener(EVT_REQUEST_STATE, onRequest)
+    return () => window.removeEventListener(EVT_REQUEST_STATE, onRequest)
+  }, [primaryLabel, primaryDisabled, primarySuccess, pasteLabel, pasteState])
+
+  // Clear registrations on unmount so non-route-calc pages don't see stale actions.
+  useEffect(() => {
+    return () => {
+      setPrimaryAction(null)
+      setSecondaryActions([])
+    }
+  }, [])
 
   return (
     <div className="app-shell">
@@ -111,15 +214,8 @@ export function AppShell({
         {children}
       </main>
 
-      {/* Bottom Bar */}
-      <BottomBar
-        onCalculatePress={onCalculate}
-        onPaste={onPaste}
-        isCalculating={isCalculating}
-        showSuccess={showSuccess}
-        isCalculationDirty={isCalculationDirty}
-        propertyCount={properties.length}
-      />
+      {/* BottomBar replaced by persistent AgentDock (mounted in Document.tsx).
+          Calculate + Paste are published via dock-bridge above. */}
 
       {/* Menu Sheet */}
       <MenuSheet

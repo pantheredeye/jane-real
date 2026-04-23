@@ -154,6 +154,23 @@ export const agentRoutes = [
     },
   ]),
 
+  route("/recent-prompts", [
+    requireAuth,
+    requireTenant,
+    async ({ request, ctx }: { request: Request; ctx: AppContext }) => {
+      if (request.method !== "GET") {
+        return new Response("Method not allowed", { status: 405 });
+      }
+      if (!ctx.user) {
+        return jsonResponse({ error: "Auth required" }, 401);
+      }
+      const doId = env.AGENT_STATE_DO.idFromName(ctx.user.id);
+      const stub = env.AGENT_STATE_DO.get(doId);
+      const prompts = await stub.getRecentUserPrompts(5);
+      return jsonResponse({ prompts });
+    },
+  ]),
+
   route("/reminders/:id/dismiss", [
     requireAuth,
     requireTenant,

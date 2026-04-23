@@ -11,12 +11,14 @@ import {
   type UserPreferences,
 } from "./preferences";
 import type { ToolCallResult } from "../llm";
+import type { PropertyInput } from "../../route-calculator/types";
 
 export interface ChatResult {
   reply: string;
   toolCalls: ToolCallResult[];
   events?: Event[];
   reminders?: Reminder[];
+  properties?: PropertyInput[];
 }
 
 function parsePreferences(raw: string | null | undefined): UserPreferences {

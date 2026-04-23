@@ -73,6 +73,7 @@ Reminders:
 
 Routing & properties:
 - lookupProperty — geocode an address or parse a Zillow/Realtor/Redfin URL. Use before createEvent when address is fuzzy or pasted from a listing.
+- addPropertyToRoute — append a property (address or listing URL) to the user's in-progress route on the calculator page. Use when the user says "add <address>", "put this on my route", pastes a Zillow/Realtor/Redfin URL, or otherwise asks to grow the route. Client applies the add; no DB write. Returns immediately, confirm naturally (e.g. "Added 123 Main St.").
 - optimizeDay — build an optimized route for all scheduled events on a date.
 - exportItinerary — render an OptimizedRoute as client-friendly or detailed text.
 

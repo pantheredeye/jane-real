@@ -1,5 +1,6 @@
 import type { Event, Reminder } from "@generated/prisma";
 import type { AgentContext, ToolResult } from "./types";
+import type { PropertyInput } from "../route-calculator/types";
 
 export type ToolCall = {
   id: string;
@@ -80,6 +81,26 @@ function looksLikeReminder(v: unknown): v is Reminder {
   );
 }
 
+function looksLikeProperty(v: unknown): v is PropertyInput {
+  if (!v || typeof v !== "object") return false;
+  const o = v as Record<string, unknown>;
+  return (
+    typeof o.id === "string" &&
+    typeof o.rawInput === "string" &&
+    typeof o.parsedAddress === "string"
+  );
+}
+
+function extractProperties(result: ToolResult, properties: PropertyInput[]): void {
+  if (!result.ok || result.data == null) return;
+  const data = result.data as Record<string, unknown>;
+  if (looksLikeProperty(data.property)) properties.push(data.property);
+  const list = data.properties;
+  if (Array.isArray(list)) {
+    for (const p of list) if (looksLikeProperty(p)) properties.push(p);
+  }
+}
+
 function extractEventsAndReminders(
   result: ToolResult,
   events: Event[],
@@ -122,6 +143,7 @@ export async function runAgentLoop(args: {
   toolCalls: ToolCallResult[];
   events?: Event[];
   reminders?: Reminder[];
+  properties?: PropertyInput[];
 }> {
   const max = args.maxIterations ?? DEFAULT_MAX_ITERATIONS;
   const messages: Message[] = [
@@ -139,6 +161,7 @@ export async function runAgentLoop(args: {
   const toolCalls: ToolCallResult[] = [];
   const events: Event[] = [];
   const reminders: Reminder[] = [];
+  const properties: PropertyInput[] = [];
 
   const ai = args.ctx.env.AI as unknown as {
     run: (model: string, opts: unknown) => Promise<unknown>;
@@ -160,6 +183,7 @@ export async function runAgentLoop(args: {
         toolCalls,
         events: events.length ? events : undefined,
         reminders: reminders.length ? reminders : undefined,
+        properties: properties.length ? properties : undefined,
       };
     }
 
@@ -215,6 +239,7 @@ export async function runAgentLoop(args: {
         result,
       });
       extractEventsAndReminders(result, events, reminders);
+      extractProperties(result, properties);
     }
   }
 
@@ -225,6 +250,7 @@ export async function runAgentLoop(args: {
     toolCalls,
     events: events.length ? events : undefined,
     reminders: reminders.length ? reminders : undefined,
+    properties: properties.length ? properties : undefined,
   };
 }
 
@@ -443,6 +469,24 @@ export const AGENT_TOOLS: ToolDef[] = [
       name: "lookupProperty",
       description:
         "Parse and geocode a property from a free-text address or listing URL (Zillow/Realtor/Redfin). READ-ONLY. Returns formatted address, coordinates, and listing/thumbnail URLs. Use to validate an address before creating a SHOWING event.",
+      parameters: {
+        type: "object",
+        properties: {
+          query: {
+            type: "string",
+            description: "Address or listing URL",
+          },
+        },
+        required: ["query"],
+      },
+    },
+  },
+  {
+    type: "function",
+    function: {
+      name: "addPropertyToRoute",
+      description:
+        "Add a property (free-text address or Zillow/Realtor/Redfin URL) to the user's in-progress route on the route calculator page. MUTATION of the client's unsaved list; no DB write. The result is forwarded to the open route-calc page, which appends the property. Use when the user says things like 'add 123 Main St', 'put this listing on my route', or pastes a URL in chat.",
       parameters: {
         type: "object",
         properties: {

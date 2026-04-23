@@ -131,7 +131,6 @@ export function ChatButton() {
       if (Math.abs(dy) > MOVE_CANCEL_THRESHOLD || Math.abs(dx) > MOVE_CANCEL_THRESHOLD) {
         return;
       }
-      // Short tap → toggle recording
       void toggleRecording();
     },
     [clearLongPress, toggleRecording],

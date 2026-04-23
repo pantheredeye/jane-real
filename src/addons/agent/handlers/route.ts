@@ -1,11 +1,13 @@
 import { addMinutes } from "date-fns";
 import type {
+  AddPropertyToRouteInput,
   AgentContext,
   LookupPropertyInput,
   OptimizeDayInput,
   ToolResult,
 } from "../types";
 import {
+  AddPropertyToRouteInputSchema,
   LookupPropertyInputSchema,
   OptimizeDayInputSchema,
 } from "../types";
@@ -195,6 +197,44 @@ export async function lookupProperty(
       coordinates: geocoded.coordinates,
       sourceUrl,
       thumbnailUrl,
+    },
+  };
+}
+
+// Emits a PropertyInput the client-side dock forwards to route-calc's
+// property list. Server doesn't persist route-in-progress state — the shape
+// is returned and applied client-side via the dock bridge.
+export async function addPropertyToRoute(
+  input: AddPropertyToRouteInput,
+  _ctx: AgentContext,
+): Promise<ToolResult> {
+  const parsed = AddPropertyToRouteInputSchema.parse(input);
+
+  const parseResult = parsePropertyInput(parsed.query);
+  if (!parseResult.success) {
+    return { ok: false, error: parseResult.error };
+  }
+
+  const property = parseResult.property;
+
+  // Optional: geocode to validate the address is real. Skip if it's a URL
+  // (URL parsers already yielded a structured address).
+  if (!property.sourceUrl) {
+    const [geocoded] = await geocodeAddresses([property.parsedAddress]);
+    if (!geocoded?.coordinates) {
+      return {
+        ok: false,
+        error: `Could not find address: ${property.parsedAddress}`,
+      };
+    }
+    property.parsedAddress = geocoded.formattedAddress;
+  }
+
+  return {
+    ok: true,
+    data: {
+      property,
+      message: `Added ${property.parsedAddress} to route`,
     },
   };
 }

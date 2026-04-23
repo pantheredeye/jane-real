@@ -78,6 +78,27 @@ export class AgentStateDO extends DurableObject {
     return rows.reverse().map(rowToTurn);
   }
 
+  async getRecentUserPrompts(limit = 5): Promise<string[]> {
+    const rows = this.ctx.storage.sql
+      .exec<{ content: string }>(
+        "SELECT content FROM conversations WHERE role = 'user' ORDER BY id DESC LIMIT ?",
+        limit * 4,
+      )
+      .toArray();
+    const out: string[] = [];
+    const seen = new Set<string>();
+    for (const r of rows) {
+      const trimmed = r.content.trim();
+      if (!trimmed) continue;
+      const key = trimmed.toLowerCase();
+      if (seen.has(key)) continue;
+      seen.add(key);
+      out.push(trimmed.length > 60 ? `${trimmed.slice(0, 59)}…` : trimmed);
+      if (out.length >= limit) break;
+    }
+    return out;
+  }
+
   async getContextSummary(): Promise<string | null> {
     const row = this.ctx.storage.sql
       .exec<{ summary: string }>(

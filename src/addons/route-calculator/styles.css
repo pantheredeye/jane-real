@@ -3428,8 +3428,9 @@ input, select, textarea {
 .main-viewport {
   flex: 1;
   padding: 20px 16px;
-  /* Account for bottom bar */
-  padding-bottom: calc(80px + env(safe-area-inset-bottom));
+  /* Clear the persistent AgentDock (var set in agent/styles.css; fallback 96px
+     accommodates dock row + safe-area). */
+  padding-bottom: calc(var(--agent-dock-h, 96px) + 16px + env(safe-area-inset-bottom));
   max-width: 500px;
   margin: 0 auto;
   width: 100%;
@@ -3541,6 +3542,7 @@ input, select, textarea {
 .inline-input-section {
   margin-bottom: 16px;
 }
+
 
 .inline-list-section {
   margin-bottom: 24px;

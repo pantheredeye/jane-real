@@ -10,7 +10,7 @@ import {
   dismissReminder,
   listReminders,
 } from "./reminder";
-import { lookupProperty, optimizeDay } from "./route";
+import { addPropertyToRoute, lookupProperty, optimizeDay } from "./route";
 import { exportItinerary } from "./export";
 
 export function makeExecuteHandler(
@@ -46,6 +46,11 @@ export function makeExecuteHandler(
       case "lookupProperty":
         return lookupProperty(
           input as Parameters<typeof lookupProperty>[0],
+          ctx,
+        );
+      case "addPropertyToRoute":
+        return addPropertyToRoute(
+          input as Parameters<typeof addPropertyToRoute>[0],
           ctx,
         );
       case "exportItinerary":

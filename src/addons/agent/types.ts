@@ -154,6 +154,11 @@ export const LookupPropertyInputSchema = z.object({
 });
 export type LookupPropertyInput = z.infer<typeof LookupPropertyInputSchema>;
 
+export const AddPropertyToRouteInputSchema = z.object({
+  query: z.string().min(1),
+});
+export type AddPropertyToRouteInput = z.infer<typeof AddPropertyToRouteInputSchema>;
+
 export const ExportItineraryInputSchema = z.object({
   format: z.enum(["client", "detailed"]),
   route: z.unknown(),
