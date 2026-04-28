@@ -38,7 +38,16 @@ interface DockContextValue {
   setIntegration: (i: AgentIntegration) => void;
 }
 
-const DockContext = createContext<DockContextValue | null>(null);
+const defaultDockValue: DockContextValue = {
+  primary: null,
+  secondary: [],
+  integration: {},
+  setPrimary: () => {},
+  setSecondary: () => {},
+  setIntegration: () => {},
+};
+
+const DockContext = createContext<DockContextValue>(defaultDockValue);
 
 interface DockProviderProps {
   children: ReactNode;
@@ -77,9 +86,5 @@ export function DockProvider({ children }: DockProviderProps) {
 }
 
 export function useDock(): DockContextValue {
-  const ctx = useContext(DockContext);
-  if (!ctx) {
-    throw new Error("useDock must be used within a <DockProvider>");
-  }
-  return ctx;
+  return useContext(DockContext);
 }

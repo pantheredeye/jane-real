@@ -15,17 +15,11 @@ import theaterCloseStyles from "./components/shared/theaterModal/theater-close-b
 import voiceMicStyles from "../addons/agent/components/voice-mic.css?url";
 import agentChatStyles from "../addons/agent/styles.css?url";
 import { requestInfo } from "rwsdk/worker";
-import type { AppContext } from "../worker";
-import { DockProvider } from "../addons/agent/contexts/DockProvider";
-import { VoiceProvider } from "../addons/agent/contexts/VoiceContext";
-import { AgentDock } from "../addons/agent/components/AgentDock";
 
 export const Document: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const ctx = requestInfo.ctx as AppContext;
   const nonce = requestInfo.rw.nonce;
-  const showChat = Boolean(ctx?.user);
   return (
   <html lang="en">
     <head>
@@ -72,12 +66,7 @@ export const Document: React.FC<{ children: React.ReactNode }> = ({
       <link rel="stylesheet" href={agentChatStyles} />
     </head>
     <body>
-      <DockProvider>
-        <VoiceProvider>
-          <div id="root">{children}</div>
-          {showChat && <AgentDock />}
-        </VoiceProvider>
-      </DockProvider>
+      <div id="root">{children}</div>
       <script nonce={nonce}>import("/src/client.tsx")</script>
     </body>
   </html>

@@ -1,6 +1,7 @@
 import { defineApp, ErrorResponse } from "rwsdk/worker";
-import { route, render, prefix } from "rwsdk/router";
+import { route, render, prefix, layout } from "rwsdk/router";
 import { Document } from "@/app/Document";
+import { ChatLayout } from "@/app/ChatLayout";
 import { Home } from "@/app/pages/Home";
 import { setCommonHeaders } from "@/app/headers";
 import { userRoutes } from "@/app/pages/user/routes";
@@ -95,6 +96,7 @@ const app = defineApp([
   route("/api/auth/status", authStatusHandler),
   prefix("/agent", agentRoutes),
   render(Document, [
+    layout(ChatLayout, [
     ...landingRoutes,
     ...aboutRoutes,
     route("/signup", () => {
@@ -127,6 +129,7 @@ const app = defineApp([
     prefix("/legal", legalRoutes),
     prefix("/share", shareRoutes),
     route("*", () => new Response("Not Found", { status: 404 })),
+    ]),
   ]),
 ]);
 
