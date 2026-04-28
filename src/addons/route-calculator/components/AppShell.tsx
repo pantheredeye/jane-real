@@ -3,11 +3,7 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { MenuSheet } from './MenuSheet'
 import type { PropertyInput } from '../types'
-import {
-  EVT_REQUEST_STATE,
-  setPrimaryAction,
-  setSecondaryActions,
-} from '../../agent/dock-bridge'
+import { useDock } from '../../agent/contexts/DockProvider'
 
 interface AppShellProps {
   // Children for main viewport
@@ -66,7 +62,9 @@ export function AppShell({
     'idle',
   )
 
-  // Keep fresh handler refs so the bridge publishes don't stale-close.
+  const { setPrimary, setSecondary } = useDock()
+
+  // Keep fresh handler refs so the dock publishes don't stale-close.
   const onCalculateRef = useRef(onCalculate)
   onCalculateRef.current = onCalculate
   const onPasteRef = useRef(onPaste)
@@ -112,13 +110,13 @@ export function AppShell({
 
   // Publish primary (Calculate) + secondary (Paste) actions to the dock.
   useEffect(() => {
-    setPrimaryAction({
+    setPrimary({
       label: primaryLabel,
       disabled: primaryDisabled,
       success: primarySuccess,
       onAction: () => onCalculateRef.current(),
     })
-    setSecondaryActions([
+    setSecondary([
       {
         id: 'paste',
         label: pasteLabel,
@@ -128,39 +126,15 @@ export function AppShell({
         },
       },
     ])
-  }, [primaryLabel, primaryDisabled, primarySuccess, pasteLabel, pasteState])
-
-  // Re-emit on dock request (dock mounts after page tree).
-  useEffect(() => {
-    const onRequest = () => {
-      setPrimaryAction({
-        label: primaryLabel,
-        disabled: primaryDisabled,
-        success: primarySuccess,
-        onAction: () => onCalculateRef.current(),
-      })
-      setSecondaryActions([
-        {
-          id: 'paste',
-          label: pasteLabel,
-          disabled: pasteState !== 'idle',
-          onAction: () => {
-            void handlePasteAction()
-          },
-        },
-      ])
-    }
-    window.addEventListener(EVT_REQUEST_STATE, onRequest)
-    return () => window.removeEventListener(EVT_REQUEST_STATE, onRequest)
-  }, [primaryLabel, primaryDisabled, primarySuccess, pasteLabel, pasteState])
+  }, [primaryLabel, primaryDisabled, primarySuccess, pasteLabel, pasteState, setPrimary, setSecondary])
 
   // Clear registrations on unmount so non-route-calc pages don't see stale actions.
   useEffect(() => {
     return () => {
-      setPrimaryAction(null)
-      setSecondaryActions([])
+      setPrimary(null)
+      setSecondary([])
     }
-  }, [])
+  }, [setPrimary, setSecondary])
 
   return (
     <div className="app-shell">
@@ -213,9 +187,6 @@ export function AppShell({
       <main className="main-viewport">
         {children}
       </main>
-
-      {/* BottomBar replaced by persistent AgentDock (mounted in Document.tsx).
-          Calculate + Paste are published via dock-bridge above. */}
 
       {/* Menu Sheet */}
       <MenuSheet

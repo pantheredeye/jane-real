@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
-import { setAgentIntegration, EVT_REQUEST_STATE } from '../../agent/dock-bridge'
+import { useDock } from '../../agent/contexts/DockProvider'
 import { AppShell } from '../components/AppShell'
 import { PropertyCard } from '../components/PropertyCard'
 import { DriveTimeConnector } from '../components/DriveTimeConnector'
@@ -207,27 +207,19 @@ export default function HomePage({ initialCredits, initialSavedRoutes }: HomePag
 
   const isCalculationDirty = !!(calculatedRoute && currentFingerprint !== lastCalculatedFingerprint)
 
-  // Bridge: when the agent's `addPropertyToRoute` tool emits a property,
-  // push it into the page's property list. Direct typing still goes through
-  // PropertyInputBox (fast, deterministic, no LLM).
+  // When the agent's `addPropertyToRoute` tool emits a property, push it into
+  // the page's property list. Direct typing still goes through PropertyInputBox
+  // (fast, deterministic, no LLM).
+  const { setIntegration } = useDock()
   const handleAddPropertyRef = useRef(propertyList.handleAddProperty)
   handleAddPropertyRef.current = propertyList.handleAddProperty
 
   useEffect(() => {
-    const publish = () => {
-      setAgentIntegration({
-        onAgentPropertyAdded: (property) => {
-          handleAddPropertyRef.current(property)
-        },
-      })
-    }
-    publish()
-    window.addEventListener(EVT_REQUEST_STATE, publish)
-    return () => {
-      window.removeEventListener(EVT_REQUEST_STATE, publish)
-      setAgentIntegration({})
-    }
-  }, [])
+    setIntegration({
+      onAgentPropertyAdded: (property) => handleAddPropertyRef.current(property),
+    })
+    return () => setIntegration({})
+  }, [setIntegration])
 
   return (
     <AppShell

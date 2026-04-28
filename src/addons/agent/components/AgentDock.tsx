@@ -17,13 +17,9 @@ import { EventCard } from "./EventCard";
 import { ReminderCard } from "./ReminderCard";
 import type { EventCardData, ReminderCardData } from "./cardTypes";
 import {
-  EVT_STATE_CHANGED,
-  getState,
-  requestState,
+  useDock,
   type AgentIntegration,
-  type PrimaryAction,
-  type SecondaryAction,
-} from "../dock-bridge";
+} from "../contexts/DockProvider";
 import type { PropertyInput } from "../../route-calculator/types";
 import { Menu } from "../../../app/components/ui/Menu";
 
@@ -111,9 +107,7 @@ export function AgentDock() {
     undefined,
   );
 
-  const [primary, setPrimary] = useState<PrimaryAction | null>(null);
-  const [secondary, setSecondary] = useState<SecondaryAction[]>([]);
-  const [integration, setIntegration] = useState<AgentIntegration>({});
+  const { primary, secondary, integration } = useDock();
 
   const [isMobile, setIsMobile] = useState(false);
   const [chips, setChips] = useState<string[]>([]);
@@ -164,19 +158,6 @@ export function AgentDock() {
     apply();
     mq.addEventListener("change", apply);
     return () => mq.removeEventListener("change", apply);
-  }, []);
-
-  useEffect(() => {
-    const sync = () => {
-      const s = getState();
-      setPrimary(s.primary);
-      setSecondary([...s.secondary]);
-      setIntegration({ ...s.integration });
-    };
-    sync();
-    window.addEventListener(EVT_STATE_CHANGED, sync);
-    requestState();
-    return () => window.removeEventListener(EVT_STATE_CHANGED, sync);
   }, []);
 
   // VisualViewport-driven keyboard inset — only while composer open on mobile
