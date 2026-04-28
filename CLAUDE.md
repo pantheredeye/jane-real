@@ -3,6 +3,46 @@
 ## Project Overview
 This is a RedwoodSDK application featuring a real estate route calculator that helps agents optimize their property showing schedules. The project follows RedwoodSDK's full-stack colocation architecture and React Server Components (RSC) patterns.
 
+## Session Hygiene & Memory Bank
+
+**At session start**: read `NORTH_STAR.md` and `memory-bank/active-context.md`. These define current direction and where we left off.
+
+**At session end**: invoke `/handoff` to update `memory-bank/active-context.md` and append to `memory-bank/progress.md`.
+
+**When user asks** "what's my north star", "what should I be working on", "remind me of the plan", "what's the focus" → run `/north-star` (or directly read `NORTH_STAR.md` + `memory-bank/active-context.md` and summarize).
+
+**Before any agent-driven feature work**: confirm worktree, active spec, demo script, acceptance criteria. Use `/hygiene` if unsure.
+
+**Periodically** (or when user asks "should we still be doing this?"): run `/contrarian` to stress-test the current plan from a skeptical perspective.
+
+**UI/UX checkpoints**: NEVER make UI/UX decisions unilaterally. Before any choice involving layout, color, typography, interaction pattern, copy, or new screen structure → pause, present 2–3 options with tradeoffs, wait for user pick. Existing subagents (`design-consistency-guardian`, `rwsdk-patterns-guardian`) enforce conventions but do not invent new ones.
+
+**Where artifacts live (memory-bank vs. Ralph specs — IMPORTANT distinction)**:
+
+`memory-bank/` is for **reference / persistent state** — things you READ to know what's true:
+- `NORTH_STAR.md` (root) — pinned vision + 60/90/180 + architecture decisions
+- `memory-bank/active-context.md` — where we left off + next steps
+- `memory-bank/progress.md` — append-only dated log
+- `memory-bank/ideas.md` — parking lot (triaged weekly)
+- `memory-bank/design-directions.md` — chosen UI/UX directions per surface (output of `/design-review`)
+- `memory-bank/inventory.md` — current-app audit (output of `routefast-inventory` subagent)
+- `memory-bank/expo-migration-plan.md` — high-level phased roadmap (NOT executable; reference only)
+
+`.choo-choo-ralph/` is for **executable feature specs** — things Ralph POURS into beads to work through:
+- `.choo-choo-ralph/<feature>.spec.md` — per-feature spec in Ralph format (YAML frontmatter + `<project_specification>` XML sections + `<context>` with `<existing_patterns>` / `<integration_points>` / `<new_technologies>` / `<conventions>`)
+- See `.choo-choo-ralph/archive/*.spec.md` for format reference
+- Generated via `/choo-choo-ralph:spec`, poured via `/choo-choo-ralph:pour`, harvested via `/choo-choo-ralph:harvest`
+
+**Rule of thumb**: if it has tasks + acceptance + demo + is meant to be executed → Ralph spec. If it's roadmap, audit, vision, or where-am-I → memory-bank.
+
+**When unclear**: ask the user before placing a new doc. Drafts in memory-bank are fine as a staging area; convert to Ralph spec via `/choo-choo-ralph:spec` once the work is ready to execute, then delete the memory-bank draft.
+
+**Slash commands** (in `.claude/commands/`):
+- `/north-star` — start-of-session orientation
+- `/handoff` — end-of-session state save
+- `/contrarian` — stress-test current plan
+- `/hygiene` — pre-work checklist
+
 ## Architecture
 
 ### Tech Stack
