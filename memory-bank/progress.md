@@ -4,6 +4,17 @@ Append-only. Newest at top. Read only the bottom (oldest) entries when archaeolo
 
 ---
 
+## 2026-04-28 (late)
+
+- **Homepage-decompose SHIPPED** — cherry-picked squashed state (`1a11dcc` → `2b35474`) onto `ai-agent`. `d9d1e40..2b35474` pushed.
+- **dock-collapse integration follow-up**: `useHomePageState.ts` now uses `useDock().setIntegration` (legacy bridge symbols swapped in the squash commit). Touchpoint resolved.
+- **Sections refactored** from ralph's whole-state-prop pattern → focused props per spec. Final caps: HomePage 80, useHomePageState 144, sections ≤115. Types clean.
+- Demo gauntlet 1–8 passed in dev (flow 4 verifies useDock); 9–17 deferred (pre-existing `GOOGLE_MAPS_API_KEY_SERVER` env drift).
+- Worktree `refactor+homepage-decompose` removed. Branches `refactor/homepage-decompose` + `-rebased` deleted. Spec archived (untracked).
+- Memory-bank session-save committed as `8cf5f8e` (handoff state + parallel-session expo plan updates).
+
+---
+
 ## 2026-04-28 (night, Expo Phase 0 P1 land)
 
 - **Phase 0 P1 (9 tasks) shipped** in `worktree-expo-phase-0`: tsconfig `@/*` alias, NativeWind v5 + Tailwind v4 stack, `metro.config.js` + `postcss.config.mjs` + `src/global.css`, `src/tw/{index,image,animated}.tsx`, env config + LAN auto-detect, `src/api/client.ts`, root Stack large-title, `app/index.tsx` Hello+health, README. Two commits: `d677b1b` (spec track), `34cbc8f` (feat).

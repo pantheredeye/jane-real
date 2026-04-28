@@ -74,3 +74,7 @@ prisma/dev.db-journal
 # Capacitor native platforms
 /ios
 /android
+
+# Claude Code local state
+.claude/scheduled_tasks.lock
+.claude/worktrees/
