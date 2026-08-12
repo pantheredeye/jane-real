@@ -19,10 +19,11 @@
       "custom_domain": true
     }
   ],
-  // Scheduled tasks: every 5min reminder cron + daily digest at 12:00 UTC (~7-8am ET).
+  // Scheduled tasks: daily digest at 12:00 UTC (~7-8am ET).
+  // Every-5-min reminder cron disabled — feature unused; re-add "*/5 * * * *" to resume.
   // Secrets required: RESEND_API_KEY (set via `wrangler secret put`).
   "triggers": {
-    "crons": ["*/5 * * * *", "0 12 * * *"]
+    "crons": ["0 12 * * *"]
   },
   "durable_objects": {
     "bindings": [
@@ -87,7 +88,7 @@
         "DIGEST_FROM_EMAIL": "reminders@routefast.app"
       },
       "triggers": {
-        "crons": ["*/5 * * * *", "0 12 * * *"]
+        "crons": ["0 12 * * *"]
       },
       "d1_databases": [
         {
